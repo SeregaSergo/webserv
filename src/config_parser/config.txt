@@ -1,0 +1,92 @@
+error_log logs/error.log;
+access_log  logs/access.log;
+keepalive_timeout 10;
+
+types {
+  text/html                             html htm shtml;
+  text/css                              css;
+  text/xml                              xml rss;
+  image/gif                             gif;
+  image/jpeg                            jpeg jpg;
+  application/x-javascript              js;
+  text/plain                            txt;
+  text/x-component                      htc;
+  text/mathml                           mml;
+  image/png                             png;
+  image/x-icon                          ico;
+  image/x-jng                           jng;
+  image/vnd.wap.wbmp                    wbmp;
+  application/java-archive              jar war ear;
+  application/mac-binhex40              hqx;
+  application/pdf                       pdf;
+  application/x-cocoa                   cco;
+  application/x-java-archive-diff       jardiff;
+  application/x-java-jnlp-file          jnlp;
+  application/x-makeself                run;
+  application/x-perl                    pl pm;
+  application/x-pilot                   prc pdb;
+  application/x-rar-compressed          rar;
+  application/x-redhat-package-manager  rpm;
+  application/x-sea                     sea;
+  application/x-shockwave-flash         swf;
+  application/x-stuffit                 sit;
+  application/x-tcl                     tcl tk;
+  application/x-x509-ca-cert            der pem crt;
+  application/x-xpinstall               xpi;
+  application/zip                       zip;
+  application/octet-stream              deb bin exe dll dmg eot iso img;
+  audio/mpeg                            mp3;
+  video/mpeg                            mpeg mpg mov avi;
+}
+
+server {
+	server_name suzumaki.org www.suzumaki.org;
+	listen 8080;
+  client_max_body_size 5M;
+
+  location / {
+        index   index.html index.php;
+  }
+  
+	location /images/ {
+
+        # Set the root directory to search for the file
+        root /data/www/suzumaki;
+
+        # Make an internal redirect if the file is not found
+        error_page 404 = /fetch;
+    }
+
+    location /fetch/ {
+
+        # See screenshot "alias_vs_root"
+        alias /data/www/suzumaki
+
+        limit_except	GET POST DELETE;
+        autoindex	on;
+    }
+}
+
+server {
+
+  listen 8080;
+  server_name domain.ru www.domain.ru;
+  
+  location / {
+        return 301 http://bswag.org$request_uri;
+  }
+}
+
+server {
+	server_name bswag.org www.bswag.org;
+	listen 127.0.0.0:8080;
+  
+	location /images/ {
+
+        # Set the root directory to search for the file
+        root /data/www/bswag;
+
+        # Make an internal redirect if the file is not found
+        error_page 404 = /fetch;
+    }
+}
