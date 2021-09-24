@@ -14,8 +14,8 @@ typedef unsigned long long int  time_t;
 class Config {
 
 private:
-    char *                              _err_log_file;
-    char *                              _acc_log_file;
+    std::string                         _err_log_file;
+    std::string                         _acc_log_file;
     int                                 _timeout;
     std::map<std::string, std::string>  _mime_types;
     std::vector<Server>                 _servers;
@@ -28,12 +28,14 @@ public:
     ~Config();
 	Config & operator=(Config const & src);
 
+    void set_err_logs(std::string file);
+    void set_acc_logs(std::string file);
     void set_timeout(int sec);
     int open_logs(void);
     int close_logs(void);
-    bool check_timeout(time_t time);  // true if time is up
-    void add_type(std::string & ext, std::string & description);
-    std::string & get_type(std::string const & type);
+    bool check_timeout(time_t time);  // true if the time is up
+    void add_type(std::string & ext, std::string & type);
+    std::string & get_type(std::string const & ext);
     void add_server();
     std::vector<Server> & get_servers();
 };

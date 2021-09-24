@@ -11,8 +11,8 @@ class Server {
 
 private:
 	std::vector<std::string>			_serv_names;
-	char *								_host;
-	unsigned short int					_port;
+	std::string							_host;	//network interface, ip
+	port_t								_port;
 	std::map<unsigned int, std::string>	_error_pages;
 	int									_limit_body_size;
 	std::vector<Location>				_locations;

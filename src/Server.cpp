@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(){}
+Server::Server() {}
 
 Server & Server::operator=(Server const & src){
 

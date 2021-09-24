@@ -5,7 +5,8 @@ Config::Config(void)
     _acc_log_file(MUTE_FILE),
     _timeout(10000)
 {
-    _mime_types.insert(std::make_pair(std::string("html"), std::string("text/html")));
+    _mime_types.insert(std::make_pair(std::string("default"), \
+                                    std::string("application/octet-stream")));
 }
 
 Config::Config(Config const & src) {*this = src;}
@@ -24,6 +25,14 @@ Config & Config::operator=(Config const & src)
     return (*this);
 }
 
+void Config::set_err_logs(std::string file) {
+    _err_log_file = file;
+}
+
+void Config::set_acc_logs(std::string file) {
+    _acc_log_file = file;
+}
+
 void Config::set_timeout(int sec) {
     _timeout = sec;
 }
@@ -32,9 +41,9 @@ void Config::set_timeout(int sec) {
 // fd 2 -> error_log
 int Config::open_logs(void)
 {
-    if (freopen(_acc_log_file, "w", stdout) == NULL)
+    if (freopen(&_acc_log_file[0], "w", stdout) == NULL)
          return (EXIT_FAILURE);
-    if (freopen(_err_log_file, "w", stderr) == NULL)
+    if (freopen(&_err_log_file[0], "w", stderr) == NULL)
          return (EXIT_FAILURE);
     return (EXIT_SUCCESS);
 }
@@ -64,14 +73,14 @@ bool Config::check_timeout(time_t time)
         return (false);
 }
 
-void Config::add_type(std::string & ext, std::string & description) {
-    _mime_types.insert(std::make_pair(ext, description));
+void Config::add_type(std::string & ext, std::string & type) {
+    _mime_types.insert(std::make_pair(ext, type));
 }
 
-std::string & Config::get_type(std::string const & type) {
-    std::string & ret = _mime_types[type];
+std::string & Config::get_type(std::string const & ext) {
+    std::string & ret = _mime_types[ext];
     if (ret.empty())
-        ret = _mime_types[std::string("html")];
+        ret = _mime_types[std::string("default")];
     return (ret);
 }
 

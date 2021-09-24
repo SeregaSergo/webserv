@@ -1,0 +1,67 @@
+error_log logs/error.log;     # optional field (if not: fd2 -> "/dev/null")
+access_log  logs/access.log;  # optional field (if not: fd1 -> "/dev/null")
+
+# During this time connection between server and client
+# won't be discarded
+keepalive_timeout 10;         # optional field (if not: timeout = 10 sec)
+
+# MIME types see this links:
+# https://developer.mozilla.org/ru/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+# https://developer.mozilla.org/ru/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+# optional field (if not: type = "application/octet-stream")
+types {
+  text/html                             html htm shtml;
+  text/css                              css;
+  image/gif                             gif;
+  image/jpeg                            jpeg jpg;
+  application/x-x509-ca-cert            der pem crt;
+  application/zip                       zip;
+  application/octet-stream              deb bin exe dll dmg eot iso img;
+  audio/mpeg                            mp3;
+  video/mpeg                            mpeg mpg mov avi;
+}
+
+# Could be several servers, at least one
+server {
+	server_name suzumaki.org www.suzumaki.org;  # optional field
+  listen 127.0.0.0:8080;                      # host is optional(if none: any host), port is mandatory
+  client_max_body_size 5M;                    # optional field (if none: no limit)
+  error_page 500 503 504 /custom_50x.html;    # optional field (could be several)
+
+  # Could be several locations, at least one.
+  # There are 3 types of location with different priorities (from high to low):
+  # 1. = means an exact match of uri and location path
+  # 2. ~ search by extension
+  # 3.   partial match of path (searching starts from begining)
+  location / {
+      root      /data/www/                    # works as alias in nginx
+      index     index.html index.php;         # gives one of these files if location ends with "/"
+  }
+  
+	location /images/ {
+      root /data/www/suzumaki/img/;
+  }
+  
+  location /fetch/ {
+      methods_off   POST DELETE;              # Disables methods (as default: allow everything)
+      autoindex     on;                       # https://www.keycdn.com/support/nginx-directory-index
+  }
+
+  location = /index.php {
+      root /data/www/suzumaki/index.php;
+  }
+
+  location ~ (.php|.py) {
+      root /data/www/suzumaki/cgi-bin/;
+  }
+}
+
+server {
+
+  listen 8080;
+  server_name bswag.ru www.bswag.ru;
+  
+  location / {
+        return 301 http://bswag.org$request_uri;    # redirections with parsing
+  }
+}
