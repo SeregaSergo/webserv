@@ -9,8 +9,6 @@
 
 #define MUTE_FILE   "/dev/null"
 
-typedef unsigned long long int  time_t;
-
 class Config {
 
 private:

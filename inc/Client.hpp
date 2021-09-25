@@ -6,7 +6,8 @@
 class Client {
 
 private:
-	
+    
+	Server *    _master_serv;
 
 public:
     
