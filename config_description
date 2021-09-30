@@ -1,9 +1,22 @@
 error_log logs/error.log;     # optional field (if not: fd2 -> "/dev/null")
-access_log  logs/access.log;  # optional field (if not: fd1 -> "/dev/null")
 
-# During this time connection between server and client
-# won't be discarded
-keepalive_timeout 10;         # optional field (if not: timeout = 10 sec)
+# There are to types of clients: with keep-alive connection and without.
+# There is a problem of detection of dead connections (they can 
+# reserve server resources). And this problem is solving depends on type of 
+# connection: with keep-alive or without.
+# Connections with keep-alive solve this problem on TCP level. You don't need
+# to worry about this. Connections without KA are considered dead if there is no
+# masseges from client for connection_timeout time (client will be discarded by server)
+# https://www.nginx.com/blog/http-keepalives-and-web-performance/
+connection_timeout 5;         # optional field (if not: timeout = 10 sec)
+
+# Keep-alive parameters. Optional.
+# You can't use one of them, only togather.
+# https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
+tcp_keepalive_time 40;        # after this time TCP will check connection (sec)
+tcp_keepalive_probes 3;       # how many probes will be sended to check connection
+tcp_keepalive_intvl 5;        # time iterval between to probes (sec)
+
 
 # MIME types see this links:
 # https://developer.mozilla.org/ru/docs/Web/HTTP/Basics_of_HTTP/MIME_types
@@ -25,6 +38,7 @@ types {
 server {
 	server_name suzumaki.org www.suzumaki.org;  # optional field
   listen 127.0.0.0:8080;                      # host is optional(if none: any host), port is mandatory
+  access_log  logs/access.log;                # optional field (if not: fd1 -> "/dev/null")
   client_max_body_size 5M;                    # optional field (if none: no limit)
   error_page 500 503 504 /custom_50x.html;    # optional field (could be several)
 

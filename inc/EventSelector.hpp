@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <string.h>
 
+#define DEFAULT_TIMEOUT 10
+
 class EventSelector {
 
 private:
@@ -16,11 +18,11 @@ private:
     bool                        _quit;
     time_t                      _timeout;
 
-    void fillSets(fd_set * rs, fd_set *ws);
+    void fillSets(fd_set * rs, fd_set * ws);
     void getDeadline(struct timeval * deadline);
     
 public:
-    EventSelector(time_t timeout)
+    EventSelector(time_t timeout = DEFAULT_TIMEOUT)
         : _max_fd(-1), _quit(false), _timeout(timeout) {}
     ~EventSelector() {}
     void addHandler(AFdHandler * h);

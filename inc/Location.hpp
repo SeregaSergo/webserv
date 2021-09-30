@@ -4,6 +4,11 @@
 #include <iostream>
 #include "Redirect.hpp"
 
+// Location types defines
+#define L_EQUAL     0
+#define L_EXTENTION 1
+#define L_PARTLY    2
+
 class Location {
 
 private:

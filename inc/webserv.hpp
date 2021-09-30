@@ -2,25 +2,44 @@
 #define WEBSERV_HPP
 
 #include <iostream>
+#include <vector>
+#include <map>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <signal.h>
 #include <cstring>
 #include <fcntl.h>
-#include "Config.hpp"
+#include "Logger.hpp"
+#include "Server.hpp"
+#include "EventSelector.hpp"
 
 #define YYSTYPE char *
 
 int yyparse(Config *config);
 
-// HTTP methods defines
-#define M_GET       0b00000001
-#define M_POST      0b00000010
-#define M_DELETE    0b00000100
+struct Config {
+    std::string     err_log;
+    time_t          timeout;
+    time_t          keepalive_time;
+    int             num_probes;
+    time_t          keepalive_intvl;
+};
 
-// Location types defines
-#define L_EQUAL     0
-#define L_EXTENTION 1
-#define L_PARTLY    2
+class Webserv {
+
+private:
+    Logger                              _err_log;
+    EventSelector                       _selector;
+    std::vector<Server *>               _servers;
+    std::map<std::string, std::string>  _mime_types;
+
+public:
+    Webserv(const char * config_path);
+    ~Webserv();
+    void sendErrMsg(std::string * msg);
+    const std::string & getMimeType(std::string & ext);
+    void addHandler(AFdHandler * h);
+    bool removeHandler(AFdHandler * h);
+};
 
 #endif

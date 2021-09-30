@@ -66,6 +66,7 @@ void EventSelector::start(void)
             throw std::runtime_error("Select error: " + std::string(strerror(errno)));
         }
         getDeadline(&deadline);
+        sleep_time = _timeout;
         if (res == 0) {
             for (int i = 0; i <= _max_fd; ++i) {
                 if (!_fds[i])

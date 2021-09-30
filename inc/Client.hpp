@@ -2,7 +2,8 @@
 #define CLIENT_HPP
 #include <iostream>
 #include <vector>
-		
+#include "Request.hpp"
+
 class Client {
 
 private:
