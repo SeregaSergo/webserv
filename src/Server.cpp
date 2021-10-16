@@ -1,33 +1,13 @@
-#include "Server.hpp"
-
-Server::Server() {}
+#include "../inc/Server.hpp"
 
 Server & Server::operator=(Server const & src){
 
-	this->server_names = src.server_names;
-	this->locations = src.locations;
-	return *this;
-}
-
-
-Server::Server(Server const & src){
-
-	*this = src;
-}
-
-void	Server::addServerName(std::string server_name){
-	this->server_names.push_back(server_name);
 }
 
 Server::~Server(){}
 
-std::vector<std::string>	Server::getServerNames(){
-	return this->server_names;
+void Server::flushLoggerBuffers(void)
+{
+    for (std::map<std::string, VirtServer *>::iterator it = _virt_servers.begin(); it != _virt_servers.end(); ++it)
+        (*it).second->flushLoggerBuffers();
 }
-
-
-std::vector<Location>	Server::getLocations(){
-	
-	return this->locations;
-}
-

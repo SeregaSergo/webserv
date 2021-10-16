@@ -19,7 +19,7 @@ public:
     int getFd() const { return _fd; }
     virtual bool wantRead() const { return true; }
     virtual bool wantWrite() const { return false; }
-    virtual bool checkTimeout(struct timeval * deadline, time_t & sleep_time) {return false;};
+    virtual bool checkTimeout(struct timeval & deadlineReq, struct timeval & deadlineKA, time_t & sleep_time) {return false;};
 };
 
 #endif

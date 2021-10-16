@@ -1,4 +1,6 @@
-error_log logs/error.log;     # optional field (if not: fd2 -> "/dev/null")
+error_log logs/error.log;     # optional field (if not: -> "/dev/null")
+
+daemon mode;                  # optional field (if not: server runs as terminal-interactive process)
 
 # There are to types of clients: with keep-alive connection and without.
 # There is a problem of detection of dead connections (they can 
@@ -6,16 +8,20 @@ error_log logs/error.log;     # optional field (if not: fd2 -> "/dev/null")
 # connection: with keep-alive or without.
 # Connections with keep-alive solve this problem on TCP level. You don't need
 # to worry about this. Connections without KA are considered dead if there is no
-# masseges from client for connection_timeout time (client will be discarded by server)
+# acts from client for idle_timeout time (client will be discarded by server)
 # https://www.nginx.com/blog/http-keepalives-and-web-performance/
-connection_timeout 5;         # optional field (if not: timeout = 10 sec)
+idle_timeout 5;               # optional field (if not: timeout = 10 sec)
+
+# Timeout for keep-alive connections. Server will close connections after this time
+# and after responding to the current request.
+keepalive_timeout 30;         # optional field (if not: timeout is unlimited)
 
 # Keep-alive parameters. Optional.
-# You can't use one of them, only togather.
+# You can use one of them (default settings of your OS).
 # https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
-tcp_keepalive_time 40;        # after this time TCP will check connection (sec)
-tcp_keepalive_probes 3;       # how many probes will be sended to check connection
-tcp_keepalive_intvl 5;        # time iterval between to probes (sec)
+tcp_keepalive_time 300;        # after this time TCP will check connection (sec)
+tcp_keepalive_probes 3;        # how many probes will be sended to check connection
+tcp_keepalive_intvl 20;        # time iterval between two probes (sec)
 
 
 # MIME types see this links:
@@ -39,9 +45,11 @@ server {
 	server_name suzumaki.org www.suzumaki.org;  # optional field
   listen 127.0.0.0:8080;                      # host is optional(if none: any host), port is mandatory
   access_log  logs/access.log;                # optional field (if not: fd1 -> "/dev/null")
-  client_max_body_size 5M;                    # optional field (if none: no limit)
+  client_max_body_size 5M;                    # optional field (if not: no limit)
+  root /Users/bswag/Desktop/                  # optional field (if not: "")
   error_page 500 503 504 /custom_50x.html;    # optional field (could be several)
-
+  error_page 404 /custom_404.html
+  
   # Could be several locations, at least one.
   # There are 3 types of location with different priorities (from high to low):
   # 1. = means an exact match of uri and location path
@@ -65,17 +73,17 @@ server {
       root /data/www/suzumaki/index.php;
   }
 
-  location ~ (.php|.py) {
+  location ~ .php .py {
       root /data/www/suzumaki/cgi-bin/;
   }
 }
 
 server {
 
-  listen 8080;
+  listen 127.0.0.0:8080;
   server_name bswag.ru www.bswag.ru;
   
   location / {
-        return 301 http://bswag.org$request_uri;    # redirections with parsing
+        return 301 http://suzumaki.org$request_uri;    # redirections with parsing
   }
 }
