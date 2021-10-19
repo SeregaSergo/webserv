@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <stdio.h>
+#include <sys/ioctl.h>
 #include <map>
 #include "Location.hpp"
 #include "Client.hpp"
@@ -22,23 +24,23 @@ class Server : public AFdHandler {
 private:
 	Webserv *										_master;
 	std::map<std::string, VirtServer *>				_virt_servers;
-	std::list<Client>								_clients;
+	std::map<int, Client>							_clients;
 
-	Server(Webserv * master, int fd);
+	Server(Webserv * master, int fd) : AFdHandler(fd), _master(master) {}
 
 public:
-	~Server();
-	static Server * create(std::string & host, std::string & port, Webserv * master);
-	bool addLocation(std::vector<std::string> & serv_names, std::vector<Location> * location);
+	~Server(void) {}
+	static Server * create(std::string & host, const int port, Webserv * master);
 	void removeClient(Client * c);
-	void sendErrMsg(std::string * msg);
+	void sendErrMsg(std::string & msg);
+	const VirtServer & getVirtualServ(std::string const & serv_name);
 	const std::string & getMimeType(std::string & ext);
-	const Location & chooseLocation(Request & req);
-	void flushLoggerBuffers(void);
 	
 private:
+	virtual bool wantRead() const { return true; }
+    virtual bool wantWrite() const { return false; }
 	virtual void handle(bool r, bool w);
-
+	virtual bool checkTimeout(struct timeval & cur_time) {return true;}
 };
 
 #endif

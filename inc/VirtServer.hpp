@@ -22,7 +22,6 @@ public:
 	void sendAccMsg(std::string & msg);
 	const Location * chooseLocation(std::string const & uri);
 	bool IsBodyOversize(long long int body_size);
-	void flushLoggerBuffers(void);
 	// File & getPage(int num_page);
 };
 

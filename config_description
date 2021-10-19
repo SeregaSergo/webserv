@@ -14,7 +14,7 @@ idle_timeout 5;               # optional field (if not: timeout = 10 sec)
 
 # Timeout for keep-alive connections. Server will close connections after this time
 # and after responding to the current request.
-keepalive_timeout 30;         # optional field (if not: timeout is unlimited)
+keepalive_timeout 30;         # optional field (if not: timeout = 24h)
 
 # Keep-alive parameters. Optional.
 # You can use one of them (default settings of your OS).

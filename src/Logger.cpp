@@ -23,6 +23,6 @@ void Logger::handle(bool r, bool w)
     } 
 }
 
-void Logger::flaushBuf(void) {
+bool Logger::checkTimeout(struct timeval & cur_time) {
     _write = true;
 }

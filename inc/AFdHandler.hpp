@@ -6,20 +6,29 @@
 #include <sys/time.h>
 #include <fcntl.h>
 
-// Absract parent class for Server, Client and Logger classes
+// Absract parent class for
+// Server class
+// Client class
+// Logger class
+// File class
+// CGI class
 class AFdHandler {
 
-private:
-    int     _fd;
+protected:
+    int             _fd;
+    struct timeval  _time;
 
 public:
-    AFdHandler(int fd) : _fd(fd) {fcntl(fd, F_SETFL, O_NONBLOCK);}
+    AFdHandler(int fd) : _fd(fd) {
+        fcntl(fd, F_SETFL, O_NONBLOCK);
+        gettimeofday(&_time, NULL);
+    }
     virtual ~AFdHandler() { close(_fd); }
-    virtual void handle(bool r, bool w) = 0;
     int getFd() const { return _fd; }
-    virtual bool wantRead() const { return true; }
-    virtual bool wantWrite() const { return false; }
-    virtual bool checkTimeout(struct timeval & deadlineReq, struct timeval & deadlineKA, time_t & sleep_time) {return false;};
+    virtual bool wantRead() const = 0;
+    virtual bool wantWrite() const = 0;
+    virtual void handle(bool r, bool w) = 0;
+    virtual bool checkTimeout(struct timeval & cur_time) = 0;
 };
 
 #endif

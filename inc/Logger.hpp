@@ -7,8 +7,8 @@
 
 namespace constants
 {
-    int loggerBuffer = 2048;
-    time_t loggerTimeout = 5;
+    const int loggerBuffer = 2048;
+    const time_t loggerTimeout = 5;
 }
 
 // Absract parent class for Server, Client and Logger classes
@@ -24,11 +24,12 @@ public:
     virtual ~Logger() {}
     virtual bool wantRead() const { return false; }
     virtual bool wantWrite() const { return _write; }
-    void writeMsg(std::string & msg);
+    void sendMsg(std::string & msg);
     void flushBuf(void);
 
 protected:
     virtual void handle(bool r, bool w);
+    virtual bool checkTimeout(struct timeval & cur_time);
 };
 
 #endif

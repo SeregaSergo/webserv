@@ -23,7 +23,3 @@ const Location * VirtServer::chooseLocation(std::string const & uri)
 bool VirtServer::IsBodyOversize(long long int body_size) {
 	return (body_size > _max_body_size);
 }
-
-void VirtServer::flushLoggerBuffers(void) {
-	_acc_log->flushBuf();
-}
