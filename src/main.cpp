@@ -1,7 +1,5 @@
 #include "../inc/webserv.hpp"
 
-Config  g_config;
-
 void demonize()
 {
     pid_t pid;
@@ -30,6 +28,7 @@ void demonize()
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
 }
+
 
 void    parse_config(const char *path)
 {

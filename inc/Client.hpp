@@ -12,7 +12,7 @@
 
 namespace constants
 {
-    int ka_time = 1200;		// every 20 min
+    int ka_time = 600;		// every 10 min
     int ka_probes = 5;
     int ka_interval = 30;
 }

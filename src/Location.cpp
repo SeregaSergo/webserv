@@ -1,10 +1,13 @@
 #include "../inc/Location.hpp"
 
-Location::Location(char type, std::vector<std::string> & path)
-		: _type(type), _loc_path(path), _redir(NULL),
-		  _autoindex(false)
+Location::Location(char type, std::vector<std::string> & path, std::string & root)
+		: _type(type)
+		, _loc_path(path)
+		, _redir(NULL)
+		, _autoindex(false)
+		, _root(root)
 {
-	for (int i = sizeof(constants::methods) / sizeof(std::string); i !=0; --i)
+	for (int i = sizeof(constants::methods) / sizeof(std::string); i != 0; --i)
 		_methods.insert(constants::methods[i]);
 }
 
@@ -18,8 +21,12 @@ void	Location::addIndex(std::string & index) {
 	_index.push_back(index);
 }
 
-void	Location::delMethod(std::string & method) {
-	_methods.erase(method);
+void	Location::clearMethodSet() {
+	_methods.clear();
+}
+
+void	Location::addMethod(std::string & method) {
+	_methods.insert(method);
 }
 
 void	Location::setRedir(Redirect * redir) {

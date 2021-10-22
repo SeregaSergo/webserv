@@ -26,6 +26,21 @@ namespace constants
     time_t      timeout_ka = 86400; // it is constant after parsing of the config
 }
 
+struct ConfigServ {
+    std::vector<std::string>    server_names;
+    std::string                 ip;
+    int                         port;
+    std::string                 acc_log;
+    long long int               client_max_body_size;
+    std::string                 root;
+    std::map<int, std::string>	err_pages;
+    std::vector<Location>       locations;
+    
+    ConfigServ(void)
+    : port(-1)
+    , client_max_body_size(-1) {}
+};
+
 struct Config {
     std::string                         err_log;
     bool                                daemon;
@@ -35,6 +50,15 @@ struct Config {
     int                                 num_probes;
     time_t                              keepalive_intvl;
     std::map<std::string, std::string>  mime_types;
+    std::vector<ConfigServ>             servers;
+
+    Config(void)
+    : daemon(false)
+    , timeout_idle(constants::timeout_idle)
+    , timeout_ka(constants::timeout_ka)
+    , keepalive_time(constants::ka_time)
+    , num_probes(constants::ka_probes)
+    , keepalive_intvl(constants::ka_interval) {}
 };
 
 class Webserv {

@@ -29,16 +29,17 @@ private:
 	// Location();
 
 public:
-	Location(char type, std::vector<std::string> & path);
+	Location(char type, std::vector<std::string> & path, std::string & root);
 	// Location(Location const & src);
 	~Location();
 	// Location & operator=(Location const & src);
 	
-	void	addIndex(std::string & index);
-	void	delMethod(std::string &method);
-	void	setRedir(Redirect * redir);
-	void	setAutoindex(bool ai);
-	void	setRoot(std::string & root);
+	void		addIndex(std::string & index);
+	void		clearMethodSet();
+	void		addMethod(std::string &method);
+	void		setRedir(Redirect * redir);
+	void		setAutoindex(bool ai);
+	void		setRoot(std::string & root);
 
 	char		checkLocation(std::string const & uri);
 	Redirect *	getRedir();

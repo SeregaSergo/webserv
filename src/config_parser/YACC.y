@@ -29,23 +29,47 @@ extern "C"
 		SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE CLIENT_MAX_BODY_SIZE  
 		IP AUTOINDEX PATH  ROOT LIMIT_EXCEPT 
 		FILENAME ;
- /*%token EQUAL DIRECTIVE WORD FILENAME QUOTE OBRACE EBRACE SEMICOLON LIMIT_EXCEPT;*/
+
+/*
+** This is for using different return types (see 6.3)
+** http://rus-linux.net/lib.php?name=/MyLDP/algol/lex-yacc-howto.html
+*/
+%union 
+{
+    int				number;
+	long long int	long_number;
+    char *			string;
+}
+
+%token <number> STATE
+%token <number> NUMBER
+%token <string> WORD
 
 %parse-param {Config *config}
 %%
 commands:
-		| commands command
+		| commands command SEMICOLON
+		;
+command:
+		error_log_file
+		|
+		daemon
+		|
+		timeout
+		|
+		mime_types
+		|
+		server
 		;
 
-command:
-	   server_start 
+error_log_file: 
 
-server_start:	SERVER 
-				{
-					std::cout << "Server created" << std::endl;
-					config->add_server();		
-				}
-				server_content
+server:	SERVER 
+		{
+			std::cout << "Server created" << std::endl;
+			config->add_server();		
+		}
+		server_content
 
 server_content:	OBRACE server_statements EBRACE
 
@@ -53,18 +77,18 @@ server_statements:	|	server_statements server_statement;
 
 server_statement: root | error_page | location_block | listen | server_names  | client_max_body_size; 
 
-root:	ROOT PATH SEMICOLON  
+root:	ROOT FILENAME SEMICOLON  
 		{
 		//	servers->back().setRoot($2);
 		}	
 
 error_page: 
-		ERROR_PAGE error_num PATH SEMICOLON 
+		ERROR_PAGE error_num FILENAME SEMICOLON 
 		{
 		//	servers->back().setErrorPage($3);
 		}
 		|
-		ERROR_PAGE error_num EQUAL PATH	SEMICOLON
+		ERROR_PAGE error_num EQUAL FILENAME	SEMICOLON
 		{
 		//	servers->back().setErrorPage($4);
 		}
@@ -72,7 +96,7 @@ error_page:
 error_num:
 		 | error_num NUMBER
 
-location_block:	LOCATION PATH OBRACE 
+location_block:	LOCATION FILENAME OBRACE 
 				{
 					servers->back().getLocations().push_back(Location($2));
 				}
@@ -113,7 +137,7 @@ what_to_listen: IP COLON NUMBER
 
 server_names: SERVER_NAME server_name  SEMICOLON
 
-server_name: |	server_name PATH
+server_name: |	server_name FILENAME
 				{
 					servers->back().addServerName((std::string)$2);
 				}

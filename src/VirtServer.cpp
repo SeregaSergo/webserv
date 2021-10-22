@@ -1,7 +1,7 @@
 #include "../inc/VirtServer.hpp"
 
 void VirtServer::sendAccMsg(std::string & msg) {
-	_acc_log->writeMsg(msg);
+	_acc_log.sendMsg(msg);
 }
 
 const Location * VirtServer::chooseLocation(std::string const & uri)

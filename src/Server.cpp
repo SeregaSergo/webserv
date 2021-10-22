@@ -23,7 +23,7 @@ Server * Server::create(std::string & host, const int port, Webserv * master)
 
 void Server::handle(bool r, bool w)
 {
-    long                connfd;
+    int                 connfd;
     struct sockaddr_in  addr;
 
 	connfd = accept(_fd, (struct sockaddr *)&addr, NULL);
@@ -55,7 +55,7 @@ const VirtServer & Server::getVirtualServ(std::string const & serv_name)
 {
     std::map<std::string, VirtServer *>::iterator it = _virt_servers.find(serv_name);
     if (it == _virt_servers.end())
-        it =_virt_servers.find("default");
+        it =_virt_servers.find("");
     return (*(*it).second);
 }
 

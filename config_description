@@ -1,6 +1,6 @@
 error_log logs/error.log;     # optional field (if not: -> "/dev/null")
 
-daemon mode;                  # optional field (if not: server runs as terminal-interactive process)
+daemon_mode;                  # optional field (if not: server runs as terminal-interactive process)
 
 # There are to types of clients: with keep-alive connection and without.
 # There is a problem of detection of dead connections (they can 
@@ -38,7 +38,7 @@ types {
   application/octet-stream              deb bin exe dll dmg eot iso img;
   audio/mpeg                            mp3;
   video/mpeg                            mpeg mpg mov avi;
-}
+};
 
 # Could be several servers, at least one
 server {
@@ -48,7 +48,7 @@ server {
   client_max_body_size 5M;                    # optional field (if not: no limit)
   root /Users/bswag/Desktop/                  # optional field (if not: "")
   error_page 500 503 504 /custom_50x.html;    # optional field (could be several)
-  error_page 404 /custom_404.html
+  error_page 404 /custom_404.html;
   
   # Could be several locations, at least one.
   # There are 3 types of location with different priorities (from high to low):
@@ -65,7 +65,7 @@ server {
   }
   
   location /fetch/ {
-      methods_off   POST DELETE;              # Disables methods (as default: allow everything)
+      allowed_methods   GET;                  # Disables methods (as default: allow everything)
       autoindex     on;                       # https://www.keycdn.com/support/nginx-directory-index
   }
 
@@ -76,7 +76,7 @@ server {
   location ~ .php .py {
       root /data/www/suzumaki/cgi-bin/;
   }
-}
+};
 
 server {
 
@@ -84,6 +84,6 @@ server {
   server_name bswag.ru www.bswag.ru;
   
   location / {
-        return 301 http://suzumaki.org$request_uri;    # redirections with parsing
+        redirect 301 http://suzumaki.org$uri;    # redirections with parsing
   }
-}
+};

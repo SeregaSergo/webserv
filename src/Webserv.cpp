@@ -27,7 +27,7 @@ const std::string & Webserv::getMimeType(std::string & ext)
 {
     std::map<std::string, std::string>::iterator it = _mime_types.find(ext);
     if (it == _mime_types.end())
-        it = _mime_types.find("default");
+        it = _mime_types.find("");
     return ((*it).second);
 }
 
