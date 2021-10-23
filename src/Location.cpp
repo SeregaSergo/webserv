@@ -1,10 +1,10 @@
 #include "../inc/Location.hpp"
 
-Location::Location(char type, std::vector<std::string> & path, std::string & root)
+Location::Location(char type, std::vector<std::string> & path, std::string & root, bool ai)
 		: _type(type)
 		, _loc_path(path)
 		, _redir(NULL)
-		, _autoindex(false)
+		, _autoindex(ai)
 		, _root(root)
 {
 	for (int i = sizeof(constants::methods) / sizeof(std::string); i != 0; --i)

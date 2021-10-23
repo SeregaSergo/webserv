@@ -31,14 +31,17 @@ struct ConfigServ {
     std::string                 ip;
     int                         port;
     std::string                 acc_log;
-    long long int               client_max_body_size;
+    int                         client_max_body_size;
     std::string                 root;
+    bool                        autoindex;
+    std::vector<int>            err_num_temp;
     std::map<int, std::string>	err_pages;
     std::vector<Location>       locations;
     
     ConfigServ(void)
     : port(-1)
-    , client_max_body_size(-1) {}
+    , client_max_body_size(-1)
+    , autoindex(false) {}
 };
 
 struct Config {
@@ -50,6 +53,7 @@ struct Config {
     int                                 num_probes;
     time_t                              keepalive_intvl;
     std::map<std::string, std::string>  mime_types;
+    std::string                         mime_temp;
     std::vector<ConfigServ>             servers;
 
     Config(void)

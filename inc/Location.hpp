@@ -29,7 +29,7 @@ private:
 	// Location();
 
 public:
-	Location(char type, std::vector<std::string> & path, std::string & root);
+	Location(char type, std::vector<std::string> & path, std::string & root, bool ai);
 	// Location(Location const & src);
 	~Location();
 	// Location & operator=(Location const & src);
