@@ -17,12 +17,12 @@ class VirtServer {
 private:
 	Logger							_acc_log;
 	long long int					_max_body_size;
-	std::string						_root;
 	std::map<int, std::string>		_err_pages;
 	std::vector<Location>			_locations;
 
 public:
-	// VirtServer(int fdLog, );
+	VirtServer(int fdLog, long long int body_size, std::map<int, \
+			std::string> & err_pages, std::vector<Location> & locations);
 	~VirtServer();
 	void sendAccMsg(std::string & msg);
 	const Location * chooseLocation(std::string const & uri);

@@ -26,11 +26,13 @@ private:
 	std::map<std::string, VirtServer *>				_virt_servers;
 	std::map<int, Client>							_clients;
 
-	Server(Webserv * master, int fd) : AFdHandler(fd), _master(master) {}
+	Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers)
+		: AFdHandler(fd), _master(master) {}
 
 public:
 	~Server(void) {}
-	static Server * create(std::string & host, const int port, Webserv * master);
+	static Server * create(std::string & host, const int port, Webserv * master,\
+							std::map<std::string, VirtServer *> & virt_servers);
 	void removeClient(Client * c);
 	void sendErrMsg(std::string & msg);
 	const VirtServer & getVirtualServ(std::string const & serv_name);

@@ -1,6 +1,8 @@
 #ifndef WEBSERV_HPP
 #define WEBSERV_HPP
 
+#define FD_SETSIZE 2048
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -17,13 +19,15 @@
 #include "Server.hpp"
 
 #define YYSTYPE char *
+#define _DARWIN_UNLIMITED_SELECT
 
 int yyparse(Config *config);
 
 namespace constants
 {
-    time_t      timeout_idle = 10;  // it is constant after parsing of the config
-    time_t      timeout_ka = 86400; // it is constant after parsing of the config
+    time_t          timeout_idle = 10;  // it is constant after parsing of the config
+    time_t          timeout_ka = 86400; // it is constant after parsing of the config
+    const char *    default_file = "/dev/null";
 }
 
 struct ConfigServ {
@@ -77,6 +81,9 @@ private:
     std::map<std::string, std::string>  _mime_types;    // (ext, MIME type)
     
     void fillSets(fd_set * rs, fd_set * ws);
+    void demonize(void);
+    void setupParameters(Config & conf);
+    int makeServ(std::vector<ConfigServ> & conf_servers);
 
 public:
     Webserv(const char * config_path);

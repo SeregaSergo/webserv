@@ -79,7 +79,7 @@ daemon:
 
 timeout: type_timeout NUMBER
 		{
-			switch ($1):
+			switch ($1)
 			{
 			case IDLE_TIMEOUT:
 				config->timeout_idle = $2;
@@ -194,8 +194,18 @@ client_max_body_size:
 		CLIENT_MAX_BODY_SIZE FILESIZE
 		{
 			int l = strlen($2);
+			int factor = 1;
+			switch ($2[l - 1])
+			{
+			case 'G':
+				factor *= 1024;
+			case 'M':
+				factor *= 1024;
+			case 'K':
+				factor *= 1024;
+			}
 			$2[l - 1] = 0;
-			config->servers.back()->client_max_body_size = atoi($2);
+			config->servers.back()->client_max_body_size = factor * atoi($2);
 			free($2);
 		}
 		;

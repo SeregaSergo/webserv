@@ -1,6 +1,6 @@
 #include "../inc/Server.hpp"
 
-Server * Server::create(std::string & host, const int port, Webserv * master)
+Server * Server::create(std::string & host, const int port, Webserv * master, std::map<std::string, VirtServer *> & virt_servers)
 {
     struct sockaddr_in  addr;
     std::memset(&addr, 0, sizeof(addr));
@@ -16,7 +16,7 @@ Server * Server::create(std::string & host, const int port, Webserv * master)
 	if (listen(fd, 1024) == -1)
 	    throw std::runtime_error("Port could not listen.");
 	
-    Server * serv = new Server(master, fd);
+    Server * serv = new Server(master, fd, virt_servers);
     master->addHandler(serv);
     return (serv);
 }

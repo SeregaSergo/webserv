@@ -59,11 +59,11 @@ server {
       root      /data/www/                    # works as alias in nginx
       index     index.html index.php;         # gives one of these files if location ends with "/"
   };
-  
+
 	location /images/ {
       root /data/www/suzumaki/img/;
   };
-  
+
   location /fetch/ {
       allowed_methods   GET;                  # Disables methods (as default: allow everything)
       autoindex     on;                       # https://www.keycdn.com/support/nginx-directory-index
@@ -75,6 +75,7 @@ server {
 
   location ~ php,py {
       root /data/www/suzumaki/cgi-bin/;
+      allowed_methods   GET;
   };
 };
 

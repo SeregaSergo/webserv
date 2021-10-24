@@ -1,35 +1,5 @@
 #include "../inc/webserv.hpp"
 
-void demonize()
-{
-    pid_t pid;
-
-    pid = fork();
-    if (pid < 0)
-        exit(EXIT_FAILURE);
-    if (pid > 0)
-        exit(EXIT_SUCCESS);
-    
-    if (setsid() < 0)
-        exit(EXIT_FAILURE);
-
-    pid = fork();
-    if (pid < 0)
-        exit(EXIT_FAILURE);
-    if (pid > 0)
-        exit(EXIT_SUCCESS);
-
-    umask(0);
-
-    freopen(MUTE_FILE, "r", stdin);
-    
-    chdir("/");
-
-    signal(SIGCHLD, SIG_IGN);
-    signal(SIGHUP, SIG_IGN);
-}
-
-
 void    parse_config(const char *path)
 {
     int file = open(path, O_RDONLY);
