@@ -26,8 +26,7 @@ private:
 	std::map<std::string, VirtServer *>				_virt_servers;
 	std::map<int, Client>							_clients;
 
-	Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers)
-		: AFdHandler(fd), _master(master) {}
+	Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers);
 
 public:
 	~Server(void) {}

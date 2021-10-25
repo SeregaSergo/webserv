@@ -25,10 +25,10 @@ extern "C"
 
 %}
 
-%token	QUOTE OBRACE EBRACE SEMICOLON COLON HTTP_METHOD NUMBER WORD STATE  EQUAL
-		SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE CLIENT_MAX_BODY_SIZE  
-		IP AUTOINDEX PATH  ROOT LIMIT_EXCEPT 
-		FILENAME ;
+%token	ERRLOG ACCLOG DAEMON IDLE_TIMEOUT KA_TIMEOUT KA_TIME KA_PROBES
+		KA_INTERVAL MIMETYPES ROOT ALLOWED_METHODS INDEX REDIRECTION
+		AUTOINDEX SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE
+		CLIENT_MAX_BODY_SIZE URI QUOTE OBRACE EBRACE SEMICOLON
 
 /*
 ** This is for using different return types (see 6.3)
@@ -37,13 +37,17 @@ extern "C"
 %union 
 {
     int				number;
-	long long int	long_number;
     char *			string;
 }
 
 %token <number> STATE
 %token <number> NUMBER
 %token <string> WORD
+%token <string> PATH
+%token <string> URL
+%token <string> FILESIZE
+%token <string> HTTP_METHOD
+%token <string> IP
 
 %parse-param {Config *config}
 %%
@@ -101,6 +105,9 @@ timeout: type_timeout NUMBER
 		;
 type_timeout:
 		IDLE_TIMEOUT | KA_TIMEOUT | KA_TIME | KA_PROBES | KA_INTERVAL
+		{
+			$$=$1;
+		}
 		;
 
 mime_types:
@@ -110,7 +117,7 @@ mime_type_statements:
 		| mime_type_statements mime_type_statement SEMICOLON
 		;
 mime_type_statement:
-		MIMETYPE 
+		PATH 
 		{
 			config->mime_temp($1);
 			free($1);
@@ -120,7 +127,7 @@ mime_type_statement:
 extensions:
 		| extensions WORD
 		{
-			config->mime_types.insert(std::pair<std::string, std::string>($1, config->mime_temp));
+			config->mime_types.insert(std::pair<std::string, std::string>($2, config->mime_temp));
 			free($2);
 		}
 		;
@@ -241,11 +248,11 @@ error_num:
 		;
 
 location_block:
-		LOCATION loc_type FILENAME OBRACE 
+		LOCATION loc_type PATH OBRACE 
 		{
 			char type = constants::loc_equal_type;
 			std::vector<std::string> loc_path;
-			char * token = strtok(string, ",");
+			char * token = strtok(string, "/");
 			while (token != NULL) {
 				loc_path.push_back(token);
 				token = strtok(NULL, " ");
@@ -258,7 +265,7 @@ location_block:
 		}
 		location_statements EBRACE
 		|
-		LOCATION FILENAME OBRACE 
+		LOCATION PATH OBRACE 
 		{
 			std::vector<std::string> loc_path;
 			char * token = strtok(string, ",");
@@ -299,7 +306,7 @@ autoindex_loc:
 		}
 		;
 root_loc:
-		ROOT FILENAME
+		ROOT PATH
 		{
 			config->servers.back()->locations.back().setRoot($2);
 			free($2);
@@ -309,7 +316,7 @@ index_loc:
 		INDEX index_file
 		;
 index_file:
-		| index_file FILENAME
+		| index_file PATH
 		{
 			config->servers.back()->locations.back().addIndex($2);
 			free($2);

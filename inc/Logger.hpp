@@ -25,7 +25,7 @@ public:
     virtual ~Logger() {}
     virtual bool wantRead() const { return false; }
     virtual bool wantWrite() const { return _write; }
-    void sendMsg(std::string & msg);
+    void sendMsg(std::string const & msg);
 
 protected:
     virtual void handle(bool r, bool w);

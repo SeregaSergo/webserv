@@ -88,12 +88,13 @@ private:
 public:
     Webserv(const char * config_path);
     ~Webserv(void);
-    void sendErrMsg(std::string & msg);
+    void sendErrMsg(std::string const & msg);
     const std::string & getMimeType(std::string & ext);
     void addHandler(AFdHandler * h);
     bool removeHandler(AFdHandler * h);
     void start();
     void stop() { _quit = true; }  
+    void reset();
 };
 
 #endif

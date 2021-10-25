@@ -17,8 +17,68 @@ Webserv::Webserv(const char * config_path)
     while (conf.servers.size() != 0)
         if (makeServ(conf.servers))
             throw std::runtime_error("Ip/host mismatch");
+    if (_servers.empty())
+        throw std::runtime_error("Servers are not defined");
     if (conf.daemon)
         demonize();
+}
+
+void Webserv::setupParameters(Config & conf)
+{
+    int err_log_fd = open(&conf.err_log[0], O_WRONLY|O_CREAT|O_TRUNC);
+    if (err_log_fd < 0) {
+        std::cerr << "WARNING: can't open error file." << std::endl;
+        err_log_fd = open(constants::default_file, O_WRONLY);
+    }
+    _err_log = new Logger(err_log_fd);
+    addHandler(_err_log);
+
+    constants::timeout_idle = conf.timeout_idle;
+    constants::timeout_ka = conf.timeout_ka;
+    constants::ka_time = conf.keepalive_time;
+    constants::ka_probes = conf.num_probes;
+    constants::ka_interval = conf.keepalive_intvl;
+    _mime_types.swap(conf.mime_types);
+}
+
+int Webserv::makeServ(std::vector<ConfigServ> & conf)
+{
+    int pos_new = _virt_servers.size();
+    int port = conf[0].port;
+    std::string ip = conf[0].ip;
+    std::vector<ConfigServ> serv_create;
+    serv_create.push_back(conf[0]);
+    std::map<std::string, VirtServer *> virt_map;
+    for (std::vector<ConfigServ>::iterator it = ++conf.begin(); it != conf.end(); ++it)
+    {
+        if ((*it).port == port)
+        {
+            if ((*it).ip == ip)
+            {
+                serv_create.push_back(*it);
+                serv_create.erase(it);
+                --it;
+            }
+            else if ((*it).ip.empty() || ip.empty())
+                return (1);
+        }
+    }
+    for (std::vector<ConfigServ>::iterator it = serv_create.begin(); it != serv_create.end(); ++it)
+    {
+        int acc_log_fd = open(&(*it).acc_log[0], O_WRONLY|O_CREAT|O_TRUNC);
+        if (acc_log_fd < 0) {
+            std::cerr << "WARNING: can't open access file: " << &(*it).acc_log[0] << std::endl;
+            acc_log_fd = open(constants::default_file, O_WRONLY);
+        }
+        Logger * acc_logger = new Logger(acc_log_fd);
+        addHandler(acc_logger);
+        _virt_servers.push_back(VirtServer(acc_logger, (*it).client_max_body_size, \
+                        (*it).err_pages, (*it).locations));
+        for (std::vector<std::string>::iterator i = (*it).server_names.begin(); i != (*it).server_names.end(); ++i)
+            virt_map.insert(std::pair<std::string, VirtServer *>(*i, &_virt_servers.back()));
+    }
+    virt_map.insert(std::pair<std::string, VirtServer *>("", &_virt_servers[pos_new]));
+    _servers.push_back(Server::create(ip, port, this, virt_map));
 }
 
 Webserv::~Webserv(void)
@@ -29,7 +89,7 @@ Webserv::~Webserv(void)
         delete *it;
 }
 
-void Webserv::sendErrMsg(std::string & msg) {
+void Webserv::sendErrMsg(std::string const & msg) {
     _err_log->sendMsg(msg);
 }
 
@@ -97,7 +157,7 @@ void Webserv::start(void)
         if (res < 0) {
             if (errno == EINTR)
                 continue;
-            throw std::runtime_error("Select error: " + std::string(strerror(errno)));
+            throw std::runtime_error("select error: " + std::string(strerror(errno)));
         }
         gettimeofday(&cur_time, NULL);
         if (res == 0) {
@@ -150,27 +210,4 @@ void Webserv::demonize()
 
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
-}
-
-void Webserv::setupParameters(Config & conf)
-{
-    int err_log_fd = open(&conf.err_log[0], O_WRONLY|O_CREAT|O_TRUNC);
-    if (err_log_fd < 0) {
-        std::cerr << "WARNING: can't open error file." << std::endl;
-        err_log_fd = open(constants::default_file, O_WRONLY);
-    }
-    _err_log = new Logger(err_log_fd);
-    addHandler(_err_log);
-
-    constants::timeout_idle = conf.timeout_idle;
-    constants::timeout_ka = conf.timeout_ka;
-    constants::ka_time = conf.keepalive_time;
-    constants::ka_probes = conf.num_probes;
-    constants::ka_interval = conf.keepalive_intvl;
-    _mime_types.swap(conf.mime_types);
-}
-
-int Webserv::makeServ(std::vector<ConfigServ> & conf_servers)
-{
-
 }

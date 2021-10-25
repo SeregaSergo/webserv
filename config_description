@@ -43,10 +43,16 @@ types {
 # Could be several servers, at least one
 server {
 	server_name suzumaki.org www.suzumaki.org;  # optional field
+  
   listen 127.0.0.0:8080;                      # host is optional(if none: any host), port is mandatory
+  
   access_log  logs/access.log;                # optional field (if not: fd1 -> "/dev/null")
-  client_max_body_size 5M;                    # optional field (if not: no limit)
+  
+  # You can use B(bytes), K(kbs), M, G
+  client_max_body_size 5M;                    # optional field (if not: no limit) 
+  
   root /Users/bswag/Desktop/;                 # optional field (if not: "")
+  
   error_page 500 503 504 /custom_50x.html;    # optional field (could be several)
   error_page 404 /custom_404.html;
   
@@ -73,7 +79,7 @@ server {
       root /data/www/suzumaki/index.php;
   };
 
-  location ~ php,py {
+  location ~ php/py {
       root /data/www/suzumaki/cgi-bin/;
       allowed_methods   GET;
   };

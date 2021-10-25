@@ -1,7 +1,24 @@
 #include "../inc/VirtServer.hpp"
 
+VirtServer::VirtServer(Logger * logger, long long int body_size, std::map<int, \
+			std::string> & err_pages, std::vector<Location> & locations)
+		: _acc_log(logger)
+		, _max_body_size(body_size)
+		, _err_pages(err_pages)
+		, _locations(locations)
+{
+
+}
+
+VirtServer::VirtServer(VirtServer const & src)
+	: _acc_log(src._acc_log)
+	, _max_body_size(src._max_body_size)
+	, _err_pages(src._err_pages)
+	, _locations(src._locations)
+{}
+
 void VirtServer::sendAccMsg(std::string & msg) {
-	_acc_log.sendMsg(msg);
+	_acc_log->sendMsg(msg);
 }
 
 const Location * VirtServer::chooseLocation(std::string const & uri)

@@ -19,7 +19,6 @@
 	client_max_body_size 			printf(" DIRECTIVE");
 	*/
 
-GET | POST | DELETE			{ yylval=strdup(yytext); return HTTP_METHOD; }
 error_log					return ERRLOG;
 access_log					return ACCLOG;
 daemon_mode					return DAEMON;
@@ -34,27 +33,25 @@ allowed_methods				return ALLOWED_METHODS;
 index						return INDEX;
 redirect					return REDIRECTION; 
 autoindex					return AUTOINDEX;
-client_max_body_size		return BODYSIZE;
-on|off						{ yylval.number=!strcmp(yytext,"on"); return STATE; }	
 server						return SERVER;
 listen						return LISTEN;
 server_name					return SERVER_NAME;
 location					return LOCATION;
 error_page					return ERROR_PAGE;
 client_max_body_size		return CLIENT_MAX_BODY_SIZE;
-[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+	 { yylval.string=strdup(yytext); return IP; }
-[0-9]+  					{ yylval.number=atoi(yytext); 	return NUMBER; }
-[a-zA-Z][a-zA-Z0-9_]*   	{ yylval.string=strdup(yytext); return WORD; }
-[a-zA-Z0-9\/.-]+        	{ yylval.string=strdup(yytext); return PATH; }
-[a-zA-Z][a-zA-Z0-9\/:.]+	{ yylval.string=strdup(yytext); return URL; }
-[a-zA-Z]+/[a-zA-Z0-9.-]+	{ yylval.string=strdup(yytext); return MIMETYPE; }
-[0-9]+(B|K|M|G)				{ yylval.string=strdup(yytext);	return FILESIZE; }
 $uri						return URI;
-.[a-zA-Z]+					{ yylval.string=strdup(&yytext[1]); return EXT; }
 \"                      	return QUOTE;
 \{                      	return OBRACE;
 \}                      	return EBRACE;
 ;                       	return SEMICOLON;
+on|off						{ yylval.number=!strcmp(yytext,"on"); return STATE; }
+GET | POST | DELETE			{ yylval.string=strdup(yytext); return HTTP_METHOD; }	
+[0-9]+(B|K|M|G)				{ yylval.string=strdup(yytext);	return FILESIZE; }
+[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+	 { yylval.string=strdup(yytext); return IP; }
+[0-9]+  					{ yylval.number=atoi(yytext); 	return NUMBER; }
+[a-zA-Z][a-zA-Z_]*   		{ yylval.string=strdup(yytext); return WORD; }
+[a-zA-Z0-9\/.-]+        	{ yylval.string=strdup(yytext); return PATH; }
+[a-zA-Z][a-zA-Z0-9\/:.]+	{ yylval.string=strdup(yytext); return URL; }
 \n                      	/* пропускаем концы строк */;
 [ \t]+                  	/* пропускаем пробелы */;
 %%

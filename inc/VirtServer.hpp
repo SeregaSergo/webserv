@@ -15,15 +15,16 @@
 class VirtServer {
 
 private:
-	Logger							_acc_log;
+	Logger *						_acc_log;
 	long long int					_max_body_size;
 	std::map<int, std::string>		_err_pages;
 	std::vector<Location>			_locations;
 
 public:
-	VirtServer(int fdLog, long long int body_size, std::map<int, \
+	VirtServer(Logger * logger, long long int body_size, std::map<int, \
 			std::string> & err_pages, std::vector<Location> & locations);
 	~VirtServer();
+	VirtServer(VirtServer const & src);
 	void sendAccMsg(std::string & msg);
 	const Location * chooseLocation(std::string const & uri);
 	bool IsBodyOversize(long long int body_size);

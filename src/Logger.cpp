@@ -1,6 +1,6 @@
 #include "../inc/Logger.hpp"
 
-void Logger::sendMsg(std::string & msg)
+void Logger::sendMsg(std::string const & msg)
 {
     _buffer += getDateTime();
     _buffer += msg;

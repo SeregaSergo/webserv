@@ -1,11 +1,18 @@
 #include "../inc/Server.hpp"
 
+Server::Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers)
+		: AFdHandler(fd)
+        , _master(master) {}
+
 Server * Server::create(std::string & host, const int port, Webserv * master, std::map<std::string, VirtServer *> & virt_servers)
 {
     struct sockaddr_in  addr;
     std::memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = inet_addr(host.c_str());
+    if (host.empty())
+	    addr.sin_addr.s_addr = inet_addr(INADDR_ANY);
+	else
+        addr.sin_addr.s_addr = inet_addr(host.c_str());
 	addr.sin_port = htons(port);
 
     int fd = socket(AF_INET, SOCK_STREAM, 0);
