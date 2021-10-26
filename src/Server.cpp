@@ -2,7 +2,8 @@
 
 Server::Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers)
 		: AFdHandler(fd)
-        , _master(master) {}
+        , _master(master)
+        , _virt_servers(virt_servers) {}
 
 Server * Server::create(std::string & host, const int port, Webserv * master, std::map<std::string, VirtServer *> & virt_servers)
 {
@@ -10,7 +11,7 @@ Server * Server::create(std::string & host, const int port, Webserv * master, st
     std::memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
     if (host.empty())
-	    addr.sin_addr.s_addr = inet_addr(INADDR_ANY);
+	    addr.sin_addr.s_addr = INADDR_ANY;
 	else
         addr.sin_addr.s_addr = inet_addr(host.c_str());
 	addr.sin_port = htons(port);
@@ -33,6 +34,8 @@ void Server::handle(bool r, bool w)
     int                 connfd;
     struct sockaddr_in  addr;
 
+    (void)r;
+    (void)w;
 	connfd = accept(_fd, (struct sockaddr *)&addr, NULL);
 	if (connfd == -1)
     {
@@ -43,14 +46,14 @@ void Server::handle(bool r, bool w)
 	else
 	{
 		_clients.insert(std::make_pair(connfd, Client(connfd, addr)));
-        _master->addHandler(&_clients[connfd]);
+        _master->addHandler(&(*(_clients.find(connfd))).second);
 	}
 }
 
 void Server::removeClient(Client * c)
 {
     int fd = c->getFd();
-    _master->removeHandler(&_clients[fd]);
+    _master->removeHandler(&(*(_clients.find(fd))).second);
     _clients.erase(fd);
 }
 

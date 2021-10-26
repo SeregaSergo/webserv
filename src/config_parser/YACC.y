@@ -1,8 +1,6 @@
 %{
 #include <stdio.h>
-#include "../inc/Config.hpp"
-#include <string.h>
-#include <vector>
+#include "../inc/Webserv.hpp"
 //DELETE THIS SHIT ON MAC
 int yylex(void);  
 //int yydebug=1;
@@ -48,6 +46,13 @@ extern "C"
 %token <string> FILESIZE
 %token <string> HTTP_METHOD
 %token <string> IP
+
+%type <int> type_timeout
+%type <int> IDLE_TIMEOUT
+%type <int> KA_TIMEOUT
+%type <int> KA_TIME
+%type <int> KA_PROBES
+%type <int> KA_INTERVAL
 
 %parse-param {Config *config}
 %%
@@ -105,9 +110,6 @@ timeout: type_timeout NUMBER
 		;
 type_timeout:
 		IDLE_TIMEOUT | KA_TIMEOUT | KA_TIME | KA_PROBES | KA_INTERVAL
-		{
-			$$=$1;
-		}
 		;
 
 mime_types:
@@ -163,7 +165,7 @@ server_names:
 		SERVER_NAME server_name
 		;
 server_name:
-		| server_name FILENAME
+		| server_name PATH
 		{
 			config->servers.back()->server_names.push_back($2);
 			free($2);
@@ -217,7 +219,7 @@ client_max_body_size:
 		}
 		;
 
-root:	ROOT FILENAME
+root:	ROOT PATH
 		{
 			config->servers.back()->root = $2;
 			free($2);
@@ -231,7 +233,7 @@ autoindex:	AUTOINDEX STATE
 		;
 
 error_page:
-		ERROR_PAGE error_num FILENAME
+		ERROR_PAGE error_num PATH
 		{
 			std::vector<int> * ptr_vec = config->servers.back()->err_num_temp;
 			std::map<int, std::string> * ptr_map = config->servers.back()->err_pages;
@@ -281,9 +283,6 @@ location_block:
 		;
 loc_type:
 		'=' | '~'
-		{
-			$$ = $1;
-		}
 		;
 location_statements: 
 		| location_statements location_statement SEMICOLON

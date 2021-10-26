@@ -10,6 +10,12 @@
 #include "Client.hpp"
 #include "Webserv.hpp"
 #include "VirtServer.hpp"
+#include "AFdHandler.hpp"
+
+class Webserv;
+class VirtServer;
+class AFdHandler;
+class Client;
 
 // Server creates new clients, process client's requests of
 // choosing locations, delete clients at their requests.
@@ -41,7 +47,10 @@ private:
 	virtual bool wantRead() const { return true; }
     virtual bool wantWrite() const { return false; }
 	virtual void handle(bool r, bool w);
-	virtual bool checkTimeout(struct timeval & cur_time) {return true;}
+	virtual bool checkTimeout(struct timeval & cur_time) {
+		(void)cur_time;
+		return true;
+	}
 };
 
 #endif

@@ -12,9 +12,12 @@ void Logger::sendMsg(std::string const & msg)
 void Logger::handle(bool r, bool w)
 {
     int ret = 0;
-
-    ret = write(_fd, _buffer.c_str(), _buffer.size());
-    if (ret == _buffer.size() || ret == -1)
+    int buf_size = _buffer.size();
+    (void)r;
+    (void)w;
+    
+    ret = write(_fd, _buffer.c_str(), buf_size);
+    if (ret == buf_size || ret == -1)
     {
         _write = false;
         _buffer.clear();
@@ -27,12 +30,14 @@ void Logger::handle(bool r, bool w)
 bool Logger::checkTimeout(struct timeval & cur_time) {
     if (_time.tv_sec + constants::loggerTimeout < cur_time.tv_sec)
         _write = true;
+    return (false);
 }
 
-const std::string & Logger::getDateTime(void) {
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[64];
+const char * Logger::getDateTime(void)
+{
+    time_t      now = time(0);
+    struct tm   tstruct;
+    static char buf[64];
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "[%Y/%m/%d-%X] ", &tstruct);
     return buf;

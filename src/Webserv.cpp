@@ -15,8 +15,7 @@ Webserv::Webserv(const char * config_path)
     close(file);
     setupParameters(conf);
     while (conf.servers.size() != 0)
-        if (makeServ(conf.servers))
-            throw std::runtime_error("Ip/host mismatch");
+        makeServ(conf.servers);
     if (_servers.empty())
         throw std::runtime_error("Servers are not defined");
     if (conf.daemon)
@@ -41,7 +40,7 @@ void Webserv::setupParameters(Config & conf)
     _mime_types.swap(conf.mime_types);
 }
 
-int Webserv::makeServ(std::vector<ConfigServ> & conf)
+void Webserv::makeServ(std::vector<ConfigServ> & conf)
 {
     int pos_new = _virt_servers.size();
     int port = conf[0].port;
@@ -60,7 +59,7 @@ int Webserv::makeServ(std::vector<ConfigServ> & conf)
                 --it;
             }
             else if ((*it).ip.empty() || ip.empty())
-                return (1);
+                throw std::runtime_error("Ip/host mismatch");
         }
     }
     for (std::vector<ConfigServ>::iterator it = serv_create.begin(); it != serv_create.end(); ++it)

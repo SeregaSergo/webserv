@@ -8,14 +8,10 @@
 #include <sys/resource.h>
 #include "/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/netinet/tcp.h"
 #include "Request.hpp"
-#include "../inc/Server.hpp"
+#include "Server.hpp"
+#include "AFdHandler.hpp"
 
-namespace constants
-{
-    int ka_time = 600;		// every 10 min
-    int ka_probes = 5;
-    int ka_interval = 30;
-}
+class Server;
 
 class Client : public AFdHandler {
 
@@ -26,6 +22,7 @@ private:
 
 public:
     Client(int fd, struct sockaddr_in & addr);
+    Client(Client const & src);
 
 protected:
     virtual bool wantRead() const;

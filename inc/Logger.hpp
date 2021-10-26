@@ -18,7 +18,7 @@ private:
     std::string         _buffer;
     bool                _write;
 
-    const std::string & getDateTime(void);
+    const char * getDateTime(void);
     
 public:
     Logger(int fd) : AFdHandler(fd), _write(false) {}

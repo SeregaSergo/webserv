@@ -12,3 +12,10 @@ Client::Client(int fd, struct sockaddr_in & addr)
     setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &constants::ka_probes, sizeof(constants::ka_probes));
     setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &constants::ka_interval, sizeof(constants::ka_interval));
 }
+
+Client::Client(Client const & src)
+    :  AFdHandler(src._fd)
+    , _master_serv(src._master_serv)
+    , _addr(src._addr)
+    , _port(src._port)
+{}

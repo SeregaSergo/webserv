@@ -1,4 +1,4 @@
-NAME = ../config_parser.cc
+NAME = ../ConfigParser.ccp
 
 .PHONY: all
 

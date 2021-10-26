@@ -6,7 +6,16 @@ PATH_S =		./src
 PATH_O =		./obj
 PATH_P =		./src/config_parser
 
-SRCS =			main.cpp
+SRCS =			main.cpp \
+				Webserv.cpp \
+				Server.cpp \
+				VirtServer.cpp \
+				Location.cpp \
+				Client.cpp \
+				Logger.cpp \
+				Redirect.cpp \
+				ConfigParser.ccp
+
 OBJS =			$(SRCS:%.cpp=%.o)
 
 CC =			clang++
