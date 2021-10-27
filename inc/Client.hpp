@@ -13,12 +13,21 @@
 
 class Server;
 
+namespace clientState
+{
+    int     reading = 1;
+    int     writing = 2;
+    int     waitingForReq = 3;
+}
+
 class Client : public AFdHandler {
 
 private:
-	Server *    _master_serv;
-	std::string	_addr;
-	int			_port;
+	Server *        _master_serv;
+	std::string	    _addr;
+	int			    _port;
+    int             _state;
+    struct timeval  _timer;
 
 public:
     Client(int fd, struct sockaddr_in & addr);

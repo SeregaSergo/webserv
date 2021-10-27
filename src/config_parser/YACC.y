@@ -1,20 +1,19 @@
 %{
 #include <stdio.h>
-#include "../inc/Webserv.hpp"
-//DELETE THIS SHIT ON MAC
-int yylex(void);  
-//int yydebug=1;
-#define YYSTYPE char *
+#include "../../inc/Webserv.hpp"
 extern char	*yytext;
 #define YYDEBUG_LEXER_TEXT yytext
 int yyparse(Config *config);
+
 extern "C"
 {
 	void yyerror(Config *config, const char *str)
 	{
+		(void)config;
 		fprintf(stderr,"ошибка: %s\n",str);
 	}
-	//int yylex(); 
+	int yyparse(void);
+	int yylex(void); 
     int yywrap()
     {
 		return 1;
@@ -32,6 +31,7 @@ extern "C"
 ** This is for using different return types (see 6.3)
 ** http://rus-linux.net/lib.php?name=/MyLDP/algol/lex-yacc-howto.html
 */
+
 %union 
 {
     int				number;
@@ -47,12 +47,15 @@ extern "C"
 %token <string> HTTP_METHOD
 %token <string> IP
 
-%type <int> type_timeout
-%type <int> IDLE_TIMEOUT
-%type <int> KA_TIMEOUT
-%type <int> KA_TIME
-%type <int> KA_PROBES
-%type <int> KA_INTERVAL
+%type <number> type_timeout
+%type <number> loc_type
+%type <number> IDLE_TIMEOUT
+%type <number> KA_TIMEOUT
+%type <number> KA_TIME
+%type <number> KA_PROBES
+%type <number> KA_INTERVAL
+%type <number> '='
+%type <number> '~'
 
 %parse-param {Config *config}
 %%
@@ -74,7 +77,7 @@ command:
 error_log_file: 
 		ERRLOG PATH
 		{
-			config->error_log = $2;
+			config->err_log = $2;
 			free($2);
 		}
 		;
@@ -121,7 +124,7 @@ mime_type_statements:
 mime_type_statement:
 		PATH 
 		{
-			config->mime_temp($1);
+			config->mime_temp = std::string($1);
 			free($1);
 		}
 		extensions
@@ -167,7 +170,7 @@ server_names:
 server_name:
 		| server_name PATH
 		{
-			config->servers.back()->server_names.push_back($2);
+			config->servers.back().server_names.push_back($2);
 			free($2);
 		}
 		;
@@ -178,23 +181,21 @@ listen:
 what_to_listen:
 		IP ':' NUMBER 
 		{
-			config->servers.back()->ip = $1;
+			config->servers.back().ip = $1;
 			free($1);
-			config->servers.back()->port = $3;
-			free($3);
+			config->servers.back().port = $3;
 		}
 		|
 		NUMBER 
 		{
-			config->servers.back()->port = $1;
-			free($1);
+			config->servers.back().port = $1;
 		}
 		;
 
 access_log_file: 
 		ACCLOG PATH
 		{
-			config->servers.back()->access_log = $2;
+			config->servers.back().acc_log = $2;
 			free($2);
 		}
 		;
@@ -214,38 +215,38 @@ client_max_body_size:
 				factor *= 1024;
 			}
 			$2[l - 1] = 0;
-			config->servers.back()->client_max_body_size = factor * atoi($2);
+			config->servers.back().client_max_body_size = factor * atoi($2);
 			free($2);
 		}
 		;
 
 root:	ROOT PATH
 		{
-			config->servers.back()->root = $2;
+			config->servers.back().root = $2;
 			free($2);
 		}
 		;
 
 autoindex:	AUTOINDEX STATE
 		{
-			config->servers.back()->autoindex = $2;
+			config->servers.back().autoindex = $2;
 		}
 		;
 
 error_page:
 		ERROR_PAGE error_num PATH
 		{
-			std::vector<int> * ptr_vec = config->servers.back()->err_num_temp;
-			std::map<int, std::string> * ptr_map = config->servers.back()->err_pages;
-			for (std::vector<int>::iterator it = *ptr_vec.begin(); it != *ptr_vec.end(); ++it)
-				*ptr_map.insert(std::pair<int, std::string>(*it, $3));
+			std::vector<int> * ptr_vec = &config->servers.back().err_num_temp;
+			std::map<int, std::string> * ptr_map = &config->servers.back().err_pages;
+			for (std::vector<int>::iterator it = (*ptr_vec).begin(); it != (*ptr_vec).end(); ++it)
+				(*ptr_map).insert(std::pair<int, std::string>(*it, $3));
 			free($3);
 		}
 		;
 error_num:
 		| error_num NUMBER
 		{
-			config->servers.back()->err_num_temp.push_back($2);
+			config->servers.back().err_num_temp.push_back($2);
 		}
 		;
 
@@ -254,15 +255,15 @@ location_block:
 		{
 			char type = constants::loc_equal_type;
 			std::vector<std::string> loc_path;
-			char * token = strtok(string, "/");
+			char * token = strtok($3, "/");
 			while (token != NULL) {
 				loc_path.push_back(token);
 				token = strtok(NULL, " ");
 			}
-			if (loc_type == '~')
+			if ($2 == '~')
 				type = constants::loc_ext_type;
-			config->servers.back()->locations.push_back(Location(type, loc_path, \
-							config->servers.back()->root, config->servers.back()->autoindex));
+			config->servers.back().locations.push_back(Location(type, loc_path, \
+							config->servers.back().root, config->servers.back().autoindex));
 			free($3);
 		}
 		location_statements EBRACE
@@ -270,13 +271,13 @@ location_block:
 		LOCATION PATH OBRACE 
 		{
 			std::vector<std::string> loc_path;
-			char * token = strtok(string, ",");
+			char * token = strtok($2, ",");
 			while (token != NULL) {
 				loc_path.push_back(token);
 				token = strtok(NULL, " ");
 			}
-			config->servers.back()->locations.push_back(Location(constants::loc_partly_type, loc_path, \
-							config->servers.back()->root, config->servers.back()->autoindex));
+			config->servers.back().locations.push_back(Location(constants::loc_partly_type, loc_path, \
+							config->servers.back().root, config->servers.back().autoindex));
 			free($2);
 		}
 		location_statements EBRACE
@@ -301,13 +302,13 @@ location_statement:
 autoindex_loc:
 		AUTOINDEX STATE
 		{
-			config->servers.back()->locations.back().setAutoindex($2);
+			config->servers.back().locations.back().setAutoindex($2);
 		}
 		;
 root_loc:
 		ROOT PATH
 		{
-			config->servers.back()->locations.back().setRoot($2);
+			config->servers.back().locations.back().setRoot($2);
 			free($2);
 		}
 		;
@@ -317,26 +318,26 @@ index_loc:
 index_file:
 		| index_file PATH
 		{
-			config->servers.back()->locations.back().addIndex($2);
+			config->servers.back().locations.back().addIndex($2);
 			free($2);
 		}
 		;
 allowed_methods:
 		ALLOWED_METHODS
 		{
-			config->servers.back()->locations.back().clearMethodSet();
+			config->servers.back().locations.back().clearMethodSet();
 		}
 		http_methods
 		;
 http_methods:
 		HTTP_METHOD 
 		{
-			config->servers.back()->locations.back().addMethod($1);
+			config->servers.back().locations.back().addMethod($1);
 			free($1);
 		}
 		| http_methods HTTP_METHOD
 		{
-			config->servers.back()->locations.back().addMethod($2);
+			config->servers.back().locations.back().addMethod($2);
 			free($2);
 		}
 		;	
@@ -344,14 +345,14 @@ http_redirection:
 		REDIRECTION NUMBER URL URI
 		{
 			Redirect * ptr = new Redirect($2, $3, true);
-			setRedir(ptr);
+			config->servers.back().locations.back().setRedir(ptr);
 			free($3);
 		}
 		|
 		REDIRECTION NUMBER URL
 		{
 			Redirect * ptr = new Redirect($2, $3, false);
-			setRedir(ptr);
+			config->servers.back().locations.back().setRedir(ptr);
 			free($3);
 		}
 		;

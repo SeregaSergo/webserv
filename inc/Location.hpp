@@ -34,12 +34,12 @@ public:
 	~Location();
 	// Location & operator=(Location const & src);
 	
-	void		addIndex(std::string & index);
+	void		addIndex(std::string const & index);
 	void		clearMethodSet();
-	void		addMethod(std::string &method);
+	void		addMethod(std::string const & method);
 	void		setRedir(Redirect * redir);
 	void		setAutoindex(bool ai);
-	void		setRoot(std::string & root);
+	void		setRoot(std::string const & root);
 
 	char		checkLocation(std::string const & uri);
 	Redirect *	getRedir();

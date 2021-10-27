@@ -14,7 +14,7 @@ private:
 
 public:
     Redirect(int code, std::string url, bool uri) : _code(code), _url(url), _uri(uri) {}
-    ~Redirect();
+    ~Redirect() {}
     Redirect(Redirect const & src);
 	Redirect & operator=(Redirect const & src);
 

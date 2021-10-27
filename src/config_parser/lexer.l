@@ -1,13 +1,13 @@
 %{
-	#define YYSTYPE char *
 	#include <stdio.h>
-	//DELETE THIS SHIT ON MAC	
-	#include <vector>
-	#include "../../inc/Webserv.hpp"
+	//DELETE THIS SHIT ON MAC
 	//IM SERIOUS
-	#include "YACC.hh"
+	#include "ConfigParser.hpp"
 	int yylex(void);  
 %}
+
+%option nounput
+%option noinput
 
 %%
 	/*
@@ -45,7 +45,7 @@ $uri						return URI;
 \}                      	return EBRACE;
 ;                       	return SEMICOLON;
 on|off						{ yylval.number=!strcmp(yytext,"on"); return STATE; }
-GET | POST | DELETE			{ yylval.string=strdup(yytext); return HTTP_METHOD; }	
+GET|POST|DELETE				{ yylval.string=strdup(yytext); return HTTP_METHOD; }	
 [0-9]+(B|K|M|G)				{ yylval.string=strdup(yytext);	return FILESIZE; }
 [0-9]+[.][0-9]+[.][0-9]+[.][0-9]+	 { yylval.string=strdup(yytext); return IP; }
 [0-9]+  					{ yylval.number=atoi(yytext); 	return NUMBER; }
@@ -55,5 +55,3 @@ GET | POST | DELETE			{ yylval.string=strdup(yytext); return HTTP_METHOD; }
 \n                      	/* пропускаем концы строк */;
 [ \t]+                  	/* пропускаем пробелы */;
 %%
-
-#define YYSTYPE char *

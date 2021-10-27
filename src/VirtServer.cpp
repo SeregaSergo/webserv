@@ -6,8 +6,10 @@ VirtServer::VirtServer(Logger * logger, long long int body_size, std::map<int, \
 		, _max_body_size(body_size)
 		, _err_pages(err_pages)
 		, _locations(locations)
-{
+{}
 
+VirtServer::~VirtServer(void) {
+	delete _acc_log;
 }
 
 VirtServer::VirtServer(VirtServer const & src)

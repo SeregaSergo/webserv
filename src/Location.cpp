@@ -17,7 +17,7 @@ Location::~Location(void)
 		delete _redir;
 }
 
-void	Location::addIndex(std::string & index) {
+void	Location::addIndex(std::string const & index) {
 	_index.push_back(index);
 }
 
@@ -25,7 +25,7 @@ void	Location::clearMethodSet() {
 	_methods.clear();
 }
 
-void	Location::addMethod(std::string & method) {
+void	Location::addMethod(std::string const & method) {
 	_methods.insert(method);
 }
 
@@ -37,7 +37,7 @@ void	Location::setAutoindex(bool ai) {
 	_autoindex = ai;
 }
 
-void	Location::setRoot(std::string & root) {
+void	Location::setRoot(std::string const & root) {
 	_root = root;
 }
 
