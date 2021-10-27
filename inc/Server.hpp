@@ -6,11 +6,9 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <map>
-#include "Location.hpp"
 #include "Client.hpp"
 #include "Webserv.hpp"
 #include "VirtServer.hpp"
-#include "AFdHandler.hpp"
 
 class Webserv;
 class VirtServer;

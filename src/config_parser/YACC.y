@@ -4,6 +4,7 @@
 extern char	*yytext;
 #define YYDEBUG_LEXER_TEXT yytext
 int yyparse(Config *config);
+#define YYDEBUG 1
 
 extern "C"
 {

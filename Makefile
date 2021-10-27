@@ -13,21 +13,22 @@ SRCS =			main.cpp \
 				Location.cpp \
 				Client.cpp \
 				Logger.cpp \
-				Redirect.cpp
+				Redirect.cpp \
+				constants.cpp
 
-OBJS =			$(addprefix $(PATH_O)/, *.o)
+OBJS =			$(SRCS:%.cpp=%.o)
 
 CC =			clang++
 CFLAGS =		-Wall -Wextra -Werror -std=c++98
 
-DEPS =			$(addprefix $(PATH_O)/, *.d)
+DEPS =			$(OBJS:%.o=%.d)
 
 .PHONY: all clean fclean re
 
 all: config_parser $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(addprefix $(PATH_O)/, *.o) -o $(NAME)
 
 %.o: $(addprefix $(PATH_S)/, %.cpp) | obj_direction
 	$(CC) $(CFLAGS) -MMD -c -o $(addprefix $(PATH_O)/, $@) $<
@@ -41,7 +42,7 @@ config_parser:
 -include $(DEPS)
 
 clean:
-	/bin/rm -f $(OBJS) $(DEPS)
+	/bin/rm -f $(addprefix $(PATH_O)/, *.o) $(addprefix $(PATH_O)/, $(DEPS))
 	make clean -C $(PATH_P)
 
 fclean: clean

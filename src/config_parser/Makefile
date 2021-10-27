@@ -16,7 +16,7 @@ all: produce_objs
 
 produce_objs : lexer.l YACC.y
 	lex lexer.l
-	yacc -d YACC.y -o $(YACC_SRC)
+	yacc -d YACC.y --debug -o $(YACC_SRC)
 	clang $(CFLAGS) -c $(LEX_SRC) -o $(LEX_OBJ)
 	clang++ $(CFLAGS) $(CPPFLAGS) -c $(YACC_SRC) -o $(YACC_OBJ)
 

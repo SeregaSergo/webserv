@@ -1,0 +1,62 @@
+error_log logs/error.log;
+daemon_mode;
+idle_timeout 5;
+keepalive_timeout 30;
+tcp_keepalive_time 300;
+tcp_keepalive_probes 3;
+tcp_keepalive_intvl 20;
+
+types {
+  text/html                             html htm shtml;
+  text/css                              css;
+  image/gif                             gif;
+  image/jpeg                            jpeg jpg;
+  application/x-x509-ca-cert            der pem crt;
+  application/zip                       zip;
+  application/octet-stream              deb bin exe dll dmg eot iso img;
+  audio/mpeg                            mp3;
+  video/mpeg                            mpeg mpg mov avi;
+};
+
+server {
+	server_name suzumaki.org www.suzumaki.org;
+  listen 127.0.0.0:8080;
+  access_log  logs/access.log;
+  client_max_body_size 5M;
+  root /Users/bswag/Desktop/;
+  error_page 500 503 504 /custom_50x.html;
+  error_page 404 /custom_404.html;
+  
+  location / {
+      root      /data/www/;
+      index     index.html index.php;
+  };
+
+	location /images/ {
+      root /data/www/suzumaki/img/;
+  };
+
+  location /fetch/ {
+      allowed_methods   GET;
+      autoindex     on;
+  };
+
+  location = /index.php {
+      root /data/www/suzumaki/index.php;
+  };
+
+  location ~ php/py {
+      root /data/www/suzumaki/cgi-bin/;
+      allowed_methods   GET;
+  };
+};
+
+server {
+
+  listen 127.0.0.0:8080;
+  server_name bswag.ru www.bswag.ru;
+  
+  location / {
+        redirect 301 http://suzumaki.org$uri;
+  };
+};

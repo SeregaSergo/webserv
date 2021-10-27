@@ -8,11 +8,13 @@ Webserv::Webserv(const char * config_path)
     , _err_log(NULL)
 {
     Config conf;
-    
     int file = open(config_path, O_RDONLY);
+    if (file < 0)
+        throw std::runtime_error("Can't open file: " + std::string(config_path));
+    dup2(file, 0);
+    close(file);
     if (yyparse(&conf))
         throw std::runtime_error("Сonfig file is not valid");
-    close(file);
     setupParameters(conf);
     while (conf.servers.size() != 0)
         makeServ(conf.servers);

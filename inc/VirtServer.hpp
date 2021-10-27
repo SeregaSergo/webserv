@@ -7,7 +7,7 @@
 #include "Location.hpp"
 #include "Client.hpp"
 #include "Webserv.hpp"
-
+#include "Logger.hpp"
 
 // Access message format :
 // client address | request | status | body_bytes_sent | user_agent

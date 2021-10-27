@@ -8,16 +8,16 @@
 #include <sys/resource.h>
 #include "/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/netinet/tcp.h"
 #include "Request.hpp"
-#include "Server.hpp"
 #include "AFdHandler.hpp"
+#include "Webserv.hpp"
 
 class Server;
 
 namespace clientState
 {
-    int     reading = 1;
-    int     writing = 2;
-    int     waitingForReq = 3;
+    const int     reading = 1;
+    const int     writing = 2;
+    const int     waitingForReq = 3;
 }
 
 class Client : public AFdHandler {

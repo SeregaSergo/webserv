@@ -62,7 +62,7 @@ server {
   # 2. ~ search by extension
   # 3.   partial match of path (searching starts from begining)
   location / {
-      root      /data/www/                    # works as alias in nginx
+      root      /data/www/;                   # works as alias in nginx
       index     index.html index.php;         # gives one of these files if location ends with "/"
   };
 
