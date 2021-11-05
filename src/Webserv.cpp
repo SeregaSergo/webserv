@@ -18,6 +18,7 @@ Webserv::Webserv(const char * config_path)
     setupParameters(conf);
     while (conf.servers.size() != 0)
         makeServ(conf.servers);
+    std::cout << "End of setting up" << std::endl;
     if (_servers.empty())
         throw std::runtime_error("Servers are not defined");
     if (conf.daemon)
@@ -33,7 +34,6 @@ void Webserv::setupParameters(Config & conf)
     }
     _err_log = new Logger(err_log_fd);
     addHandler(_err_log);
-
     constants::timeout_idle = conf.timeout_idle;
     constants::timeout_ka = conf.timeout_ka;
     constants::ka_time = conf.keepalive_time;
@@ -105,9 +105,10 @@ const std::string & Webserv::getMimeType(std::string & ext)
 void Webserv::addHandler(AFdHandler * h)
 {
     int fd = h->getFd();
+    std::cout << fd << "|max_fd=" << _max_fd << std::endl;
     if (fd > _max_fd)
     {
-        _fds.insert(_fds.end(), _max_fd - fd, 0);
+        _fds.insert(_fds.end(), fd - _max_fd, NULL);
         _max_fd = fd;
     }
     _fds[fd] = h;

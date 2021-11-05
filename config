@@ -25,7 +25,7 @@ server {
   client_max_body_size 5M;
   root /Users/bswag/Desktop/;
   error_page 500 503 504 /custom_50x.html;
-  error_page 404 /custom_404.html;
+  error_page 404 /custom404.html;
   
   location / {
       root      /data/www/;

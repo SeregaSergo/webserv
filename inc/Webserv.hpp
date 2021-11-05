@@ -21,6 +21,11 @@
 #include "constants.hpp"
 //#define YYSTYPE char *
 
+#ifdef LINUX_COMPILATION
+#include <errno.h>
+#include <stdlib.h>
+#endif
+
 struct ConfigServ {
     std::vector<std::string>    server_names;
     std::string                 ip;
@@ -61,6 +66,7 @@ struct Config {
 };
 
 int yyparse(Config *config);
+
 class VirtServer;
 class Server;
 class Location;

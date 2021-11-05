@@ -5,8 +5,17 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 #include <sys/resource.h>
-#include "/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/netinet/tcp.h"
+
+#ifdef LINUX_COMPILATION
+#define TCP_KEEPALIVE TCP_KEEPIDLE
+#endif
+
+// #ifdef MACOS_COMPILATION
+//     #include "/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/netinet/tcp.h"
+// #endif
+
 #include "Request.hpp"
 #include "AFdHandler.hpp"
 #include "Webserv.hpp"

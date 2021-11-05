@@ -1,10 +1,9 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #include "../../inc/Webserv.hpp"
 extern char	*yytext;
-#define YYDEBUG_LEXER_TEXT yytext
-int yyparse(Config *config);
-#define YYDEBUG 1
+
 
 extern "C"
 {
@@ -21,12 +20,21 @@ extern "C"
     }
 }
 
+#ifdef DEBUG_LEX
+extern int yydebug;
+
+int main(void)
+{
+        yydebug=1;
+        yyparse();
+}
+#endif
+
 %}
 
-%token	ERRLOG ACCLOG DAEMON IDLE_TIMEOUT KA_TIMEOUT KA_TIME KA_PROBES
-		KA_INTERVAL MIMETYPES ROOT ALLOWED_METHODS INDEX REDIRECTION
-		AUTOINDEX SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE
-		CLIENT_MAX_BODY_SIZE URI QUOTE OBRACE EBRACE SEMICOLON
+%token	ERRLOG ACCLOG DAEMON MIMETYPES ROOT ALLOWED_METHODS INDEX REDIRECTION
+		AUTOINDEX SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE 
+		CLIENT_MAX_BODY_SIZE URI QUOTE OBRACE EBRACE SEMICOLON COLON
 
 /*
 ** This is for using different return types (see 6.3)
@@ -48,15 +56,17 @@ extern "C"
 %token <string> HTTP_METHOD
 %token <string> IP
 
+
 %type <number> type_timeout
 %type <number> loc_type
-%type <number> IDLE_TIMEOUT
-%type <number> KA_TIMEOUT
-%type <number> KA_TIME
-%type <number> KA_PROBES
-%type <number> KA_INTERVAL
-%type <number> '='
-%type <number> '~'
+
+%token <number> IDLE_TIMEOUT
+%token <number> KA_TIMEOUT
+%token <number> KA_TIME
+%token <number> KA_PROBES
+%token <number> KA_INTERVAL
+%token <number> EQUALS
+%token <number> TILDE
 
 %parse-param {Config *config}
 %%
@@ -180,7 +190,7 @@ listen:
 		LISTEN what_to_listen
 		;
 what_to_listen:
-		IP ':' NUMBER 
+		IP COLON NUMBER 
 		{
 			config->servers.back().ip = $1;
 			free($1);
@@ -261,7 +271,7 @@ location_block:
 				loc_path.push_back(token);
 				token = strtok(NULL, " ");
 			}
-			if ($2 == '~')
+			if ($2 == TILDE)
 				type = constants::loc_ext_type;
 			config->servers.back().locations.push_back(Location(type, loc_path, \
 							config->servers.back().root, config->servers.back().autoindex));
@@ -284,7 +294,7 @@ location_block:
 		location_statements EBRACE
 		;
 loc_type:
-		'=' | '~'
+		EQUALS | TILDE
 		;
 location_statements: 
 		| location_statements location_statement SEMICOLON

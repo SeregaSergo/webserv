@@ -2,8 +2,9 @@
 	#include <stdio.h>
 	//DELETE THIS SHIT ON MAC
 	//IM SERIOUS
+	typedef struct Config Config;
 	#include "ConfigParser.hpp"
-	int yylex(void);  
+	int yylex(void);
 %}
 
 %option nounput
@@ -44,14 +45,17 @@ $uri						return URI;
 \{                      	return OBRACE;
 \}                      	return EBRACE;
 ;                       	return SEMICOLON;
+:                       	return COLON;
+=							return EQUALS;
+~							return TILDE;
+\n                      	/* пропускаем концы строк */;
+[ \t]+                  	/* пропускаем пробелы */;
 on|off						{ yylval.number=!strcmp(yytext,"on"); return STATE; }
 GET|POST|DELETE				{ yylval.string=strdup(yytext); return HTTP_METHOD; }	
 [0-9]+(B|K|M|G)				{ yylval.string=strdup(yytext);	return FILESIZE; }
 [0-9]+[.][0-9]+[.][0-9]+[.][0-9]+	 { yylval.string=strdup(yytext); return IP; }
 [0-9]+  					{ yylval.number=atoi(yytext); 	return NUMBER; }
-[a-zA-Z][a-zA-Z_]*   		{ yylval.string=strdup(yytext); return WORD; }
-[a-zA-Z0-9\/.-]+        	{ yylval.string=strdup(yytext); return PATH; }
+[a-zA-Z][a-zA-Z0-9_]*   	{ yylval.string=strdup(yytext); return WORD; }
+[a-zA-Z0-9\/._-]+        	{ yylval.string=strdup(yytext); return PATH; }
 [a-zA-Z][a-zA-Z0-9\/:.]+	{ yylval.string=strdup(yytext); return URL; }
-\n                      	/* пропускаем концы строк */;
-[ \t]+                  	/* пропускаем пробелы */;
 %%
