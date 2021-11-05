@@ -3,11 +3,11 @@ NAME =			server
 NAME_D_LEX =	test_lex
 
 # Directory paths
-PATH_T =		./tests
-PATH_I =		./inc
-PATH_S =		./src
-PATH_O =		./obj
-PATH_P =		./src/config_parser
+PATH_T =		tests
+PATH_I =		inc
+PATH_S =		src
+PATH_O =		obj
+PATH_P =		src/config_parser
 
 # Main files
 MAIN =			main.cpp
@@ -29,64 +29,73 @@ OBJS =			$(addprefix $(PATH_O)/,$(SRCS:%.cpp=%.o))
 
 # Lexer files
 LEX_SRC =		lexer.l
-LEX_C =			lex.yy.c
-LEX_OBJ =		$(addprefix $(PATH_O)/,$(SRCS:%.c=%.o))
+LEX_PROD =		lex.yy.c
+LEX_C =			$(addprefix $(PATH_P)/, $(LEX_PROD))
+LEX_OBJ =		$(addprefix $(PATH_O)/,$(LEX_PROD:%.c=%.o))
 
 # Yacc files
 YACC_SRC = 		YACC.y
-YACC_CPP =		ConfigParser.cpp
-YACC_HHP = 		$(YACC_SRC:%.cpp=%.hpp)
-YACC_OBJ =		$(addprefix $(PATH_O), $(YACC_SRC:%.cpp=%.o))
+YACC_PROD =		ConfigParser.cpp
+YACC_CPP =		$(addprefix $(PATH_P)/, $(YACC_PROD))
+YACC_HPP = 		$(YACC_CPP:%.cpp=%.hpp)
+YACC_OBJ =		$(addprefix $(PATH_O)/, $(YACC_PROD:%.cpp=%.o))
 
 CC =			clang
 CXX =			clang++
-CFLAGS =		-Wall -Wextra -Werror -DLINUX_COMPILATION 
+CFLAGS =		-Wall -Wextra -Werror
 CXXFLAGS =		-std=c++98
+
+OS := $(shell uname)
+ifeq ($(OS), Linux)
+    OSFLAGS = -DLINUX_COMPILATION
+else
+    OSFLAGS = -DMACOS_COMPILATION
+endif
+
 
 DEPS =			$(MAIN_OBJ:%.o=%.d) \
 				$(MAIN_LEX_OBJ:%.o=%.d) \
 				$(OBJS:%.o=%.d) \
 				$(LEX_OBJ:%.o=%.d) \
-				$(YAC_OBJ:%.o=%.d)
+				$(YACC_OBJ:%.o=%.d)
 
-.PHONY: all debug_lex clean fclean re
+.PHONY: all debug_lex directories  clean fclean re
 
-all: $(NAME)
-$(NAME): $(OBJS) $(MAIN_OBJ) $(LEX_OBJ) $(YAC_OBJ)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $^ -o $@
+all: directories $(NAME)
+$(NAME): $(OBJS) $(MAIN_OBJ) $(YACC_OBJ) $(LEX_OBJ)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $^ -o $@
 
+debug_lex: directories $(NAME_D_LEX)
+$(NAME_D_LEX): $(OBJS) $(MAIN_LEX_OBJ) $(LEX_OBJ) $(YACC_OBJ)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $^ -o $@
 
-debug_lex: $(NAME_D_LEX)
-$(NAME_D_LEX): $(OBJS) $(MAIN_LEX_OBJ) $(LEX_OBJ) $(YAC_OBJ)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $^ -o $@
+$(OBJS) $(MAIN_OBJ): $(addprefix $(PATH_O)/, %.o) : $(addprefix $(PATH_S)/, %.cpp)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
 
+$(MAIN_LEX_OBJ): $(addprefix $(PATH_O)/, %.o) : $(addprefix $(PATH_T)/, %.cpp)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
 
-$(OBJS) $(MAIN_OBJ): $(addprefix $(PATH_S)/, $(@F:%.o=%.cpp))
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -MMD -c $< -o $@
+$(LEX_OBJ): $(LEX_C) $(YACC_HPP)
+	$(CC) $(CFLAGS) $(OSFLAGS) -MMD -c $< -o $@
 
-$(MAIN_LEX_OBJ): $(addprefix $(PATH_T)/, $(@F:%.o=%.cpp))
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -MMD -c $< -o $@
+$(LEX_C): $(addprefix $(PATH_P)/, $(LEX_SRC))
+	flex $<
+	@mv $(LEX_PROD) $(PATH_P)
 
-$(LEX_OBJ): $(addprefix $(PATH_P)/, $(LEX_C))
-	$(CC) $(CFLAGS) -MMD -c $< -o $@
+$(YACC_OBJ): $(YACC_CPP)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
 
-%$(LEX_C): $(addprefix $(PATH_P)/, $(LEX_SRC))
-	lex $< -o $@
-
-$(YACC_OBJ): $(addprefix $(PATH_P)/, $(YACC_CPP))
-	$(CXX) $(CFLAGS) (CXXFLAGS) -MMD -c $< -o $@
-
-%$(YACC_CPP): $(addprefix $(PATH_P)/, $(YACC_SRC))
-	yacc $< -d -o $@
+$(YACC_CPP) $(YACC_HPP) &: $(addprefix $(PATH_P)/, $(YACC_SRC))
+	yacc $< -d -o $(YACC_CPP)
 
 -include $(DEPS)
 
+directories:
+	@mkdir -p $(PATH_O)
+
 clean:
-	/bin/rm -f  $(MAIN_OBJ) $(MAIN_LEX_OBJ) $(OBJS) \
-				$(LEX_OBJ) $(YAC_OBJ) $(DEPS) \
-				$(addprefix $(PATH_P), $(YACC_CPP)) \
-				$(addprefix $(PATH_P), $(YACC_HPP)) \
-				$(addprefix $(PATH_P), $(LEX_C))
+	/bin/rm -f  $(MAIN_OBJ) $(MAIN_LEX_OBJ) $(OBJS) $(LEX_OBJ) \
+				$(YACC_OBJ) $(DEPS) $(YACC_CPP) $(YACC_HPP) $(LEX_C)
 
 fclean: clean
 	/bin/rm -f $(NAME) $(NAME_D_LEX)

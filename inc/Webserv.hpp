@@ -19,7 +19,6 @@
 #include "Location.hpp"
 #include "Logger.hpp"
 #include "constants.hpp"
-//#define YYSTYPE char *
 
 #ifdef LINUX_COMPILATION
 #include <errno.h>

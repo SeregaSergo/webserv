@@ -1,5 +1,5 @@
 #include "../inc/Webserv.hpp"
-#include "./config_parser/ConfigParser.hpp"
+#include "../src/config_parser/ConfigParser.hpp"
 
 extern "C" {
     int yylex(void);
