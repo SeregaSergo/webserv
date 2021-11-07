@@ -20,7 +20,7 @@ types {
 
 server {
 	server_name suzumaki.org www.suzumaki.org;
-  listen 127.0.0.0:8080;
+  listen 127.0.0.1:8080;
   access_log  /home/serega/Desktop/webserv/www/logs/access.log;
   client_max_body_size 5M;
   root /Users/bswag/Desktop/;
@@ -53,7 +53,7 @@ server {
 
 server {
 
-  listen 127.0.0.0:8080;
+  listen 127.0.0.1:8080;
   server_name bswag.ru www.bswag.ru;
   
   location / {

@@ -15,6 +15,11 @@ Client::Client(int fd, struct sockaddr_in & addr)
     gettimeofday(&_timer, NULL);
 }
 
+Client * Client::create(int fd, struct sockaddr_in & addr)
+{
+    return (new Client(fd, addr));
+}
+
 Client::Client(Client const & src)
     :  AFdHandler(src._fd)
     , _master_serv(src._master_serv)
@@ -39,8 +44,14 @@ bool Client::wantWrite() const
 
 void Client::handle(bool r, bool w)
 {
-    (void)r;
-    (void)w;
+    if (r)
+    {
+        
+    }
+    else if (w)
+    {
+
+    }
 }
 
 // Delete client if the client takes no action during <timeout_idle> time

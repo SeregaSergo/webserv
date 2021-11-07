@@ -38,8 +38,10 @@ private:
     int             _state;
     struct timeval  _timer;
 
-public:
     Client(int fd, struct sockaddr_in & addr);
+
+public:
+    static Client * create(int fd, struct sockaddr_in & addr);
     Client(Client const & src);
 
 protected:

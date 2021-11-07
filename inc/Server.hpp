@@ -28,7 +28,7 @@ class Server : public AFdHandler {
 private:
 	Webserv *										_master;
 	std::map<std::string, VirtServer *>				_virt_servers;
-	std::map<int, Client>							_clients;
+	std::map<int, Client *>							_clients;
 
 	Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers);
 

@@ -94,6 +94,7 @@ void Webserv::makeServ(std::vector<ConfigServ> & conf)
     virt_map.insert(std::pair<std::string, VirtServer *>("", _virt_servers[pos_new]));
     
     // Creating real server
+    std::cout << "IP: " << ip << "\nPort: " << port << std::endl;
     _servers.push_back(Server::create(ip, port, this, virt_map));
 }
 
@@ -136,7 +137,7 @@ bool Webserv::removeHandler(AFdHandler * h)
     int fd = h->getFd();
     if (fd > _max_fd || _fds[fd] != h)
         return (false);
-    _fds[fd] = 0;
+    _fds[fd] = NULL;
     if (fd == _max_fd)
         while (_max_fd >= 0 && !_fds[_max_fd])
             --_max_fd;

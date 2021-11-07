@@ -12,10 +12,9 @@ Server * Server::create(std::string & host, const int port, Webserv * master, st
 	addr.sin_family = AF_INET;
     if (host.empty())
 	    addr.sin_addr.s_addr = INADDR_ANY;
-	else
+	else 
         addr.sin_addr.s_addr = inet_addr(host.c_str());
-	addr.sin_port = htons(port);
-
+	addr.sin_port = htonl(port);
     int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1)
         throw std::runtime_error("Could not create socket.");
@@ -23,7 +22,6 @@ Server * Server::create(std::string & host, const int port, Webserv * master, st
 	    throw std::runtime_error("Could not bind port.");
 	if (listen(fd, 1024) == -1)
 	    throw std::runtime_error("Port could not listen.");
-	
     Server * serv = new Server(master, fd, virt_servers);
     master->addHandler(serv);
     return (serv);
@@ -45,16 +43,18 @@ void Server::handle(bool r, bool w)
     }
 	else
 	{
-		_clients.insert(std::make_pair(connfd, Client(connfd, addr)));
-        _master->addHandler(&(*(_clients.find(connfd))).second);
+        Client * cl_ptr = Client::create(connfd, addr);
+        _master->addHandler(cl_ptr);
+		_clients.insert(std::make_pair(connfd, cl_ptr));
 	}
 }
 
 void Server::removeClient(Client * c)
 {
     int fd = c->getFd();
-    _master->removeHandler(&(*(_clients.find(fd))).second);
+    _master->removeHandler(c);
     _clients.erase(fd);
+    delete c;
 }
 
 void Server::sendErrMsg(std::string & msg) {
