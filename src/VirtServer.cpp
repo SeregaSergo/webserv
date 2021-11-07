@@ -1,15 +1,31 @@
 #include "../inc/VirtServer.hpp"
 
-VirtServer::VirtServer(Logger * logger, long long int body_size, std::map<int, \
-			std::string> & err_pages, std::vector<Location> & locations)
+VirtServer::VirtServer(Logger * logger, const long long int body_size, const std::map<int, \
+			std::string> & err_pages, const std::vector<Location> & locations)
 		: _acc_log(logger)
 		, _max_body_size(body_size)
 		, _err_pages(err_pages)
 		, _locations(locations)
 {}
 
+VirtServer * VirtServer::create(ConfigServ const & conf, Webserv & wbsrv)
+{
+	int acc_log_fd = open(&conf.acc_log[0], O_WRONLY|O_CREAT|O_TRUNC, 0666);
+	if (acc_log_fd < 0) {
+		std::cerr << "WARNING: can't open access file: " << &conf.acc_log[0] << std::endl;
+		acc_log_fd = open(constants::default_file, O_WRONLY);
+	}
+	Logger * acc_logger = new Logger(acc_log_fd);
+	VirtServer * virt_serv = new VirtServer(acc_logger, conf.client_max_body_size, \
+											conf.err_pages, conf.locations);
+	wbsrv.addHandler(acc_logger);
+	return (virt_serv);
+}
+
 VirtServer::~VirtServer(void) {
 	delete _acc_log;
+	for (std::vector<Location>::iterator it = _locations.begin(); it != _locations.end(); ++it)
+		(*it).delRedir();
 }
 
 VirtServer::VirtServer(VirtServer const & src)

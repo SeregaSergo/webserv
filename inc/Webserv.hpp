@@ -41,6 +41,8 @@ struct ConfigServ {
     : port(-1)
     , client_max_body_size(-1)
     , autoindex(false) {}
+    
+    ConfigServ & operator=(ConfigServ const & src);
 };
 
 struct Config {
@@ -62,7 +64,11 @@ struct Config {
     , keepalive_time(constants::ka_time)
     , num_probes(constants::ka_probes)
     , keepalive_intvl(constants::ka_interval) {}
+
+    friend std::ostream & operator<<(std::ostream & o, Config const & conf);
 };
+
+std::ostream & operator<<(std::ostream & o, Config const & conf);
 
 int yyparse(Config *config);
 
@@ -78,7 +84,7 @@ private:
     bool                                _quit;
     Logger *                            _err_log;
     std::vector<Server *>               _servers;
-    std::vector<VirtServer>             _virt_servers;
+    std::vector<VirtServer *>           _virt_servers;
     std::map<std::string, std::string>  _mime_types;    // (ext, MIME type)
     
     void fillSets(fd_set * rs, fd_set * ws);

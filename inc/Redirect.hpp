@@ -20,6 +20,9 @@ public:
 
     // std::string rewrite_url();
     // int get_code();
+    friend std::ostream & operator<<(std::ostream & o, Redirect const & src);
 };
+
+std::ostream & operator<<(std::ostream & o, Redirect const & src);
 
 #endif

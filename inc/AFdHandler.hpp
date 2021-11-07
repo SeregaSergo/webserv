@@ -23,7 +23,7 @@ public:
         fcntl(fd, F_SETFL, O_NONBLOCK);
         gettimeofday(&_time, NULL);
     }
-    virtual ~AFdHandler() { close(_fd); }
+    virtual ~AFdHandler() { std::cout << "Handler is destroyed" << std::endl; close(_fd); }
     int getFd() const { return _fd; }
     virtual bool wantRead() const = 0;
     virtual bool wantWrite() const = 0;

@@ -45,6 +45,7 @@ int main(void)
 {
     int				number;
     char *			string;
+	char			letter;
 }
 
 %token <number> STATE
@@ -58,7 +59,7 @@ int main(void)
 
 
 %type <number> type_timeout
-%type <number> loc_type
+%type <letter> loc_type
 
 %token <number> IDLE_TIMEOUT
 %token <number> KA_TIMEOUT
@@ -123,7 +124,11 @@ timeout: type_timeout NUMBER
 		}
 		;
 type_timeout:
-		IDLE_TIMEOUT | KA_TIMEOUT | KA_TIME | KA_PROBES | KA_INTERVAL
+		IDLE_TIMEOUT	{ $$ = IDLE_TIMEOUT; }
+		| KA_TIMEOUT 	{ $$ = KA_TIMEOUT; }
+		| KA_TIME 		{ $$ = KA_TIME; }
+		| KA_PROBES 	{ $$ = KA_PROBES; }
+		| KA_INTERVAL	{ $$ = KA_INTERVAL; }
 		;
 
 mime_types:
@@ -264,37 +269,27 @@ error_num:
 location_block:
 		LOCATION loc_type PATH OBRACE 
 		{
-			char type = constants::loc_equal_type;
+			char type = $2;
 			std::vector<std::string> loc_path;
-			char * token = strtok($3, "/");
-			while (token != NULL) {
-				loc_path.push_back(token);
-				token = strtok(NULL, " ");
+			if (type == constants::loc_ext_type)
+			{
+				char * token = strtok($3, "/");
+				while (token != NULL) {
+					loc_path.push_back(token);
+					token = strtok(NULL, " ");
+				}
 			}
-			if ($2 == TILDE)
-				type = constants::loc_ext_type;
+			else
+				loc_path.push_back($3);
 			config->servers.back().locations.push_back(Location(type, loc_path, \
 							config->servers.back().root, config->servers.back().autoindex));
 			free($3);
 		}
 		location_statements EBRACE
-		|
-		LOCATION PATH OBRACE 
-		{
-			std::vector<std::string> loc_path;
-			char * token = strtok($2, ",");
-			while (token != NULL) {
-				loc_path.push_back(token);
-				token = strtok(NULL, " ");
-			}
-			config->servers.back().locations.push_back(Location(constants::loc_partly_type, loc_path, \
-							config->servers.back().root, config->servers.back().autoindex));
-			free($2);
-		}
-		location_statements EBRACE
-		;
 loc_type:
-		EQUALS | TILDE
+		EQUALS	{ $$ = constants::loc_equal_type; }
+		| TILDE	{ $$ = constants::loc_ext_type; }
+		|		{ $$ = constants::loc_partly_type; }
 		;
 location_statements: 
 		| location_statements location_statement SEMICOLON

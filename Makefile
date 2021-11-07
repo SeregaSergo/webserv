@@ -42,7 +42,7 @@ YACC_OBJ =		$(addprefix $(PATH_O)/, $(YACC_PROD:%.cpp=%.o))
 
 CC =			clang
 CXX =			clang++
-CFLAGS =		-Wall -Wextra -Werror
+CFLAGS =		-Wall -Wextra -Werror -fsanitize=address
 CXXFLAGS =		-std=c++98
 
 OS := $(shell uname)

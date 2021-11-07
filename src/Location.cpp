@@ -7,14 +7,32 @@ Location::Location(char type, std::vector<std::string> & path, std::string & roo
 		, _autoindex(ai)
 		, _root(root)
 {
-	for (int i = sizeof(constants::methods) / sizeof(std::string); i != 0; --i)
+	for (int i = sizeof(constants::methods) / sizeof(std::string); i != -1; --i)
 		_methods.insert(constants::methods[i]);
 }
 
-Location::~Location(void)
+Location::Location(Location const & src)
+	: _type(src._type)
+	, _loc_path(src._loc_path)
+	, _index(src._index)
+	, _methods(src._methods)
+	, _redir(src._redir)
+	, _autoindex(src._autoindex)
+	, _root(src._root)
+{}
+
+Location & Location::operator=(Location const & src)
 {
-	if (_redir)
-		delete _redir;
+	if (this == &src)
+		return (*this);
+	_type = src._type;
+	_loc_path = src._loc_path;
+	_index = src._index;
+	_methods = src._methods;
+	_redir = src._redir;
+	_autoindex = src._autoindex;
+	_root = src._root;
+	return (*this);
 }
 
 void	Location::addIndex(std::string const & index) {
@@ -64,6 +82,32 @@ char	Location::checkLocation(std::string const & uri)
 	return (0);
 }
 
-Redirect *	Location::getRedir(void) {
+Redirect * Location::getRedir(void) {
 	return (_redir);
+}
+
+void Location::delRedir(void) {
+	if (_redir)
+		delete _redir;
+}
+
+std::ostream & operator<<(std::ostream & o, Location const & src) {
+    o << "Type: " << (int)src._type << std::endl;
+	o << "Location path: ";
+	for (std::vector<std::string>::const_iterator it = src._loc_path.begin(); it != src._loc_path.end(); ++it)
+		o << *it << "  ";
+	o << "\nIndex: ";
+	for (std::vector<std::string>::const_iterator it = src._index.begin(); it != src._index.end(); ++it)
+		o << *it << "  ";
+	o << "\nAllowed methods: ";
+	for (std::set<std::string>::const_iterator it = src._methods.begin(); it != src._methods.end(); ++it)
+		o << *it << "  ";
+	o << "\nRedirection: ";
+	if (src._redir)
+		o << "\n" << *src._redir << "\n";
+	else
+		o << "none" << std::endl;
+	o << "Autoindex: " << src._autoindex << std::endl;
+	o << "Root: " << src._root << std::endl;
+	return (o);
 }

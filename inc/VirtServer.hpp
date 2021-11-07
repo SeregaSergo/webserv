@@ -12,6 +12,9 @@
 // Access message format :
 // client address | request | status | body_bytes_sent | user_agent
 
+class Webserv;
+struct ConfigServ;
+
 class VirtServer {
 
 private:
@@ -20,9 +23,11 @@ private:
 	std::map<int, std::string>		_err_pages;
 	std::vector<Location>			_locations;
 
+	VirtServer(Logger * logger, const long long int body_size, const std::map<int, \
+			std::string> & err_pages, const std::vector<Location> & locations);
+
 public:
-	VirtServer(Logger * logger, long long int body_size, std::map<int, \
-			std::string> & err_pages, std::vector<Location> & locations);
+	static VirtServer * create(ConfigServ const & conf, Webserv & wbsrv);
 	~VirtServer();
 	VirtServer(VirtServer const & src);
 	void sendAccMsg(std::string & msg);
