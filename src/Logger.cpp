@@ -28,7 +28,7 @@ void Logger::handle(bool r, bool w)
 }
 
 bool Logger::checkTimeout(struct timeval & cur_time) {
-    if (_time.tv_sec + constants::loggerTimeout < cur_time.tv_sec)
+    if (_time.tv_sec + constants::loggerTimeout < cur_time.tv_sec && !_buffer.empty())
         _write = true;
     return (false);
 }

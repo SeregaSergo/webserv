@@ -1,6 +1,7 @@
 # Program names
 NAME =			server
 NAME_D_LEX =	test_lex
+NAME_CLIENT = 	cl
 
 # Directory paths
 PATH_T =		tests
@@ -15,6 +16,9 @@ MAIN_OBJ =		$(addprefix $(PATH_O)/,$(MAIN:%.cpp=%.o))
 
 MAIN_LEX = 		test_lex.cpp
 MAIN_LEX_OBJ =	$(addprefix $(PATH_O)/,$(MAIN_LEX:%.cpp=%.o))
+
+MAIN_CLIENT =	cl.cpp
+MAIN_CL_OBJ =	$(addprefix $(PATH_O)/,$(MAIN_CLIENT:%.cpp=%.o))
 
 # Files of basic program
 SRCS =			Webserv.cpp \
@@ -55,18 +59,19 @@ endif
 
 DEPS =			$(MAIN_OBJ:%.o=%.d) \
 				$(MAIN_LEX_OBJ:%.o=%.d) \
+				$(MAIN_CL_OBJ:%.o=%.d) \
 				$(OBJS:%.o=%.d) \
 				$(LEX_OBJ:%.o=%.d) \
 				$(YACC_OBJ:%.o=%.d)
 
-.PHONY: all debug_lex directories  clean fclean re
+.PHONY: all client debug_lex directories  clean fclean re
 
 all: directories $(NAME)
 $(NAME): $(OBJS) $(MAIN_OBJ) $(YACC_OBJ) $(LEX_OBJ)
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $^ -o $@
 
 debug_lex: directories $(NAME_D_LEX)
-$(NAME_D_LEX): $(OBJS) $(MAIN_LEX_OBJ) $(LEX_OBJ) $(YACC_OBJ)
+$(NAME_D_LEX): $(OBJS)  $(YACC_OBJ) $(LEX_OBJ) $(MAIN_LEX_OBJ)
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $^ -o $@
 
 $(OBJS) $(MAIN_OBJ): $(addprefix $(PATH_O)/, %.o) : $(addprefix $(PATH_S)/, %.cpp)
@@ -90,14 +95,22 @@ $(YACC_CPP) $(YACC_HPP) &: $(addprefix $(PATH_P)/, $(YACC_SRC))
 
 -include $(DEPS)
 
+client: directories $(NAME_CLIENT)
+$(NAME_CLIENT): $(MAIN_CL_OBJ)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $< -o $@
+
+$(MAIN_CL_OBJ): $(addprefix $(PATH_T)/, $(MAIN_CLIENT))
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
+
 directories:
 	@mkdir -p $(PATH_O)
 
 clean:
 	/bin/rm -f  $(MAIN_OBJ) $(MAIN_LEX_OBJ) $(OBJS) $(LEX_OBJ) \
-				$(YACC_OBJ) $(DEPS) $(YACC_CPP) $(YACC_HPP) $(LEX_C)
+				$(YACC_OBJ) $(DEPS) $(YACC_CPP) $(YACC_HPP) $(LEX_C) \
+				$(MAIN_CL_OBJ)
 
 fclean: clean
-	/bin/rm -f $(NAME) $(NAME_D_LEX)
+	/bin/rm -f $(NAME) $(NAME_D_LEX) $(NAME_CLIENT)
 
 re: fclean all

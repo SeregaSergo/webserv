@@ -33,7 +33,7 @@ private:
 	Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers);
 
 public:
-	~Server(void) {}
+	~Server(void);
 	static Server * create(std::string & host, const int port, Webserv * master,\
 							std::map<std::string, VirtServer *> & virt_servers);
 	void removeClient(Client * c);
@@ -47,7 +47,7 @@ private:
 	virtual void handle(bool r, bool w);
 	virtual bool checkTimeout(struct timeval & cur_time) {
 		(void)cur_time;
-		return true;
+		return false;
 	}
 };
 

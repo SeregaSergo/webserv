@@ -30,7 +30,7 @@ Webserv::Webserv(const char * config_path)
     close(file);
     if (yyparse(&conf))
         throw std::runtime_error("Сonfig file is not valid");
-    std::cout << conf << std::endl;     // debug print
+    // std::cout << conf << std::endl;     // debug print
     setupParameters(conf);
     while (conf.servers.size() != 0)
         makeServ(conf.servers);
@@ -123,7 +123,6 @@ const std::string & Webserv::getMimeType(std::string & ext)
 void Webserv::addHandler(AFdHandler * h)
 {
     int fd = h->getFd();
-    std::cout << fd << "|max_fd=" << _max_fd << std::endl;
     if (fd > _max_fd)
     {
         _fds.insert(_fds.end(), fd - _max_fd + 1, NULL);
@@ -173,12 +172,14 @@ void Webserv::start(void)
         time.tv_usec = 0;
         res = select(_max_fd + 1, &rs, &ws, 0, &time);
         if (res < 0) {
+            std::cout << "*** select < 0" << std::endl;
             if (errno == EINTR)
                 continue;
             throw std::runtime_error("select error: " + std::string(strerror(errno)));
         }
         gettimeofday(&time, NULL);
         if (res == 0) {
+            std::cout << "*** select == 0" << std::endl;
             for (int i = 0; i <= _max_fd; ++i) {
                 if (!_fds[i])
                     continue;
@@ -186,12 +187,13 @@ void Webserv::start(void)
             }
         }
         else {
+            std::cout << "*** select > 0" << std::endl;
             for (int i = 0; i <= _max_fd; ++i) {
                 if (!_fds[i] || _fds[i]->checkTimeout(time))
                     continue;
                 bool r = FD_ISSET(i, &rs);
                 bool w = FD_ISSET(i, &ws);
-                if (r | w)
+                if (r || w)
                     _fds[i]->handle(r, w);
             }
         }

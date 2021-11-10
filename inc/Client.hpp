@@ -36,13 +36,14 @@ private:
 	std::string	    _addr;
 	int			    _port;
     int             _state;
-    struct timeval  _timer;
-
-    Client(int fd, struct sockaddr_in & addr);
+    struct timeval  _timer;     // this is for timout_idle
+    char	        _buffer[1024];
+    Client(int fd, struct sockaddr_in const & addr, Server * serv);
 
 public:
-    static Client * create(int fd, struct sockaddr_in & addr);
+    static Client * create(int fd, struct sockaddr_in const & addr, Server * serv);
     Client(Client const & src);
+    ~Client();
 
 protected:
     virtual bool wantRead() const;

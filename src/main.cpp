@@ -17,8 +17,14 @@ int main(int argc, char **argv)
                 webserv.start();
                 keep_on = false;
             }
+            catch (const std::bad_alloc& ex) {
+                webserv.sendErrMsg(std::string("MEMORY: ") + ex.what());
+            }
             catch (std::runtime_error & ex) {
-                webserv.sendErrMsg(std::string("FATAL ") + ex.what());
+                webserv.sendErrMsg(std::string("FATAL RUNTIME ") + ex.what());
+            }
+            catch (std::exception &ex) {
+                std::cerr << "STANDART EXCEPTION: " << ex.what() << '\n';
             }
         }
     }

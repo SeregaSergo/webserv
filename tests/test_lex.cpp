@@ -113,10 +113,10 @@ void    print_token(int t)
         printf("COLON");
         break;
     case EQUALS:
-        printf("=");
+        printf("EQUALS");
         break;
     case TILDE:
-        printf("~");
+        printf("TILDE");
         break;        
     default:
         printf("undef");
