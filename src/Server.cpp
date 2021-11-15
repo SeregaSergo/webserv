@@ -66,7 +66,7 @@ void Server::removeClient(Client * c)
     delete c;
 }
 
-void Server::sendErrMsg(std::string & msg) {
+void Server::sendErrMsg(std::string const & msg) {
     _master->sendErrMsg(msg);
 }
 

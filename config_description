@@ -23,6 +23,8 @@ tcp_keepalive_time 300;        # after this time TCP will check connection (sec)
 tcp_keepalive_probes 3;        # how many probes will be sended to check connection
 tcp_keepalive_intvl 20;        # time iterval between two probes (sec)
 
+limit_uri_length  1024;        # if uri in request is larger -> 414 Request-URI Too Long 
+limit_request_entity 4096;     # if headers in request is larger -> 413 Request Entity Too Large
 
 # MIME types see this links:
 # https://developer.mozilla.org/ru/docs/Web/HTTP/Basics_of_HTTP/MIME_types

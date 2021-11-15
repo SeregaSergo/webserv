@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     }
     catch (std::runtime_error & ex) {
         std::cerr << "[Webserv] Error: " << ex.what() << std::endl;
-        return (EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     return (EXIT_SUCCESS);
 }

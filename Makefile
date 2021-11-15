@@ -28,6 +28,7 @@ SRCS =			Webserv.cpp \
 				Client.cpp \
 				Logger.cpp \
 				Redirect.cpp \
+				Request.cpp \
 				constants.cpp
 OBJS =			$(addprefix $(PATH_O)/,$(SRCS:%.cpp=%.o))
 

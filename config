@@ -1,10 +1,13 @@
-error_log /Users/bswag/Desktop/webserv/www/logs/error.log;
+error_log /home/serega/Desktop/webserv/www/logs/error.log;
 
 idle_timeout 5;
 keepalive_timeout 30;
 tcp_keepalive_time 300;
 tcp_keepalive_probes 3;
 tcp_keepalive_intvl 20;
+
+limit_uri_length  1024;
+limit_request_entity 4096;
 
 types {
   text/html                             html htm shtml;
@@ -21,32 +24,38 @@ types {
 server {
 	server_name suzumaki.org www.suzumaki.org;
   listen 127.0.0.1:8080;
-  access_log  /Users/bswag/Desktop/webserv/www/logs/access.log;
+  access_log  /home/serega/Desktop/webserv/www/logs/access.log;
   client_max_body_size 5M;
   root /Users/bswag/Desktop/;
   error_page 500 503 504 /custom_50x.html;
   error_page 404 /custom404.html;
   
   location / {
-      root      /data/www/;
+      root      /home/serega/Desktop/webserv/www/;
       index     index.html index.php;
   };
 
 	location /images/ {
       root /data/www/suzumaki/img/;
+      allowed_methods   GET;
   };
 
-  location /fetch/ {
-      allowed_methods   GET;
+  location /storage/ {
       autoindex     on;
   };
 
   location = /index.php {
-      root /data/www/suzumaki/index.php;
+      root /home/serega/Desktop/webserv/www/index.php;
+      allowed_methods   GET;
   };
 
   location ~ php/py {
-      root /data/www/suzumaki/cgi-bin/;
+      root /home/serega/Desktop/webserv/www/cgi-bin/;
+      allowed_methods   GET;
+  };
+
+  location ~ pdf {
+      root /home/serega/Desktop/webserv/www/documents/;
       allowed_methods   GET;
   };
 };

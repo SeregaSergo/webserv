@@ -4,16 +4,17 @@
 #include <set>
 #include <iostream>
 #include "Redirect.hpp"
+#include "constants.hpp"
 
 // Location types defines
-namespace constants
-{
-    const char loc_equal_type(3);
-    const char loc_ext_type(2);
-    const char loc_partly_type(1);
+// namespace constants
+// {
+//     const char loc_equal_type(3);
+//     const char loc_ext_type(2);
+//     const char loc_partly_type(1);
 
-	const std::string methods [] = {"GET", "POST", "DELETE"};
-}
+// 	const std::string methods [] = {"GET", "POST", "DELETE"};
+// }
 
 class Location {
 

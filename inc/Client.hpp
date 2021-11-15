@@ -12,22 +12,13 @@
 #define TCP_KEEPALIVE TCP_KEEPIDLE
 #endif
 
-// #ifdef MACOS_COMPILATION
-//     #include "/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/netinet/tcp.h"
-// #endif
-
+// #include "Response.hpp"
 #include "Request.hpp"
 #include "AFdHandler.hpp"
 #include "Webserv.hpp"
+#include "constants.hpp"
 
 class Server;
-
-namespace clientState
-{
-    const int     reading = 1;
-    const int     writing = 2;
-    const int     waitingForReq = 3;
-}
 
 class Client : public AFdHandler {
 
@@ -37,7 +28,10 @@ private:
 	int			    _port;
     int             _state;
     struct timeval  _timer;     // this is for timout_idle
-    char	        _buffer[1024];
+
+    Request         _req;
+    // Response        _resp;
+
     Client(int fd, struct sockaddr_in const & addr, Server * serv);
 
 public:
@@ -45,11 +39,19 @@ public:
     Client(Client const & src);
     ~Client();
 
+    friend class Request;
+    friend class Response;
+
 protected:
     virtual bool wantRead() const;
     virtual bool wantWrite() const;
     virtual void handle(bool r, bool w);
     virtual bool checkTimeout(struct timeval & cur_time);
+
+private:
+    int recieveData(void);
+    int freeSpace(void);
+    std::string getAddress(void);
 };
 
 #endif

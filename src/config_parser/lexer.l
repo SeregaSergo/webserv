@@ -28,6 +28,8 @@ keepalive_timeout			return KA_TIMEOUT;
 tcp_keepalive_time			return KA_TIME;
 tcp_keepalive_probes		return KA_PROBES;
 tcp_keepalive_intvl			return KA_INTERVAL;
+limit_uri_length			return URI_LENGTH;
+limit_request_entity		return REQUEST_LENGTH;
 types						return MIMETYPES;
 root						return ROOT;
 allowed_methods				return ALLOWED_METHODS;

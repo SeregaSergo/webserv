@@ -30,7 +30,7 @@ Webserv::Webserv(const char * config_path)
     close(file);
     if (yyparse(&conf))
         throw std::runtime_error("Сonfig file is not valid");
-    // std::cout << conf << std::endl;     // debug print
+    std::cout << conf << std::endl;     // debug print
     setupParameters(conf);
     while (conf.servers.size() != 0)
         makeServ(conf.servers);
@@ -55,6 +55,9 @@ void Webserv::setupParameters(Config & conf)
     constants::ka_time = conf.keepalive_time;
     constants::ka_probes = conf.num_probes;
     constants::ka_interval = conf.keepalive_intvl;
+    constants::limit_uri_length = static_cast<unsigned long>(conf.limit_uri_length);
+    constants::limit_request_length = static_cast<unsigned long>(conf.limit_request_length);
+    constants::incoming_buffer = conf.incoming_buffer;
     _mime_types.swap(conf.mime_types);
 }
 

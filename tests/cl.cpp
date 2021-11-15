@@ -1,45 +1,176 @@
-#include <iostream>
-#include <stdio.h>
-#include <sys/socket.h>
+#include <cstring>
 #include <stdlib.h>
-#include <unistd.h>
+#include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
-#include <string.h>
+#include <netdb.h>
 #include <arpa/inet.h>
+#include <vector>
+#include <string.h>
+#include <assert.h>
+#include <stdio.h>
+#include <sstream>
 
-#define PORT 8080
+#define BUF_SIZE    1024
+#define PORT        8080
 
-int main()
+char http_g[] = {"http://"};
+char host_g[] = {"localhost"};
+char parm_g[] = {"/api/method.php"};
+char http_version[] = {"HTTP/1.1"};
+
+std::string getProtocol( std::string url )
 {
-    int sock = 0;
-    std::string msg("Bitch!\n");
+    std::string protocol = "";
+    int i = 0;
 
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    for(i = 0; i < url.size(); i++)
     {
-        printf("\n Socket creation error \n");
-        return -1;
+        if ( url[i] != '/' || url[i+1] != '/'  )
+            protocol += url[i];
+        else
+        {
+            protocol += "//";
+            break;
+        }
+    }
+    return protocol;
+}
+
+std::string getHost( std::string url )
+{
+    std::string host = "";
+
+    url.replace(0, getProtocol(url).size(), "");
+
+    int i = 0;
+    for(i = 0; i < url.size(); i++)
+    {
+        if( url[i] != '/' )
+            host += url[i];
+        else
+            break;
     }
 
-    struct sockaddr_in serv_addr;
-    memset(&serv_addr, '0', sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-    // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0)
+    return host;
+}
+
+std::string getAction( std::string url )
+{
+    std::string parm = "";
+
+    url.replace(0, getProtocol(url).size()+getHost(url).size(), "");
+
+    int i = 0;
+    for(i = 0; i < url.size(); i++)
     {
-        printf("Invalid address/ Address not supported \n");
-        return -1;
+        if( url[i] != '?' && url[i] != '#' )
+            parm += url[i];
+        else
+            break;
     }
-    
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+
+    return parm;
+}
+
+std::string getParams( std::vector< std::pair< std::string, std::string> > requestData )
+{
+    std::string parm = "";
+
+    std::vector< std::pair< std::string, std::string> >::iterator itr = requestData.begin();
+
+    for( ; itr != requestData.end(); ++itr )
     {
-        printf("Connection Failed!\n");
-        return -1;
+        if( parm.size() < 1 )
+            parm += "";
+        else
+            parm += "&";
+        parm += itr->first + "=" + itr->second;
     }
-    else
-        std::cout << "Connection: " << inet_ntoa(serv_addr.sin_addr) \
-            << ":" << ntohs(serv_addr.sin_port) << std::endl;
-    send(sock, msg.c_str() , msg.size(), 0);
-    sleep(15);
+    return parm;
+}
+
+std::string GET( std::string url, std::vector< std::pair< std::string, std::string> > requestData )
+{
+    std::string http(http_g);// = getProtocol(url);
+    std::string host(host_g);// = getHost(url);
+    std::string script = getAction(url);
+    std::string parm = getParams( requestData );
+
+    char buf[BUF_SIZE];
+
+    std::string header = "";
+
+    header += "GET ";
+    header += http + host + script + "?" + parm;
+    header += (std::string)" "+ http_version + "\r\n";
+    header += (std::string)"Host: " + http + host + "/" + "\r\n";
+    header += (std::string)"User-Agent: Mozilla/5.0" + "\r\n";
+    //header += (std::string)"Accept: text/html" + "\r\n";
+    header += (std::string)"Accept-Language: ru,en-us;q=0.7,en;q=0.3" + "\r\n";
+    header += (std::string)"Accept-Charset: utf-8;q=0.7,*;q=0.7" + "\r\n";
+    header += (std::string)"Connection: keep-alive " + "\r\n";
+    header += "\r\n";
+
+    int sock;
+    struct sockaddr_in addr;
+    struct hostent* raw_host;
+    raw_host = gethostbyname( host.c_str() );
+    if (raw_host == NULL)
+    {
+        std::cout<<"ERROR, no such host";
+        exit(0);
+    }
+
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(PORT);
+
+    bcopy( (char*)raw_host->h_addr, (char*)&addr.sin_addr, raw_host->h_length );
+
+    if( connect( sock, (struct sockaddr *)&addr, sizeof(addr) ) < 0)
+    {
+        std::cerr<<"connect error"<<std::endl;
+        exit(2);
+    }
+
+
+    char * message = new char[ header.size() ];
+    for(int i = 0; i < header.size(); i++)
+        message[i] = header[i];
+
+    send(sock, message, header.size(), 0);
+    recv(sock, buf, sizeof(buf), 0);
+
+    std::string answer = "";
+
+    for(int j = 0; j < BUF_SIZE; j++)
+        answer += buf[j];
+
+    return answer;
+
+}
+
+void removeDupWord(char str[])
+{
+    // Returns first token 
+    char *token = strtok(str, " ");
+    int i = 0;
+    // Keep printing tokens while one of the
+    // delimiters present in str[].
+    while (token != NULL)
+    {
+        ++i;
+        printf("%i) %s\n", i, token);
+        token = strtok(NULL, " ");
+    }
+}
+
+int main(void)
+{
+    char str [] = "aaa bbb  ccc    ddd";
+    removeDupWord(str);
     return (0);
 }

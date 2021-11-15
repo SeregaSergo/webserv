@@ -63,22 +63,22 @@ void	Location::setRoot(std::string const & root) {
 // apropriate priority, else return 0
 char	Location::checkLocation(std::string const & uri)
 {
-	if (_type == constants::loc_equal_type) {
+	if (_type == location::Type::equal) {
 		if (uri == _loc_path[0])
-			return (constants::loc_equal_type);
+			return (location::Type::equal);
 	}
-	else if (_type == constants::loc_ext_type) {
+	else if (_type == location::Type::extention) {
 		std::size_t found = uri.find_last_of(".");
 		if (found != std::string::npos) {
 			std::string ext_uri = uri.substr(found + 1);
 			for (std::vector<std::string>::iterator it = _loc_path.begin(); it != _loc_path.end(); ++it) {
 				if (*it == ext_uri)
-					return (constants::loc_ext_type);
+					return (location::Type::extention);
 			}
 		}
 	}
 	else if (uri.compare(0, _loc_path[0].size(), _loc_path[0]) == 0)
-		return (constants::loc_partly_type);
+		return (location::Type::partial);
 	return (0);
 }
 

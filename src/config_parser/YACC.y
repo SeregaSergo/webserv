@@ -58,7 +58,7 @@ int main(void)
 %token <string> IP
 
 
-%type <number> type_timeout
+%type <number> num_constant
 %type <letter> loc_type
 
 %token <number> IDLE_TIMEOUT
@@ -66,6 +66,8 @@ int main(void)
 %token <number> KA_TIME
 %token <number> KA_PROBES
 %token <number> KA_INTERVAL
+%token <number> URI_LENGTH
+%token <number> REQUEST_LENGTH
 %token <number> EQUALS
 %token <number> TILDE
 
@@ -79,7 +81,7 @@ command:
 		|
 		daemon
 		|
-		timeout
+		num_constants
 		|
 		mime_types
 		|
@@ -101,7 +103,7 @@ daemon:
 		}
 		;
 
-timeout: type_timeout NUMBER
+num_constants: num_constant NUMBER
 		{
 			switch ($1)
 			{
@@ -120,15 +122,25 @@ timeout: type_timeout NUMBER
 			case KA_INTERVAL:
 				config->keepalive_intvl = $2;
 				break;
+			case URI_LENGTH:
+				config->limit_uri_length = $2;
+				break;
+			case REQUEST_LENGTH:
+				config->limit_request_length = $2;
+				if (config->incoming_buffer < $2)
+					config->incoming_buffer = $2;
+				break;
 			}
 		}
 		;
-type_timeout:
-		IDLE_TIMEOUT	{ $$ = IDLE_TIMEOUT; }
-		| KA_TIMEOUT 	{ $$ = KA_TIMEOUT; }
-		| KA_TIME 		{ $$ = KA_TIME; }
-		| KA_PROBES 	{ $$ = KA_PROBES; }
-		| KA_INTERVAL	{ $$ = KA_INTERVAL; }
+num_constant:
+		IDLE_TIMEOUT		{ $$ = IDLE_TIMEOUT; }
+		| KA_TIMEOUT 		{ $$ = KA_TIMEOUT; }
+		| KA_TIME 			{ $$ = KA_TIME; }
+		| KA_PROBES 		{ $$ = KA_PROBES; }
+		| KA_INTERVAL		{ $$ = KA_INTERVAL; }
+		| URI_LENGTH		{ $$ = URI_LENGTH; }
+		| REQUEST_LENGTH	{ $$ = REQUEST_LENGTH; }
 		;
 
 mime_types:
@@ -271,7 +283,7 @@ location_block:
 		{
 			char type = $2;
 			std::vector<std::string> loc_path;
-			if (type == constants::loc_ext_type)
+			if (type == location::Type::extention)
 			{
 				char * token = strtok($3, "/");
 				while (token != NULL) {
@@ -286,10 +298,20 @@ location_block:
 			free($3);
 		}
 		location_statements EBRACE
+		|
+		LOCATION TILDE WORD OBRACE 
+		{
+			std::vector<std::string> loc_path;
+			loc_path.push_back($3);
+			config->servers.back().locations.push_back(Location(location::Type::extention, loc_path, \
+							config->servers.back().root, config->servers.back().autoindex));
+			free($3);
+		}
+		location_statements EBRACE
 loc_type:
-		EQUALS	{ $$ = constants::loc_equal_type; }
-		| TILDE	{ $$ = constants::loc_ext_type; }
-		|		{ $$ = constants::loc_partly_type; }
+		EQUALS	{ $$ = location::Type::equal; }
+		| TILDE	{ $$ = location::Type::extention; }
+		|		{ $$ = location::Type::partial; }
 		;
 location_statements: 
 		| location_statements location_statement SEMICOLON

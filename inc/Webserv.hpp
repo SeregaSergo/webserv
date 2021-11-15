@@ -25,6 +25,10 @@
 #include <stdlib.h>
 #endif
 
+class VirtServer;
+class Server;
+class Location;
+
 struct ConfigServ {
     std::vector<std::string>    server_names;
     std::string                 ip;
@@ -53,6 +57,9 @@ struct Config {
     time_t                              keepalive_time;
     int                                 num_probes;
     time_t                              keepalive_intvl;
+    int                                 limit_uri_length;
+    int                                 limit_request_length;
+    int                                 incoming_buffer;
     std::map<std::string, std::string>  mime_types;
     std::string                         mime_temp;
     std::vector<ConfigServ>             servers;
@@ -63,7 +70,10 @@ struct Config {
     , timeout_ka(constants::timeout_ka)
     , keepalive_time(constants::ka_time)
     , num_probes(constants::ka_probes)
-    , keepalive_intvl(constants::ka_interval) {}
+    , keepalive_intvl(constants::ka_interval)
+    , limit_uri_length(constants::limit_uri_length)
+    , limit_request_length(constants::limit_request_length)
+    , incoming_buffer(constants::incoming_buffer) {}
 
     friend std::ostream & operator<<(std::ostream & o, Config const & conf);
 };
@@ -71,10 +81,6 @@ struct Config {
 std::ostream & operator<<(std::ostream & o, Config const & conf);
 
 int yyparse(Config *config);
-
-class VirtServer;
-class Server;
-class Location;
 
 class Webserv {
 
