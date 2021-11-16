@@ -12,9 +12,10 @@ class Request {
 private:
     std::string                         _method;
     std::string                         _uri;
-    char                                _uri_type;
     std::string                         _http_version;
     std::map<std::string, std::string>  _headers;
+
+    std::string                         _header_name;
 
     int                                 _state;
     int                                 _status_code;
@@ -27,16 +28,20 @@ private:
 
     int freeSpace(void);
     int filledSpace(void);
-    int passWhitespaces(void);
-    int findNextWhitespace(void);
-    int findEndOfLine(void);
+    bool passSymbols(char c);
+    bool findEndOfWord(char c);
+    bool findEndOfLine(void);
     bool isVersionSupported(void);
-    
+    bool isEndOfRequest(void);
+    bool getUri(void);
+
 public:
     Request();
     ~Request(void);
     int getRequest(int socket);
     int parseData(void);
+
+    friend std::ostream & operator<<(std::ostream & o, Request const & req);
 };
 
 #endif

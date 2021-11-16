@@ -49,7 +49,7 @@ namespace request
         enum State
         {
             method,
-            URI,
+            uri,
             version,
             headerName,
             headerValue,

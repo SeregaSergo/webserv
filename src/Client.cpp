@@ -62,6 +62,7 @@ void Client::handle(bool r, bool w)
         std::cout << _fd << ") Client handling reading" << std::endl;
 	    int		ret;
         ret = _req.getRequest(_fd);
+        std::cout << _req << std::endl;
         if (ret <= 0)
 	    {
             _master_serv->removeClient(this);
@@ -75,24 +76,24 @@ void Client::handle(bool r, bool w)
     }
     else if (w)
     {
-        // std::cout << _fd << ") Client handling writting" << std::endl;
-        // std::stringstream response;
-        // std::string str("Request-URI Too Long");
+        std::cout << _fd << ") Client handling writting" << std::endl;
+        std::stringstream response;
+        std::string str("Request-URI Too Long");
 
-        // response << "HTTP/1.1 414 Request-URI Too Long\r\n"
-        //     << "Version: HTTP/1.1\r\n"
-        //     << "Content-Type: text/html; charset=utf-8\r\n"
-        //     << "Content-Length: " << str.length()
-        //     << "\r\n\r\n"
-        //     << str;
+        response << "HTTP/1.1 414 Request-URI Too Long\r\n"
+            << "Version: HTTP/1.1\r\n"
+            << "Content-Type: text/html; charset=utf-8\r\n"
+            << "Content-Length: " << str.length()
+            << "\r\n\r\n"
+            << str;
 
-        // // Отправляем ответ клиенту с помощью функции send
-        // if (_state == clientState::writing)
-        //     send(_fd, response.str().c_str(),
-        //         response.str().length(), 0);
+        // Отправляем ответ клиенту с помощью функции send
+        if (_state == client::State::writing)
+            send(_fd, response.str().c_str(),
+                response.str().length(), 0);
         
-        // _state = clientState::waitingForReq;
-        // // shutdown(_fd, SHUT_RDWR);
+        _state = client::State::waitingForReq;
+        // shutdown(_fd, SHUT_RDWR);
     }
 }
 
