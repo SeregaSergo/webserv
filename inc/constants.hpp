@@ -39,7 +39,9 @@ namespace request
     {
         enum ReturnCode
         {
-            proceed,
+            error,
+            disconnected,
+            unfinished,
             completed
         };
     }

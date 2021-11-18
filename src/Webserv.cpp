@@ -30,7 +30,7 @@ Webserv::Webserv(const char * config_path)
     close(file);
     if (yyparse(&conf))
         throw std::runtime_error("Сonfig file is not valid");
-    std::cout << conf << std::endl;     // debug print
+    // std::cout << conf << std::endl;     // debug print
     setupParameters(conf);
     while (conf.servers.size() != 0)
         makeServ(conf.servers);

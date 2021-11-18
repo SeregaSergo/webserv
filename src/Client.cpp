@@ -63,35 +63,52 @@ void Client::handle(bool r, bool w)
 	    int		ret;
         ret = _req.getRequest(_fd);
         std::cout << _req << std::endl;
-        if (ret <= 0)
-	    {
+        switch (ret)
+        {
+        case request::ReturnCode::error:
+            std::cout << "return error" << std::endl; 
             _master_serv->removeClient(this);
-            if (ret == -1)
-                _master_serv->sendErrMsg("Client " + getAddress() + " - recieve error");
+            _master_serv->sendErrMsg("Client " + getAddress() + " - recieve error");
             return;
-        }
-        gettimeofday(&_timer, NULL);
-	    if (ret == request::ReturnCode::completed)
+
+        case request::ReturnCode::disconnected:
+            std::cout << "disconnected" << std::endl; 
+            _master_serv->removeClient(this);
+            return;
+        
+        case request::ReturnCode::unfinished:
+            std::cout << "unfinished" << std::endl; 
+            break;
+
+        case request::ReturnCode::completed:
+            std::cout << "complited" << std::endl;
             _state = client::State::writing;
+            break;
+        }
+        
+        gettimeofday(&_timer, NULL);
     }
-    else if (w)
+    if (w)
     {
         std::cout << _fd << ") Client handling writting" << std::endl;
         std::stringstream response;
         std::string str("Request-URI Too Long");
 
-        response << "HTTP/1.1 414 Request-URI Too Long\r\n"
-            << "Version: HTTP/1.1\r\n"
-            << "Content-Type: text/html; charset=utf-8\r\n"
-            << "Content-Length: " << str.length()
-            << "\r\n\r\n"
-            << str;
+        // response << "HTTP/1.1 414 Request-URI Too Long\r\n"
+        //     << "Version: HTTP/1.1\r\n"
+        //     << "Content-Type: text/html; charset=utf-8\r\n"
+        //     << "Content-Length: " << str.length()
+        //     << "\r\n\r\n"
+        //     << str;
+
+        response << _req.getStatusCode();
 
         // Отправляем ответ клиенту с помощью функции send
         if (_state == client::State::writing)
-            send(_fd, response.str().c_str(),
-                response.str().length(), 0);
-        
+        {
+            send(_fd, response.str().c_str(), response.str().length(), 0);
+            std::cout << "Sent response" << std::endl;
+        }
         _state = client::State::waitingForReq;
         // shutdown(_fd, SHUT_RDWR);
     }

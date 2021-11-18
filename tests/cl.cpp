@@ -13,11 +13,6 @@
 #include <sstream>
 
 #define BUF_SIZE    1024
-#define PORT        8080
-
-char http_g[] = {"http://"};
-char host_g[] = {"localhost"};
-char parm_g[] = {"/api/method.php"};
 char http_version[] = {"HTTP/1.1"};
 
 std::string getProtocol( std::string url )
@@ -75,14 +70,18 @@ std::string getPort( std::string url )
             break;
     }
 
+    if (port.empty())
+        port = "80";
+
     return port;
 }
 
 std::string getAction( std::string url )
 {
     std::string parm = "";
-
-    url.replace(0, getProtocol(url).size()+getHost(url).size()+getPort(url).size(), "");
+    std::string port = getPort(url);
+    int port_size = port.empty() ? 0 : port.size() + 1;
+    url.replace(0, getProtocol(url).size()+getHost(url).size()+ port_size, "");
 
     unsigned long i = 0;
     for(i = 0; i < url.size(); i++)
@@ -115,19 +114,30 @@ std::string getParams( std::vector< std::pair< std::string, std::string> > reque
     return parm;
 }
 
-std::string GET( std::string url, std::vector< std::pair< std::string, std::string> > requestData )
+void GET( std::string url, std::vector< std::pair< std::string, std::string> > requestData )
 {
     std::string http = getProtocol(url);
     std::string host = getHost(url);
     std::string port = getPort(url);
     std::string script = getAction(url);
     std::string parm = getParams(requestData);
-
-    if (port.empty())
-        port = std::string("80");
-    char buf[BUF_SIZE];
-
     std::string header = "";
+    char buf[BUF_SIZE];
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in addr;
+    struct hostent* raw_host = gethostbyname( host.c_str() );
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(atoi(port.c_str()));
+
+    if (raw_host == NULL) {
+        std::cout << "ERROR, no such host: " << host.c_str();
+        exit(0);
+    }
+    bcopy( (char*)raw_host->h_addr, (char*)&addr.sin_addr, raw_host->h_length );
+    if (connect( sock, (struct sockaddr *)&addr, sizeof(addr) ) < 0) {
+        std::cerr << "connect error" <<std::endl;
+        exit(2);
+    }
 
     header += "GET ";
     header += http + host + script + parm;
@@ -140,57 +150,11 @@ std::string GET( std::string url, std::vector< std::pair< std::string, std::stri
     header += (std::string)"Connection: keep-alive " + "\r\n";
     header += "\r\n";
 
-    int sock;
-    struct sockaddr_in addr;
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(atoi(port.c_str()));
-   
-    struct hostent* raw_host = gethostbyname( host.c_str() );
-    if (raw_host == NULL)
-    {
-        std::cout<<"ERROR, no such host: " << host.c_str();
-        exit(0);
-    }
+    send(sock, &header[0], header.size(), 0);
+    int ret = recv(sock, buf, sizeof(buf), 0);
 
-    bcopy( (char*)raw_host->h_addr, (char*)&addr.sin_addr, raw_host->h_length );
-
-    if( connect( sock, (struct sockaddr *)&addr, sizeof(addr) ) < 0)
-    {
-        std::cerr<<"connect error"<<std::endl;
-        exit(2);
-    }
-
-
-    char * message = new char[ header.size() ];
-    for(unsigned long i = 0; i < header.size(); i++)
-        message[i] = header[i];
-
-    send(sock, message, header.size(), 0);
-    recv(sock, buf, sizeof(buf), 0);
-
-    std::string answer = "";
-
-    for(int j = 0; j < BUF_SIZE; j++)
-        answer += buf[j];
-
-    return answer;
-
-}
-
-void removeDupWord(char str[])
-{
-    // Returns first token 
-    char *token = strtok(str, " ");
-    int i = 0;
-    // Keep printing tokens while one of the
-    // delimiters present in str[].
-    while (token != NULL)
-    {
-        ++i;
-        printf("%i) %s\n", i, token);
-        token = strtok(NULL, " ");
-    }
+    std::cout << "\nRequest:\n" << header << std::endl;
+    std::cout << "\nResponse:\n" << std::string(buf, &buf[ret]) << std::endl;
 }
 
 int main(int argc, char ** argv)
@@ -208,6 +172,8 @@ int main(int argc, char ** argv)
     std::vector<std::pair< std::string, std::string> > params;
     for (int i = 2; i != argc; i += 2)
         params.push_back(std::make_pair(argv[i], argv[i+1]));
+    
     GET(argv[1], params);
+    
     return (0);
 }

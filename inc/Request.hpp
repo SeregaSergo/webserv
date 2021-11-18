@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <map>
 #include "constants.hpp"
+#include "Location.hpp"
 
 class Request {
 
@@ -32,14 +33,17 @@ private:
     bool findEndOfWord(char c);
     bool findEndOfLine(void);
     bool isVersionSupported(void);
-    bool isEndOfRequest(void);
+    bool isEndOfHeaders(void);
     bool getUri(void);
+    bool isMethodImplemented(void);
+    int errorCode(int code);
 
 public:
     Request();
     ~Request(void);
     int getRequest(int socket);
     int parseData(void);
+    int getStatusCode(void);
 
     friend std::ostream & operator<<(std::ostream & o, Request const & req);
 };

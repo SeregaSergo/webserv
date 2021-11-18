@@ -2,6 +2,7 @@
 
 Request::Request(void)
     : _state(request::State::method)
+    , _status_code(200)
 {
     _buffer = new char[constants::incoming_buffer];
     _ptr = _buffer;
@@ -112,7 +113,7 @@ inline bool Request::findEndOfLine(void)
         return (false);
 }
 
-inline bool Request::isEndOfRequest(void)
+inline bool Request::isEndOfHeaders(void)
 {
     if (_tail == _ptr)
         return (true);
@@ -133,50 +134,95 @@ inline bool Request::isVersionSupported(void)
     return (false);
 }
 
+inline bool Request::isMethodImplemented(void)
+{
+    for (int i = sizeof(constants::methods) / sizeof(std::string) - 1; i != -1; --i)
+        if (_method == constants::methods[i])
+            return (true);
+    return (false);
+}
+
 int    Request::getRequest(int socket)
 {
     int ret;
     ret = recv(socket, _ptr, freeSpace(), 0);
     _ptr += ret;
-    if (ret <= 0)
-        return (ret);
-    while (parseData() == 1);
+    if (ret < 0)
+        return (request::ReturnCode::error);
+    if (ret == 0)
+        return (request::ReturnCode::disconnected);
+    while (!(ret = parseData()))
+    {
+        // switch (_state)
+        // {
+        // case request::State::method:
+        //     std::cout << "method" << std::endl;
+        //     break;
+        // case request::State::uri:
+        //     std::cout << "uri" << std::endl;
+        //     break;
+        // case request::State::version:
+        //     std::cout << "version" << std::endl;
+        //     break;
+        // case request::State::headerName:
+        //     std::cout << "header name" << std::endl;
+        //     break;
+        // case request::State::headerValue:
+        //     std::cout << "header value" << std::endl;
+        //     break;
+        // case request::State::body:
+        //     std::cout << "body" << std::endl;
+        //     break;
+        // }
+    }
     return (ret);
 }
 
+inline int Request::errorCode(int code)
+{
+    _status_code = code;
+    return (request::ReturnCode::completed);
+}
+
 // State machine for parsing.
-// return:  -1 - Client or Server Error
-//           0 - Stop parsing, wait for new data
-//           1 - Continue parsing
+// return:  request::ReturnCode::unfinished - Stop parsing, wait for new data,
+//          request::ReturnCode::completed - Stop parsing, send response,
+//          0 - Continue parsing;
 int Request::parseData(void)
 {
+    char * headers_end;
     switch (_state)
     {
     case request::State::method:
+        headers_end = strnstr(_buffer, "\r\n\r\n", (_ptr - _buffer) / sizeof(char));
+        if (headers_end == NULL)
+        {
+            if ((_ptr - _buffer) / sizeof(char) > constants::limit_request_length)
+                return (errorCode(413));     // Request Entity Too Large
+            return (request::ReturnCode::unfinished);
+        }
+        if ((headers_end - _buffer) / sizeof(char) > constants::limit_request_length)
+            return (errorCode(413));        // Request Entity Too Large
         if (findEndOfWord(' '))
         {
             _method = std::string(_head, _tail);
+            if (!isMethodImplemented())
+                return (errorCode(501)); // Not implemented
             _state = request::State::uri;
         }
         else
-            return (0);
+            return (request::ReturnCode::unfinished);
     case request::State::uri:
         if (passSymbols(' ') && findEndOfWord(' '))
         {
-            if ((_tail - _head) / sizeof(char) > constants::limit_request_length)
-            {
-                _status_code = 414;
-                return (-1);
-            }
+            if ((_tail - _head) / sizeof(char) > constants::limit_uri_length)
+                return (errorCode(414));    // Request-URI Too Long
             if (getUri())
-            {
-                _status_code = 400;
-                return (-1);
-            }
+                return (errorCode(400));     // Bad Request
             _state = request::State::version;
         }
         else
-            return (0);
+            return (request::ReturnCode::unfinished);
     case request::State::version:
         if (passSymbols(' ') && findEndOfWord('\r'))
         {
@@ -184,34 +230,40 @@ int Request::parseData(void)
             if (findEndOfLine())
                 _state = request::State::headerName;
             if (!isVersionSupported())
-            {
-                _status_code = 505;
-                return (-1);
-            }
+                return (errorCode(505));     // HTTP Version Not Supported
         }
         else
-            return (0);
+            return (request::ReturnCode::unfinished);
     case request::State::headerName:
-        if (!isEndOfRequest() && findEndOfWord(':'))
+        if (isEndOfHeaders())
+            break;
+        if (findEndOfWord(':'))
         {
             _header_name = std::string(_head, _tail);
             _state = request::State::headerValue;
         }
         else
-            return (0);
+            return (request::ReturnCode::unfinished);
     case request::State::headerValue:
         if (passSymbols(':') && findEndOfWord('\r'))
         {
             _headers.insert(std::make_pair(_header_name, std::string(_head, _tail)));
             if (findEndOfLine())
-                _state = request::State::headerValue;
+                _state = request::State::headerName;
         }
         else
-            return (0);
+            return (request::ReturnCode::unfinished);
+        break;
     case request::State::body:
-        return (0);
+        std::cout << "in parseData body" << std::endl;
+        return (request::ReturnCode::completed);
     }
-    return (1);
+    return (0);
+}
+
+int Request::getStatusCode(void)
+{
+    return (_status_code);
 }
 
 std::ostream & operator<<(std::ostream & o, Request const & req)
@@ -219,6 +271,28 @@ std::ostream & operator<<(std::ostream & o, Request const & req)
     o << "Method: " << req._method << std::endl;
     o << "URI: " << req._uri << std::endl;
     o << "HTTP version: " << req._http_version << std::endl;
+    o << "State: ";
+    switch (req._state)
+        {
+        case request::State::method:
+            o << "method" << std::endl;
+            break;
+        case request::State::uri:
+            o << "uri" << std::endl;
+            break;
+        case request::State::version:
+            o << "version" << std::endl;
+            break;
+        case request::State::headerName:
+            o << "header name" << std::endl;
+            break;
+        case request::State::headerValue:
+            o << "header value" << std::endl;
+            break;
+        case request::State::body:
+            o << "body" << std::endl;
+            break;
+        }
     o << "Headers:" << std::endl;
     for (std::map<std::string, std::string>::const_iterator it = req._headers.begin(); \
             it != req._headers.end(); ++it)

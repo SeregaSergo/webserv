@@ -7,7 +7,7 @@ Location::Location(char type, std::vector<std::string> & path, std::string & roo
 		, _autoindex(ai)
 		, _root(root)
 {
-	for (int i = sizeof(constants::methods) / sizeof(std::string); i != -1; --i)
+	for (int i = sizeof(constants::methods) / sizeof(std::string) - 1; i != -1; --i)
 		_methods.insert(constants::methods[i]);
 }
 
