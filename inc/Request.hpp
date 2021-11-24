@@ -1,3 +1,5 @@
+#include "Webserv.hpp"
+
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
@@ -6,7 +8,12 @@
 #include <sys/socket.h>
 #include <map>
 #include "constants.hpp"
-#include "Location.hpp"
+#include <string.h>
+#include <stdlib.h>
+
+class Server;
+class VirtServer;
+class Location;
 
 class Request {
 
@@ -15,11 +22,14 @@ private:
     std::string                         _uri;
     std::string                         _http_version;
     std::map<std::string, std::string>  _headers;
-
-    std::string                         _header_name;
+    std::string                         _body;
+    Server *                            _server;
+    VirtServer *                        _virt_serv;
+    Location *                          _location;
 
     int                                 _state;
     int                                 _status_code;
+    long long int                       _body_size;
 
     char *                              _buffer;
     char *                              _ptr;
@@ -39,7 +49,7 @@ private:
     int errorCode(int code);
 
 public:
-    Request();
+    Request(Server * server);
     ~Request(void);
     int getRequest(int socket);
     int parseData(void);

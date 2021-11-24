@@ -24,7 +24,7 @@ types {
 server {
 	server_name suzumaki.org www.suzumaki.org;
   listen 127.0.0.1:8080;
-  access_log  /Users/bswag/Desktop/webserv/www/logs/access.log;
+  access_log  /home/serega/Desktop/webserv/www/logs/access.log;
   client_max_body_size 5M;
   root /Users/bswag/Desktop/;
   error_page 500 503 504 /custom_50x.html;
@@ -45,13 +45,12 @@ server {
   };
 
   location = /index.php {
-      root /home/serega/Desktop/webserv/www/index.php;
+      root /home/serega/Desktop/webserv/www/;
       allowed_methods   GET;
   };
 
   location ~ php/py {
       root /home/serega/Desktop/webserv/www/cgi-bin/;
-      allowed_methods   GET;
   };
 
   location ~ pdf {

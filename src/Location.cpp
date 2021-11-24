@@ -1,6 +1,6 @@
 #include "../inc/Location.hpp"
 
-Location::Location(char type, std::vector<std::string> & path, std::string & root, bool ai)
+Location::Location(int type, std::vector<std::string> & path, std::string & root, bool ai)
 		: _type(type)
 		, _loc_path(path)
 		, _redir(NULL)
@@ -63,6 +63,8 @@ void	Location::setRoot(std::string const & root) {
 // apropriate priority, else return 0
 char	Location::checkLocation(std::string const & uri)
 {
+	std::cout << "compare: " << uri << " and " << _loc_path[0] << std::endl; 
+	std::cout << "Type: " << _type << std::endl;
 	if (_type == location::Type::equal) {
 		if (uri == _loc_path[0])
 			return (location::Type::equal);
@@ -80,6 +82,11 @@ char	Location::checkLocation(std::string const & uri)
 	else if (uri.compare(0, _loc_path[0].size(), _loc_path[0]) == 0)
 		return (location::Type::partial);
 	return (0);
+}
+
+bool	Location::checkMethod(std::string & method)
+{
+	return (_methods.find(method) != _methods.end());
 }
 
 Redirect * Location::getRedir(void) {

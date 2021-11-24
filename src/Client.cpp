@@ -8,6 +8,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     , _addr(inet_ntoa(addr.sin_addr))
     , _port(ntohs(addr.sin_port))
     , _state(client::State::reading)
+    , _req(serv)
 {
     int optval = 1;
     socklen_t optlen = sizeof(optval);
@@ -32,6 +33,7 @@ Client::Client(Client const & src)
     , _addr(src._addr)
     , _port(src._port)
     , _state(src._state)
+    , _req(src._req)
 {}
 
 Client::~Client(void)
@@ -67,8 +69,8 @@ void Client::handle(bool r, bool w)
         {
         case request::ReturnCode::error:
             std::cout << "return error" << std::endl; 
-            _master_serv->removeClient(this);
             _master_serv->sendErrMsg("Client " + getAddress() + " - recieve error");
+            _master_serv->removeClient(this);
             return;
 
         case request::ReturnCode::disconnected:
@@ -77,7 +79,7 @@ void Client::handle(bool r, bool w)
             return;
         
         case request::ReturnCode::unfinished:
-            std::cout << "unfinished" << std::endl; 
+            std::cout << "unfinished" << std::endl;
             break;
 
         case request::ReturnCode::completed:
@@ -85,14 +87,31 @@ void Client::handle(bool r, bool w)
             _state = client::State::writing;
             break;
         }
-        
         gettimeofday(&_timer, NULL);
     }
     if (w)
     {
         std::cout << _fd << ") Client handling writting" << std::endl;
         std::stringstream response;
-        std::string str("Request-URI Too Long");
+        // std::string body("<FORM METHOD=\"GET\" ACTION=\"http://localhost:8080/cgi-bin/USER/PROGRAM\">\
+// <b> Enter argument: </b>\
+// <INPUT size=40 name=q id=q >\
+// <INPUT TYPE=\"submit\" VALUE=\"Submit\">\
+// </FORM>");
+        // std::string body("<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n<h2>Select files to upload</h2>\
+        // <form enctype=\"multipart/form-data\" action=\"http://localhost:3000/upload?upload_progress_id=12344\" method=\"POST\">\n\
+        // <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"100000\" />\nChoose a file to upload: <input name=\"uploadedfile\" \
+        // type=\"file\" /><br />\n<input type=\"submit\" value=\"Upload File\" />\n</form>");
+        std::string body("<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n<h2>Select files to upload</h2>\
+        \n<form name=\"upload\" method=\"POST\" enctype=\"multipart/form-data\" action=\"/upload\">\n<input type=\"file\" name=\"file1\"><br>\
+        <input type=\"file\" name=\"file2\"><br>\n<input type=\"submit\" name=\"submit\" value=\"Upload\">\n<input type=\"hidden\" name=\"test\" value=\"value\">\
+        </form>\n</body>\n</html>");
+        response << "HTTP/1.1 200 OK\r\n"
+            << "Version: HTTP/1.1\r\n"
+            << "Content-Type: text/html; charset=utf-8\r\n"
+            << "Content-Length: " << body.length()
+            << "\r\n\r\n"
+            << body;
 
         // response << "HTTP/1.1 414 Request-URI Too Long\r\n"
         //     << "Version: HTTP/1.1\r\n"
@@ -101,13 +120,13 @@ void Client::handle(bool r, bool w)
         //     << "\r\n\r\n"
         //     << str;
 
-        response << _req.getStatusCode();
+        // response << _req.getStatusCode();
 
         // Отправляем ответ клиенту с помощью функции send
         if (_state == client::State::writing)
         {
             send(_fd, response.str().c_str(), response.str().length(), 0);
-            std::cout << "Sent response" << std::endl;
+            std::cout << response.str() << std::endl;
         }
         _state = client::State::waitingForReq;
         // shutdown(_fd, SHUT_RDWR);

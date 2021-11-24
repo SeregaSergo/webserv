@@ -39,18 +39,21 @@ void VirtServer::sendAccMsg(std::string & msg) {
 	_acc_log->sendMsg(msg);
 }
 
-const Location * VirtServer::chooseLocation(std::string const & uri)
+Location * VirtServer::chooseLocation(std::string const & uri)
 {
 	std::vector<Location>::iterator winner_pos;
-	char ret;
-	char win_prior = 0;
+	int ret;
+	int win_prior = location::Type::none;
 	for (std::vector<Location>::iterator it = _locations.begin(); it != _locations.end(); ++it)
 	{
 		ret = (*it).checkLocation(uri);
 		if (ret > win_prior)
+		{
 			winner_pos = it;
+			win_prior = ret;
+		}
 	}
-	if (win_prior == 0)
+	if (win_prior == location::Type::none)
 		return NULL;
 	return (winner_pos.base());	
 }

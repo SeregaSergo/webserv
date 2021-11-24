@@ -26,9 +26,10 @@ namespace location
     {
         enum Type
         {
-            equal,
+            none,
+            partial,
             extention,
-            partial
+            equal
         };
     }
 }
@@ -50,12 +51,17 @@ namespace request
     {
         enum State
         {
+            getting_headers,
+            endOfHeaders,
             method,
             uri,
             version,
             headerName,
             headerValue,
-            body
+            body,
+            chunk_size,
+            chunk,
+            done
         };
     }
 

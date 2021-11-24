@@ -75,6 +75,7 @@ server {
   location /fetch/ {
       allowed_methods   GET;                  # Disables methods (as default: allow everything)
       autoindex     on;                       # https://www.keycdn.com/support/nginx-directory-index
+                                              # do something only if uri ends on '/' and can't find index file
   };
 
   location = /index.php {

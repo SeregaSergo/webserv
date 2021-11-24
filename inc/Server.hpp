@@ -9,6 +9,7 @@
 #include "Client.hpp"
 #include "Webserv.hpp"
 #include "VirtServer.hpp"
+#include "AFdHandler.hpp"
 
 class Webserv;
 class VirtServer;
@@ -38,7 +39,7 @@ public:
 							std::map<std::string, VirtServer *> & virt_servers);
 	void removeClient(Client * c);
 	void sendErrMsg(std::string const & msg);
-	const VirtServer & getVirtualServ(std::string const & serv_name);
+	VirtServer * getVirtualServ(std::string const & serv_name);
 	const std::string & getMimeType(std::string & ext);
 	
 private:

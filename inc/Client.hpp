@@ -13,12 +13,13 @@
 #endif
 
 // #include "Response.hpp"
-#include "Request.hpp"
 #include "AFdHandler.hpp"
 #include "Webserv.hpp"
 #include "constants.hpp"
+#include "Request.hpp"
 
 class Server;
+class Request;
 
 class Client : public AFdHandler {
 

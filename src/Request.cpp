@@ -1,8 +1,36 @@
 #include "../inc/Request.hpp"
 
-Request::Request(void)
-    : _state(request::State::method)
+#include <string.h>
+
+#ifdef LINUX_COMPILATION
+char * strnstr(const char *s, const char *find, size_t slen)
+{
+	char c, sc;
+	size_t len;
+
+	if ((c = *find++) != '\0') {
+		len = strlen(find);
+		do {
+			do {
+				if (slen-- < 1 || (sc = *s++) == '\0')
+					return (NULL);
+			} while (sc != c);
+			if (len > slen)
+				return (NULL);
+		} while (strncmp(s, find, len) != 0);
+		s--;
+	}
+	return ((char *)s);
+}
+#endif
+
+Request::Request(Server * server)
+    : _server(server)
+    , _virt_serv(NULL)
+    , _location(NULL)
+    , _state(request::State::method)
     , _status_code(200)
+    , _body_size(-2)
 {
     _buffer = new char[constants::incoming_buffer];
     _ptr = _buffer;
@@ -12,9 +40,8 @@ Request::Request(void)
 }
 
 Request::~Request(void) {
-    delete _buffer;
+    delete[] _buffer;
 }
-
 
 inline int Request::freeSpace(void)
 {
@@ -115,10 +142,21 @@ inline bool Request::findEndOfLine(void)
 
 inline bool Request::isEndOfHeaders(void)
 {
-    if (_tail == _ptr)
-        return (true);
-    else if (findEndOfLine())
+    if (findEndOfLine())
     {
+        // prepare buffer for reading
+        memmove(_buffer, _tail, (_ptr - _tail) / sizeof(char));
+        _ptr = _buffer;
+        // checking length
+        std::map<std::string, std::string>::iterator    ptr;
+        if ((ptr = _headers.find("Content-Length")) != _headers.end())
+            _body_size = atoll(&ptr->second[0]);
+        // else if ((ptr = _headers.find("Transfer-Encoding")) != _headers.end())
+        // {
+
+        // }
+        // else
+
         _state = request::State::body;
         return (true);
     }
@@ -190,19 +228,24 @@ inline int Request::errorCode(int code)
 //          0 - Continue parsing;
 int Request::parseData(void)
 {
-    char * headers_end;
+    std::string header_name;
     switch (_state)
     {
-    case request::State::method:
-        headers_end = strnstr(_buffer, "\r\n\r\n", (_ptr - _buffer) / sizeof(char));
+    case request::State::getting_headers:
+    {
+        char * headers_end = strnstr(_buffer, "\r\n\r\n", (_ptr - _buffer) / sizeof(char));
         if (headers_end == NULL)
         {
             if ((_ptr - _buffer) / sizeof(char) > constants::limit_request_length)
                 return (errorCode(413));     // Request Entity Too Large
             return (request::ReturnCode::unfinished);
         }
-        if ((headers_end - _buffer) / sizeof(char) > constants::limit_request_length)
-            return (errorCode(413));        // Request Entity Too Large
+        else
+            _state = request::State::method;
+    }
+
+    case request::State::method:
+    {
         if (findEndOfWord(' '))
         {
             _method = std::string(_head, _tail);
@@ -211,8 +254,11 @@ int Request::parseData(void)
             _state = request::State::uri;
         }
         else
-            return (request::ReturnCode::unfinished);
+            return (errorCode(400)); // Bad request
+    }
+
     case request::State::uri:
+    {
         if (passSymbols(' ') && findEndOfWord(' '))
         {
             if ((_tail - _head) / sizeof(char) > constants::limit_uri_length)
@@ -222,41 +268,99 @@ int Request::parseData(void)
             _state = request::State::version;
         }
         else
-            return (request::ReturnCode::unfinished);
+            return (errorCode(400)); // Bad request
+    }
+
     case request::State::version:
+    {
         if (passSymbols(' ') && findEndOfWord('\r'))
         {
             _http_version = std::string(_head, _tail);
             if (findEndOfLine())
-                _state = request::State::headerName;
+                _state = request::State::endOfHeaders;
             if (!isVersionSupported())
                 return (errorCode(505));     // HTTP Version Not Supported
         }
         else
-            return (request::ReturnCode::unfinished);
+            return (errorCode(400)); // Bad request
+    }
+
+    case request::State::endOfHeaders:
+    {
+        if (findEndOfLine())
+        {
+            std::map<std::string, std::string>::iterator    ptr;
+            ptr = _headers.find("Host");
+            if (ptr == _headers.end())
+                _virt_serv = _server->getVirtualServ("");
+            else
+                _virt_serv = _server->getVirtualServ(ptr->second);
+            if ((_location = _virt_serv->chooseLocation(_uri)) == NULL)
+                return (errorCode(404));     // Not found
+            if ((ptr = _headers.find("Transfer-Encoding")) != _headers.end())
+            {
+                if (ptr->second != "chunked")
+                    return (errorCode(501));     // Not Implemented
+                else
+                    _state = request::State::chunk_size;
+            }
+            else if ((ptr = _headers.find("Content-Length")) != _headers.end())
+            {
+                _body_size = atoll(&ptr->second[0]);
+                _state = request::State::body;
+            }
+            else
+                return (errorCode(411));     // Length Required
+            if (!_location->checkMethod(_method))
+                return (errorCode(405));     // Method Not Allowed
+
+            memmove(_buffer, _tail, (_ptr - _tail) / sizeof(char));
+            _ptr = _buffer;
+        }
+        else
+            _state = request::State::headerName;
+        break;
+    }
+
     case request::State::headerName:
-        if (isEndOfHeaders())
-            break;
+    {
         if (findEndOfWord(':'))
         {
-            _header_name = std::string(_head, _tail);
+            header_name = std::string(_head, _tail);
             _state = request::State::headerValue;
         }
         else
-            return (request::ReturnCode::unfinished);
+            return (errorCode(400)); // Bad request
+    }
+
     case request::State::headerValue:
-        if (passSymbols(':') && findEndOfWord('\r'))
+    {
+        if (passSymbols(':') && passSymbols(' ') && findEndOfWord('\r'))
         {
-            _headers.insert(std::make_pair(_header_name, std::string(_head, _tail)));
+            _headers.insert(std::make_pair(header_name, std::string(_head, _tail)));
             if (findEndOfLine())
-                _state = request::State::headerName;
+                _state = request::State::endOfHeaders;
         }
         else
-            return (request::ReturnCode::unfinished);
+            return (errorCode(400)); // Bad request
         break;
+    }
+
     case request::State::body:
-        std::cout << "in parseData body" << std::endl;
+    {
         return (request::ReturnCode::completed);
+    }
+
+    case request::State::chunk_size:
+    {
+        return (request::ReturnCode::completed);
+    }
+
+    case request::State::chunk:
+    {
+        return (request::ReturnCode::completed);
+    }
+
     }
     return (0);
 }
@@ -271,6 +375,7 @@ std::ostream & operator<<(std::ostream & o, Request const & req)
     o << "Method: " << req._method << std::endl;
     o << "URI: " << req._uri << std::endl;
     o << "HTTP version: " << req._http_version << std::endl;
+    o << "Status code: " << req._status_code << std::endl;
     o << "State: ";
     switch (req._state)
         {

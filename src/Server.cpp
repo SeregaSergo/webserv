@@ -70,12 +70,12 @@ void Server::sendErrMsg(std::string const & msg) {
     _master->sendErrMsg(msg);
 }
 
-const VirtServer & Server::getVirtualServ(std::string const & serv_name)
+VirtServer * Server::getVirtualServ(std::string const & serv_name)
 {
     std::map<std::string, VirtServer *>::iterator it = _virt_servers.find(serv_name);
     if (it == _virt_servers.end())
         it =_virt_servers.find("");
-    return (*(*it).second);
+    return ((*it).second);
 }
 
 const std::string & Server::getMimeType(std::string & ext) {

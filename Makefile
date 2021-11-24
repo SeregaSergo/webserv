@@ -96,8 +96,8 @@ $(YACC_CPP) $(YACC_HPP) &: $(addprefix $(PATH_P)/, $(YACC_SRC))
 
 -include $(DEPS)
 
-client: directories $(NAME_CLIENT)
-$(NAME_CLIENT): $(MAIN_CL_OBJ)
+client: directories $(addprefix $(PATH_T)/,$(NAME_CLIENT))
+$(addprefix $(PATH_T)/,$(NAME_CLIENT)): $(MAIN_CL_OBJ)
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $< -o $@
 
 $(MAIN_CL_OBJ): $(addprefix $(PATH_T)/, $(MAIN_CLIENT))
@@ -112,6 +112,6 @@ clean:
 				$(MAIN_CL_OBJ)
 
 fclean: clean
-	/bin/rm -f $(NAME) $(NAME_D_LEX) $(NAME_CLIENT)
+	/bin/rm -f $(NAME) $(NAME_D_LEX) $(addprefix $(PATH_T)/, $(NAME_CLIENT))
 
 re: fclean all

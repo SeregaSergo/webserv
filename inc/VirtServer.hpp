@@ -31,7 +31,7 @@ public:
 	~VirtServer();
 	VirtServer(VirtServer const & src);
 	void sendAccMsg(std::string & msg);
-	const Location * chooseLocation(std::string const & uri);
+	Location * chooseLocation(std::string const & uri);
 	bool IsBodyOversize(long long int body_size);
 	// File & getPage(int num_page);
 };

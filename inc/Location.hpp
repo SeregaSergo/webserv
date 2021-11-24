@@ -19,7 +19,7 @@
 class Location {
 
 private:
-	char						_type;	// see constants namespace
+	int							_type;	// see constants namespace
 	std::vector<std::string>	_loc_path;
 	std::vector<std::string>	_index;
 	std::set<std::string>		_methods;
@@ -30,7 +30,7 @@ private:
 	// Location();
 
 public:
-	Location(char type, std::vector<std::string> & path, std::string & root, bool ai);
+	Location(int type, std::vector<std::string> & path, std::string & root, bool ai);
 	Location(Location const & src);
 	~Location() {}
 	Location & operator=(Location const & src);
@@ -43,6 +43,7 @@ public:
 	void		setRoot(std::string const & root);
 
 	char		checkLocation(std::string const & uri);
+	bool		checkMethod(std::string & method);
 	Redirect *	getRedir();
 	void		delRedir();
 	// bool	check_access();   // methods, authorization, existence
