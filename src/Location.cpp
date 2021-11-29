@@ -63,8 +63,6 @@ void	Location::setRoot(std::string const & root) {
 // apropriate priority, else return 0
 char	Location::checkLocation(std::string const & uri)
 {
-	std::cout << "compare: " << uri << " and " << _loc_path[0] << std::endl; 
-	std::cout << "Type: " << _type << std::endl;
 	if (_type == location::Type::equal) {
 		if (uri == _loc_path[0])
 			return (location::Type::equal);

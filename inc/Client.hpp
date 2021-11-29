@@ -30,8 +30,8 @@ private:
     int             _state;
     struct timeval  _timer;     // this is for timout_idle
 
-    Request         _req;
-    // Response        _resp;
+    Request         _request;
+    // Response        _response;
 
     Client(int fd, struct sockaddr_in const & addr, Server * serv);
 

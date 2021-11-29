@@ -1,6 +1,6 @@
 #include "../inc/Request.hpp"
 
-#include <string.h>
+// #include <string.h>
 
 #ifdef LINUX_COMPILATION
 char * strnstr(const char *s, const char *find, size_t slen)
@@ -28,9 +28,9 @@ Request::Request(Server * server)
     : _server(server)
     , _virt_serv(NULL)
     , _location(NULL)
-    , _state(request::State::method)
+    , _state(request::State::getting_headers)
     , _status_code(200)
-    , _body_size(-2)
+    , _body_size(0)
 {
     _buffer = new char[constants::incoming_buffer];
     _ptr = _buffer;
@@ -43,12 +43,12 @@ Request::~Request(void) {
     delete[] _buffer;
 }
 
-inline int Request::freeSpace(void)
+inline int Request::freeSpace(void) const
 {
     return ((_end - _ptr) / sizeof(char));
 }
 
-inline int Request::filledSpace(void)
+inline int Request::filledSpace(void) const
 {
     return ((_ptr - _buffer) / sizeof(char));
 }
@@ -140,29 +140,6 @@ inline bool Request::findEndOfLine(void)
         return (false);
 }
 
-inline bool Request::isEndOfHeaders(void)
-{
-    if (findEndOfLine())
-    {
-        // prepare buffer for reading
-        memmove(_buffer, _tail, (_ptr - _tail) / sizeof(char));
-        _ptr = _buffer;
-        // checking length
-        std::map<std::string, std::string>::iterator    ptr;
-        if ((ptr = _headers.find("Content-Length")) != _headers.end())
-            _body_size = atoll(&ptr->second[0]);
-        // else if ((ptr = _headers.find("Transfer-Encoding")) != _headers.end())
-        // {
-
-        // }
-        // else
-
-        _state = request::State::body;
-        return (true);
-    }
-    return (false);
-}
-
 inline bool Request::isVersionSupported(void)
 {
     const std::string * end = constants::versions + sizeof(constants::versions);
@@ -184,36 +161,31 @@ int    Request::getRequest(int socket)
 {
     int ret;
     ret = recv(socket, _ptr, freeSpace(), 0);
-    _ptr += ret;
+    std::cout << ret << std::endl;
     if (ret < 0)
         return (request::ReturnCode::error);
     if (ret == 0)
         return (request::ReturnCode::disconnected);
-    while (!(ret = parseData()))
+    _ptr += ret;
+    while (!(ret = parseData()));
+    if (_ptr == _end)
     {
-        // switch (_state)
-        // {
-        // case request::State::method:
-        //     std::cout << "method" << std::endl;
-        //     break;
-        // case request::State::uri:
-        //     std::cout << "uri" << std::endl;
-        //     break;
-        // case request::State::version:
-        //     std::cout << "version" << std::endl;
-        //     break;
-        // case request::State::headerName:
-        //     std::cout << "header name" << std::endl;
-        //     break;
-        // case request::State::headerValue:
-        //     std::cout << "header value" << std::endl;
-        //     break;
-        // case request::State::body:
-        //     std::cout << "body" << std::endl;
-        //     break;
-        // }
+        memmove(_buffer, _tail, (_ptr - _tail) / sizeof(char));
+        _ptr -= _tail - _buffer;
+        _head = _buffer;
+        _tail = _buffer;
     }
     return (ret);
+}
+void    Request::addToBody(void)
+{
+    int bytes_to_add = (_ptr - _tail) / sizeof(char);
+    if (bytes_to_add > _body_size)
+        bytes_to_add = _body_size;
+    _body.append(_tail, bytes_to_add);
+    _body_size -= bytes_to_add;
+    _tail += bytes_to_add;
+    _head = _tail;
 }
 
 inline int Request::errorCode(int code)
@@ -236,8 +208,8 @@ int Request::parseData(void)
         char * headers_end = strnstr(_buffer, "\r\n\r\n", (_ptr - _buffer) / sizeof(char));
         if (headers_end == NULL)
         {
-            if ((_ptr - _buffer) / sizeof(char) > constants::limit_request_length)
-                return (errorCode(413));     // Request Entity Too Large
+            if ((_ptr - _buffer) / sizeof(char) >= constants::limit_request_length)
+                return (errorCode(431));     // Request Header Fields Too Large
             return (request::ReturnCode::unfinished);
         }
         else
@@ -309,13 +281,12 @@ int Request::parseData(void)
                 _body_size = atoll(&ptr->second[0]);
                 _state = request::State::body;
             }
+            else if (_method == "POST")
+                return (errorCode(411));     // Length required
             else
-                return (errorCode(411));     // Length Required
+                _state = request::State::done;
             if (!_location->checkMethod(_method))
                 return (errorCode(405));     // Method Not Allowed
-
-            memmove(_buffer, _tail, (_ptr - _tail) / sizeof(char));
-            _ptr = _buffer;
         }
         else
             _state = request::State::headerName;
@@ -348,15 +319,59 @@ int Request::parseData(void)
 
     case request::State::body:
     {
-        return (request::ReturnCode::completed);
+        addToBody();
+        if (_body_size == 0)
+            _state = request::State::done;
+        else
+            return (request::ReturnCode::unfinished);
+        break;
     }
 
     case request::State::chunk_size:
     {
-        return (request::ReturnCode::completed);
+        if (findEndOfWord('\r'))
+        {
+            _body_size = strtol(_head, NULL, 16);
+            if (_body_size < 0)
+                return (errorCode(400));    // Bad request
+            if (findEndOfLine())
+            {
+                if (_body_size == 0)
+                    _state = request::State::done;
+                else
+                    _state = request::State::chunk;
+                break;
+            }
+        }
+        return (request::ReturnCode::unfinished);
     }
 
     case request::State::chunk:
+    {
+        addToBody();
+        if (_body_size == 0)
+            _state = request::State::chunk_endl;
+        else
+            return (request::ReturnCode::unfinished);
+        break;
+    }
+
+    case request::State::chunk_endl:
+    {
+        if (_ptr - _tail > 2)
+        {
+            if (findEndOfLine())
+            {
+                _state = request::State::chunk_size;
+                break;
+            }
+            else
+                return (errorCode(400));
+        }
+        return (request::ReturnCode::unfinished);
+    }
+
+    case request::State::done:
     {
         return (request::ReturnCode::completed);
     }
@@ -370,6 +385,20 @@ int Request::getStatusCode(void)
     return (_status_code);
 }
 
+void Request::clear(void)
+{
+    _method.clear();
+    _uri.clear();
+    _http_version.clear();
+    _headers.clear();
+    _body.clear();
+    _virt_serv = NULL;
+    _location = NULL;
+    _state = request::State::getting_headers;
+    _status_code = 200;
+    _body_size = 0;
+}
+
 std::ostream & operator<<(std::ostream & o, Request const & req)
 {
     o << "Method: " << req._method << std::endl;
@@ -379,6 +408,12 @@ std::ostream & operator<<(std::ostream & o, Request const & req)
     o << "State: ";
     switch (req._state)
         {
+        case request::State::getting_headers:
+            o << "getting headers" << std::endl;
+            break;
+        case request::State::endOfHeaders:
+            o << "end of headers" << std::endl;
+            break;
         case request::State::method:
             o << "method" << std::endl;
             break;
@@ -394,14 +429,25 @@ std::ostream & operator<<(std::ostream & o, Request const & req)
         case request::State::headerValue:
             o << "header value" << std::endl;
             break;
+        case request::State::chunk:
+            o << "chunk" << std::endl;
+            break;
+        case request::State::chunk_size:
+            o << "chunk size" << std::endl;
+            break;
         case request::State::body:
             o << "body" << std::endl;
+            break;
+        case request::State::done:
+            o << "done" << std::endl;
             break;
         }
     o << "Headers:" << std::endl;
     for (std::map<std::string, std::string>::const_iterator it = req._headers.begin(); \
             it != req._headers.end(); ++it)
         o << "    " << it->first << ": " << it->second <<std::endl;
+    o << "\nBody:\n" << req._body << std::endl;
     o << "\nBuffer:\n" << std::string(req._buffer, req._ptr) << std::endl;
+    o << "\nBuffer size: " << req.filledSpace() << std::endl;
     return (o);
 }

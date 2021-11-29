@@ -7,9 +7,12 @@
 class Response {
 
 private:
+    VirtServer *            _virt_serv;
+    Location *              _location;
+    std::string             _result_uri;
 
 public:
-
+    Response(Request const & request);
 };
 
 #endif

@@ -35,12 +35,12 @@ server {
       index     index.html index.php;
   };
 
-	location /images/ {
+	location /images {
       root /data/www/suzumaki/img/;
       allowed_methods   GET;
   };
 
-  location /storage/ {
+  location /storage {
       autoindex     on;
   };
 
@@ -51,6 +51,10 @@ server {
 
   location ~ php/py {
       root /home/serega/Desktop/webserv/www/cgi-bin/;
+  };
+
+  location ~ html {
+      root /home/serega/Desktop/webserv/www/static;
   };
 
   location ~ pdf {

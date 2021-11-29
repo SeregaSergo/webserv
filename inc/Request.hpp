@@ -29,7 +29,7 @@ private:
 
     int                                 _state;
     int                                 _status_code;
-    long long int                       _body_size;
+    int                                 _body_size;
 
     char *                              _buffer;
     char *                              _ptr;
@@ -37,16 +37,16 @@ private:
     char *                              _head;  // during parsing: left border
     char *                              _tail;  // during parsing: right border
 
-    int freeSpace(void);
-    int filledSpace(void);
+    int freeSpace(void) const;
+    int filledSpace(void) const;
     bool passSymbols(char c);
     bool findEndOfWord(char c);
     bool findEndOfLine(void);
     bool isVersionSupported(void);
-    bool isEndOfHeaders(void);
     bool getUri(void);
     bool isMethodImplemented(void);
     int errorCode(int code);
+    void addToBody(void);
 
 public:
     Request(Server * server);
@@ -54,7 +54,7 @@ public:
     int getRequest(int socket);
     int parseData(void);
     int getStatusCode(void);
-
+    void clear(void);
     friend std::ostream & operator<<(std::ostream & o, Request const & req);
 };
 

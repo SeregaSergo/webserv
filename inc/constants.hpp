@@ -60,6 +60,7 @@ namespace request
             headerValue,
             body,
             chunk_size,
+            chunk_endl,
             chunk,
             done
         };

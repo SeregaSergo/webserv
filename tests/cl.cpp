@@ -13,6 +13,8 @@
 #include <sstream>
 #include <iterator>
 #include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
 
 char http_version[] = {"HTTP/1.1"};
 
@@ -230,11 +232,17 @@ void POST(std::string url, int num_req, bool chunked)
         {
             size_to_send = body.size() > buf_size_g ? buf_size_g : body.size();
             std::stringstream ss;
-            ss << std::hex << size_to_send << "\r\n";
-            header += ss.str() + std::string(&body[0], &body[size_to_send]) + "\r\n";
-            body.erase(0, size_to_send);
-            if (size_to_send == 0)
+            ss << std::hex << size_to_send;
+            if (size_to_send)
+            {
+                header += ss.str() + "\r\n" + std::string(&body[0], &body[size_to_send]) + "\r\n";
+                body.erase(0, size_to_send);
+            }
+            else
+            {
+                header += ss.str() + "\r\n";
                 break;
+            }
         }
     }
     else
@@ -247,7 +255,6 @@ void POST(std::string url, int num_req, bool chunked)
 
     for (; num_req > 0; --num_req)
     {
-        std::cout << num_req << std::endl;
         while (header.size())
         {
             int size_to_send = header.size() > buf_size_g ? buf_size_g : header.size();
@@ -258,11 +265,28 @@ void POST(std::string url, int num_req, bool chunked)
 
         std::cout << "\nResponse(" << num_req << "):" << std::endl;
         ret = 1;
-        // while (ret > 0)
-        // {
-        ret = recv(sock, buf, sizeof(buf), 0);
-        std::cout << std::string(buf, &buf[ret]) << std::endl;
-        // }
+
+        fcntl(sock, F_SETFL, O_NONBLOCK);
+        int num_empty = 0;
+        while (ret != 0)
+        {
+            ret = recv(sock, buf, sizeof(buf), 0);
+            if (ret == -1)
+            {
+                if (errno == EWOULDBLOCK) {
+                    ++num_empty;
+                    if (num_empty == 6)
+                        break;
+                    usleep(30000);
+                    continue;
+                }
+                else
+                    break;
+            }
+            num_empty = 0;
+            std::cout << std::string(buf, &buf[ret]);
+        }
+        std::cout << std::endl;
     }
 }
 

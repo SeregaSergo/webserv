@@ -25,6 +25,7 @@ int main(int argc, char **argv)
             }
             catch (std::exception &ex) {
                 std::cerr << "STANDART EXCEPTION: " << ex.what() << '\n';
+                exit(EXIT_FAILURE);
             }
         }
     }
