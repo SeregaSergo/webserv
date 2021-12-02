@@ -9,6 +9,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     , _port(ntohs(addr.sin_port))
     , _state(client::State::reading)
     , _request(serv)
+    , _response(this)
 {
     int optval = 1;
     socklen_t optlen = sizeof(optval);
@@ -19,7 +20,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     
     gettimeofday(&_timer, NULL);
 
-    std::cout << _fd << ") Client connected(" << _addr << ":" << _port << ") time: " << _time.tv_sec << std::endl;
+    std::cout << "[fd " << _fd << "] Client connected(" << _addr << ":" << _port << ") time: " << _time.tv_sec << std::endl;
 }
 
 Client * Client::create(int fd, struct sockaddr_in const & addr, Server * serv)
@@ -34,13 +35,14 @@ Client::Client(Client const & src)
     , _port(src._port)
     , _state(src._state)
     , _request(src._request)
+    , _response(src._response)
 {}
 
 Client::~Client(void)
 {
     struct timeval  tm;
     gettimeofday(&tm, NULL);
-    std::cout << _fd << ") Client deleted(" << _addr << ":" << _port << ") time: " << tm.tv_sec << std::endl;
+    std::cout << "[fd " << _fd << "] Client deleted(" << _addr << ":" << _port << ") time: " << tm.tv_sec << std::endl;
 }
 
 bool Client::wantRead() const
@@ -61,11 +63,9 @@ void Client::handle(bool r, bool w)
 {
     if (r)
     {
-        std::cout << _fd << ") Client handling reading" << std::endl;
-	    int		ret;
-        ret = _request.getRequest(_fd);
-        std::cout << _request << std::endl;
-        switch (ret)
+        std::cout << "[fd "<< _fd << "] Client reading" << std::endl;
+	
+        switch (_request.getRequest(_fd))
         {
         case request::ReturnCode::error:
             std::cout << "return error" << std::endl; 
@@ -84,36 +84,41 @@ void Client::handle(bool r, bool w)
 
         case request::ReturnCode::completed:
             std::cout << "complited" << std::endl;
-            // _response(_request);
-            _state = client::State::writing;
+            _state = client::State::processing;
+            std::cout << _request << std::endl;
+            _response.processRequest(&_request);
             break;
         }
         gettimeofday(&_timer, NULL);
     }
     else if (w)
     {
-        std::cout << _fd << ") Client handling writting" << std::endl;
-        std::stringstream response;
-        std::string body("<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n<h2>Select files to upload</h2>\
-        \n<form name=\"upload\" method=\"POST\" enctype=\"multipart/form-data\" action=\"/upload\">\n<input type=\"file\" name=\"file1\"><br>\
-        <input type=\"file\" name=\"file2\"><br>\n<input type=\"submit\" name=\"submit\" value=\"Upload\">\n<input type=\"hidden\" name=\"test\" value=\"value\">\
-        </form>\n</body>\n</html>");
-        response << "HTTP/1.1 " << _request.getStatusCode() << " OK\r\n"
-            << "Version: HTTP/1.1\r\n"
-            << "Content-Type: text/html; charset=utf-8\r\n"
-            << "Content-Length: " << body.length()
-            << "\r\n\r\n"
-            << body;
+        std::cout << "[fd " << _fd << "] Client writting" << std::endl;
 
-        // Отправляем ответ клиенту с помощью функции send
-        if (_state == client::State::writing)
+        switch (_response.sendResponse())
         {
-            send(_fd, response.str().c_str(), response.str().length(), 0);
-            std::cout << response.str() << std::endl;
+        case response::ReturnCode::error:
+            std::cout << "return error" << std::endl; 
+            _master_serv->sendErrMsg("Client " + getAddress() + " - send error");
+            _master_serv->removeClient(this);
+            return;
+
+        case response::ReturnCode::disconnected:        // I dont know how to detect this
+            std::cout << "disconnected" << std::endl;
+            _master_serv->removeClient(this);
+            return;
+        
+        case response::ReturnCode::unfinished:
+            std::cout << "unfinished" << std::endl;
+            break;
+
+        case response::ReturnCode::completed:
+            std::cout << "complited" << std::endl;
+            _state = client::State::waitingForReq;
+            break;
         }
-        _state = client::State::waitingForReq;
         _request.clear();
-        // shutdown(_fd, SHUT_RDWR);
+        _response.clear();
     }
 }
 

@@ -13,7 +13,7 @@ int main(int argc, char **argv)
         Webserv webserv(argv[1]);
         while (keep_on)
         {
-            try {
+            try { 
                 webserv.start();
                 keep_on = false;
             }

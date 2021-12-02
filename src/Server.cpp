@@ -41,7 +41,7 @@ void Server::handle(bool r, bool w)
 
     (void)r;
     (void)w;
-    std::cout << _fd << ") Server handling" << std::endl;
+    std::cout << "[fd "<< _fd << "] Server accepting" << std::endl;
 	connfd = accept(_fd, (struct sockaddr *)&addr, &addrlen);
 	if (connfd == -1)
     {

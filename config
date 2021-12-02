@@ -21,6 +21,7 @@ types {
   video/mpeg                            mpeg mpg mov avi;
 };
 
+
 server {
 	server_name suzumaki.org www.suzumaki.org;
   listen 127.0.0.1:8080;
@@ -69,6 +70,6 @@ server {
   server_name bswag.ru www.bswag.ru;
   
   location / {
-        redirect 301 http://suzumaki.org$uri;
+        redirect 301 http://www.cplusplus.com/info/description§$uri;
   };
 };

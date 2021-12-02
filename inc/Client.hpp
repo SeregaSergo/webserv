@@ -12,14 +12,15 @@
 #define TCP_KEEPALIVE TCP_KEEPIDLE
 #endif
 
-// #include "Response.hpp"
+#include "Response.hpp"
+#include "Request.hpp"
 #include "AFdHandler.hpp"
 #include "Webserv.hpp"
 #include "constants.hpp"
-#include "Request.hpp"
 
 class Server;
 class Request;
+class Response;
 
 class Client : public AFdHandler {
 
@@ -31,7 +32,7 @@ private:
     struct timeval  _timer;     // this is for timout_idle
 
     Request         _request;
-    // Response        _response;
+    Response        _response;
 
     Client(int fd, struct sockaddr_in const & addr, Server * serv);
 
@@ -40,7 +41,6 @@ public:
     Client(Client const & src);
     ~Client();
 
-    friend class Request;
     friend class Response;
 
 protected:

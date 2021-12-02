@@ -126,7 +126,7 @@ num_constants: num_constant NUMBER
 				config->limit_uri_length = $2;
 				break;
 			case REQUEST_LENGTH:
-				config->limit_request_length = $2;
+				config->limit_headers_length = $2;
 				if (config->incoming_buffer < $2)
 					config->incoming_buffer = $2;
 				break;
@@ -243,7 +243,10 @@ client_max_body_size:
 				factor *= 1024;
 			}
 			$2[l - 1] = 0;
-			config->servers.back().client_max_body_size = factor * atoi($2);
+			if (config->servers.back().locations.size() == 0)
+				config->servers.back().client_max_body_size = factor * atoi($2);
+			else
+				config->servers.back().locations.back().setMaxBodySize(factor * atoi($2));
 			free($2);
 		}
 		;
@@ -283,7 +286,7 @@ location_block:
 		{
 			char type = $2;
 			std::vector<std::string> loc_path;
-			if (type == location::Type::extention)
+			if (type == location::pathType::extention)
 			{
 				char * token = strtok($3, "/");
 				while (token != NULL) {
@@ -294,7 +297,8 @@ location_block:
 			else
 				loc_path.push_back($3);
 			config->servers.back().locations.push_back(Location(type, loc_path, \
-							config->servers.back().root, config->servers.back().autoindex));
+							config->servers.back().root, config->servers.back().autoindex, \
+							config->servers.back().client_max_body_size));
 			free($3);
 		}
 		location_statements EBRACE
@@ -303,15 +307,16 @@ location_block:
 		{
 			std::vector<std::string> loc_path;
 			loc_path.push_back($3);
-			config->servers.back().locations.push_back(Location(location::Type::extention, loc_path, \
-							config->servers.back().root, config->servers.back().autoindex));
+			config->servers.back().locations.push_back(Location(location::pathType::extention, loc_path, \
+							config->servers.back().root, config->servers.back().autoindex, \
+							config->servers.back().client_max_body_size));
 			free($3);
 		}
 		location_statements EBRACE
 loc_type:
-		EQUALS	{ $$ = location::Type::equal; }
-		| TILDE	{ $$ = location::Type::extention; }
-		|		{ $$ = location::Type::partial; }
+		EQUALS	{ $$ = location::pathType::equal; }
+		| TILDE	{ $$ = location::pathType::extention; }
+		|		{ $$ = location::pathType::partial; }
 		;
 location_statements: 
 		| location_statements location_statement SEMICOLON
@@ -326,6 +331,8 @@ location_statement:
 		http_redirection
 		|
 		index_loc
+		|
+		client_max_body_size
 		;
 autoindex_loc:
 		AUTOINDEX STATE

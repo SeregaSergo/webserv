@@ -1,18 +1,32 @@
+#include "Request.hpp"
+#include "Client.hpp"
+
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
 
 #include <iostream>
-#include "Webserv.hpp"
+#include "constants.hpp"
+
+class Client;
 
 class Response {
 
 private:
-    VirtServer *            _virt_serv;
-    Location *              _location;
-    std::string             _result_uri;
+    const Request *         _request;
+    Client *                _client;
+    std::string             _response;
+    std::string             _resulting_uri;
+
+    unsigned long           _sent;
+
+    void handleError(void);
+    void processRedirection(Request const & request);
 
 public:
-    Response(Request const & request);
+    Response(Client * client) : _request(NULL), _client(client), _sent(0) {}
+    void processRequest(const Request * request);
+    int sendResponse(void);
+    void clear(void);
 };
 
 #endif

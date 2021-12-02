@@ -53,9 +53,10 @@ public:
     ~Request(void);
     int getRequest(int socket);
     int parseData(void);
-    int getStatusCode(void);
+    int getStatusCode(void) const;
     void clear(void);
     friend std::ostream & operator<<(std::ostream & o, Request const & req);
+    friend class Response;
 };
 
 #endif

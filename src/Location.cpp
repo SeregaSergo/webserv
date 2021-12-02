@@ -1,31 +1,33 @@
 #include "../inc/Location.hpp"
 
-Location::Location(int type, std::vector<std::string> & path, std::string & root, bool ai)
-		: _type(type)
+Location::Location(int type, std::vector<std::string> & path, std::string & root, bool ai, int max_body_size)
+		: _pathType(type)
 		, _loc_path(path)
+		, _max_body_size(max_body_size)
+		, _root(root)
 		, _redir(NULL)
 		, _autoindex(ai)
-		, _root(root)
 {
 	for (int i = sizeof(constants::methods) / sizeof(std::string) - 1; i != -1; --i)
 		_methods.insert(constants::methods[i]);
 }
 
 Location::Location(Location const & src)
-	: _type(src._type)
+	: _pathType(src._pathType)
 	, _loc_path(src._loc_path)
 	, _index(src._index)
 	, _methods(src._methods)
+	, _max_body_size(src._max_body_size)
+	, _root(src._root)
 	, _redir(src._redir)
 	, _autoindex(src._autoindex)
-	, _root(src._root)
 {}
 
 Location & Location::operator=(Location const & src)
 {
 	if (this == &src)
 		return (*this);
-	_type = src._type;
+	_pathType = src._pathType;
 	_loc_path = src._loc_path;
 	_index = src._index;
 	_methods = src._methods;
@@ -59,32 +61,39 @@ void	Location::setRoot(std::string const & root) {
 	_root = root;
 }
 
+void	Location::setMaxBodySize(int body_size) {
+	_max_body_size = body_size;
+}
+
 // if the location is suitable to uri then return
 // apropriate priority, else return 0
 char	Location::checkLocation(std::string const & uri)
 {
-	if (_type == location::Type::equal) {
+	if (_pathType == location::pathType::equal) {
 		if (uri == _loc_path[0])
-			return (location::Type::equal);
+			return (location::pathType::equal);
 	}
-	else if (_type == location::Type::extention) {
+	else if (_pathType == location::pathType::extention) {
 		std::size_t found = uri.find_last_of(".");
 		if (found != std::string::npos) {
 			std::string ext_uri = uri.substr(found + 1);
 			for (std::vector<std::string>::iterator it = _loc_path.begin(); it != _loc_path.end(); ++it) {
 				if (*it == ext_uri)
-					return (location::Type::extention);
+					return (location::pathType::extention);
 			}
 		}
 	}
 	else if (uri.compare(0, _loc_path[0].size(), _loc_path[0]) == 0)
-		return (location::Type::partial);
+		return (location::pathType::partial);
 	return (0);
 }
 
-bool	Location::checkMethod(std::string & method)
-{
+bool	Location::checkMethod(std::string & method) {
 	return (_methods.find(method) != _methods.end());
+}
+
+bool	Location::checkBodySize(int size) {
+	return (size > _max_body_size);
 }
 
 Redirect * Location::getRedir(void) {
@@ -96,8 +105,18 @@ void Location::delRedir(void) {
 		delete _redir;
 }
 
+int	Location::getType(void)
+{
+	if (_redir)
+		return (location::Type::redirection);
+	// else if (!_cgi_pass.empty())
+	// 	return (location::Type::cgi);
+	else
+		return (location::Type::file);
+}
+
 std::ostream & operator<<(std::ostream & o, Location const & src) {
-    o << "Type: " << (int)src._type << std::endl;
+    o << "Type: " << (int)src._pathType << std::endl;
 	o << "Location path: ";
 	for (std::vector<std::string>::const_iterator it = src._loc_path.begin(); it != src._loc_path.end(); ++it)
 		o << *it << "  ";

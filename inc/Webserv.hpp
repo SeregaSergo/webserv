@@ -43,7 +43,7 @@ struct ConfigServ {
     
     ConfigServ(void)
     : port(-1)
-    , client_max_body_size(-1)
+    , client_max_body_size(constants::client_max_body_size)
     , autoindex(false) {}
     
     ConfigServ & operator=(ConfigServ const & src);
@@ -58,7 +58,7 @@ struct Config {
     int                                 num_probes;
     time_t                              keepalive_intvl;
     int                                 limit_uri_length;
-    int                                 limit_request_length;
+    int                                 limit_headers_length;
     int                                 incoming_buffer;
     std::map<std::string, std::string>  mime_types;
     std::string                         mime_temp;
@@ -72,7 +72,7 @@ struct Config {
     , num_probes(constants::ka_probes)
     , keepalive_intvl(constants::ka_interval)
     , limit_uri_length(constants::limit_uri_length)
-    , limit_request_length(constants::limit_request_length)
+    , limit_headers_length(constants::limit_headers_length)
     , incoming_buffer(constants::incoming_buffer) {}
 
     friend std::ostream & operator<<(std::ostream & o, Config const & conf);
@@ -96,6 +96,7 @@ private:
     void fillSets(fd_set * rs, fd_set * ws);
     void demonize(void);
     void setupParameters(Config & conf);
+    void init_code_descriptions(void);
     void makeServ(std::vector<ConfigServ> & conf_servers);
 
 public:

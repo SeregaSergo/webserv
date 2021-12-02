@@ -41,6 +41,44 @@ Webserv::Webserv(const char * config_path)
         demonize();
 }
 
+void init_codes_description(void)
+{
+    constants::codes_description[200] = "OK";
+    constants::codes_description[201] = "Created";
+    constants::codes_description[202] = "Accepted";
+    constants::codes_description[203] = "Non-Authoritative Information";
+    constants::codes_description[204] = "No Content";
+    constants::codes_description[205] = "Reset Content";
+    constants::codes_description[206] = "Partial Content";
+    constants::codes_description[300] = "Multiple Choice";
+    constants::codes_description[301] = "Moved Permanently";
+    constants::codes_description[302] = "Found";
+    constants::codes_description[303] = "See Other";
+    constants::codes_description[304] = "Not Modified";
+    constants::codes_description[305] = "Use Proxy";
+    constants::codes_description[307] = "Temporary Redirect";
+    constants::codes_description[308] = "Permanent Redirect";
+    constants::codes_description[400] = "Bad Request";
+    constants::codes_description[401] = "Unauthorized";
+    constants::codes_description[403] = "Forbidden";
+    constants::codes_description[404] = "Not Found";
+    constants::codes_description[405] = "Method Not Allowed";
+    constants::codes_description[406] = "Not Acceptable";
+    constants::codes_description[408] = "Request Timeout";
+    constants::codes_description[409] = "Conflict";
+    constants::codes_description[411] = "Length Required";
+    constants::codes_description[413] = "Payload Too Large";
+    constants::codes_description[414] = "URI Too Long";
+    constants::codes_description[415] = "Unsupported Media Type";
+    constants::codes_description[431] = "Request Header Fields Too Large";
+    constants::codes_description[500] = "Internal Server Error";
+    constants::codes_description[501] = "Not Implemented";
+    constants::codes_description[502] = "Bad Gateway";
+    constants::codes_description[503] = "Service Unavailable";
+    constants::codes_description[504] = "Gateway Timeout";
+    constants::codes_description[505] = "HTTP Version Not Supported";
+}
+
 void Webserv::setupParameters(Config & conf)
 {
     int err_log_fd = open(&conf.err_log[0], O_WRONLY|O_CREAT|O_TRUNC, 0666);
@@ -56,8 +94,9 @@ void Webserv::setupParameters(Config & conf)
     constants::ka_probes = conf.num_probes;
     constants::ka_interval = conf.keepalive_intvl;
     constants::limit_uri_length = static_cast<unsigned long>(conf.limit_uri_length);
-    constants::limit_request_length = static_cast<unsigned long>(conf.limit_request_length);
+    constants::limit_headers_length = static_cast<unsigned long>(conf.limit_headers_length);
     constants::incoming_buffer = conf.incoming_buffer;
+    init_codes_description();
     _mime_types.swap(conf.mime_types);
 }
 

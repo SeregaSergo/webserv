@@ -161,7 +161,6 @@ int    Request::getRequest(int socket)
 {
     int ret;
     ret = recv(socket, _ptr, freeSpace(), 0);
-    std::cout << ret << std::endl;
     if (ret < 0)
         return (request::ReturnCode::error);
     if (ret == 0)
@@ -177,6 +176,7 @@ int    Request::getRequest(int socket)
     }
     return (ret);
 }
+
 void    Request::addToBody(void)
 {
     int bytes_to_add = (_ptr - _tail) / sizeof(char);
@@ -208,7 +208,7 @@ int Request::parseData(void)
         char * headers_end = strnstr(_buffer, "\r\n\r\n", (_ptr - _buffer) / sizeof(char));
         if (headers_end == NULL)
         {
-            if ((_ptr - _buffer) / sizeof(char) >= constants::limit_request_length)
+            if ((_ptr - _buffer) / sizeof(char) >= constants::limit_headers_length)
                 return (errorCode(431));     // Request Header Fields Too Large
             return (request::ReturnCode::unfinished);
         }
@@ -320,6 +320,8 @@ int Request::parseData(void)
     case request::State::body:
     {
         addToBody();
+        if (_location->checkBodySize(_body.size()))
+            return (errorCode(413));    // Request Entity Too Large
         if (_body_size == 0)
             _state = request::State::done;
         else
@@ -349,6 +351,8 @@ int Request::parseData(void)
     case request::State::chunk:
     {
         addToBody();
+        if (_location->checkBodySize(_body.size()))
+            return (errorCode(413));    // Request Entity Too Large
         if (_body_size == 0)
             _state = request::State::chunk_endl;
         else
@@ -380,7 +384,7 @@ int Request::parseData(void)
     return (0);
 }
 
-int Request::getStatusCode(void)
+int Request::getStatusCode(void) const
 {
     return (_status_code);
 }

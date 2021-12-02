@@ -18,8 +18,9 @@ public:
     Redirect(Redirect const & src);
 	Redirect & operator=(Redirect const & src);
 
-    // std::string rewrite_url();
-    // int get_code();
+    std::string rewrite_url(std::string const & uri);
+    int get_code(void);
+
     friend std::ostream & operator<<(std::ostream & o, Redirect const & src);
 };
 

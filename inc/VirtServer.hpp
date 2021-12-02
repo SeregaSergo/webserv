@@ -33,7 +33,7 @@ public:
 	void sendAccMsg(std::string & msg);
 	Location * chooseLocation(std::string const & uri);
 	bool IsBodyOversize(long long int body_size);
-	// File & getPage(int num_page);
+	std::string getPage(int num_page);
 };
 
 #endif

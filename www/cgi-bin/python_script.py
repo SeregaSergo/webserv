@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 """Very basic Python script that outputs static HTML content."""
 
 import cgi

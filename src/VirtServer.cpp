@@ -43,7 +43,7 @@ Location * VirtServer::chooseLocation(std::string const & uri)
 {
 	std::vector<Location>::iterator winner_pos;
 	int ret;
-	int win_prior = location::Type::none;
+	int win_prior = location::pathType::none;
 	for (std::vector<Location>::iterator it = _locations.begin(); it != _locations.end(); ++it)
 	{
 		ret = (*it).checkLocation(uri);
@@ -53,11 +53,20 @@ Location * VirtServer::chooseLocation(std::string const & uri)
 			win_prior = ret;
 		}
 	}
-	if (win_prior == location::Type::none)
+	if (win_prior == location::pathType::none)
 		return NULL;
 	return (winner_pos.base());	
 }
 
 bool VirtServer::IsBodyOversize(long long int body_size) {
 	return (body_size > _max_body_size);
+}
+
+std::string VirtServer::getPage(int num_page)
+{
+	std::map<int, std::string>::iterator ptr = _err_pages.find(num_page);
+	if (ptr == _err_pages.end())
+		return ("");
+	else
+		return (ptr->second);
 }
