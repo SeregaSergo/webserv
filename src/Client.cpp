@@ -9,7 +9,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     , _port(ntohs(addr.sin_port))
     , _state(client::State::reading)
     , _request(serv)
-    , _response(this)
+    , _response(this, &_request)
 {
     int optval = 1;
     socklen_t optlen = sizeof(optval);
@@ -64,32 +64,30 @@ void Client::handle(bool r, bool w)
     if (r)
     {
         std::cout << "[fd "<< _fd << "] Client reading" << std::endl;
-	
+
         switch (_request.getRequest(_fd))
         {
         case request::ReturnCode::error:
-            std::cout << "return error" << std::endl; 
             _master_serv->sendErrMsg("Client " + getAddress() + " - recieve error");
             _master_serv->removeClient(this);
             return;
 
         case request::ReturnCode::disconnected:
-            std::cout << "disconnected" << std::endl; 
             _master_serv->removeClient(this);
             return;
         
         case request::ReturnCode::unfinished:
-            std::cout << "unfinished" << std::endl;
+            gettimeofday(&_timer, NULL);
             break;
 
         case request::ReturnCode::completed:
-            std::cout << "complited" << std::endl;
+            gettimeofday(&_timer, NULL);
             _state = client::State::processing;
             std::cout << _request << std::endl;
-            _response.processRequest(&_request);
+            _response.processRequest();
+            std::cout << _response << std::endl;
             break;
         }
-        gettimeofday(&_timer, NULL);
     }
     else if (w)
     {
@@ -98,27 +96,19 @@ void Client::handle(bool r, bool w)
         switch (_response.sendResponse())
         {
         case response::ReturnCode::error:
-            std::cout << "return error" << std::endl; 
-            _master_serv->sendErrMsg("Client " + getAddress() + " - send error");
-            _master_serv->removeClient(this);
-            return;
-
-        case response::ReturnCode::disconnected:        // I dont know how to detect this
-            std::cout << "disconnected" << std::endl;
+            _master_serv->sendErrMsg("Client " + getAddress() + " - send error/disconnected");
             _master_serv->removeClient(this);
             return;
         
         case response::ReturnCode::unfinished:
-            std::cout << "unfinished" << std::endl;
             break;
 
         case response::ReturnCode::completed:
-            std::cout << "complited" << std::endl;
+            _request.clear();
+            _response.clear();
             _state = client::State::waitingForReq;
             break;
         }
-        _request.clear();
-        _response.clear();
     }
 }
 

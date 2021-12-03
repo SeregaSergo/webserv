@@ -12,21 +12,28 @@ class Client;
 class Response {
 
 private:
-    const Request *         _request;
-    Client *                _client;
-    std::string             _response;
-    std::string             _resulting_uri;
+    const Request *                     _request;
+    Client *                            _client;
 
-    unsigned long           _sent;
+    std::string                         _response;
+    std::string                         _resulting_uri;
+    std::map<std::string,std::string>   _headers;
+    std::string                         _body;
+    int                                 _status_code;
+    unsigned long                       _sent;
 
     void handleError(void);
-    void processRedirection(Request const & request);
+    void processRedirection(void);
+    bool isConnectionAlive(void);
+    void assembleResponse(void);
 
 public:
-    Response(Client * client) : _request(NULL), _client(client), _sent(0) {}
-    void processRequest(const Request * request);
+    Response(Client * client, Request * req) : _request(req), _client(client), _status_code(0), _sent(0) {}
+    void processRequest(void);
     int sendResponse(void);
     void clear(void);
+
+    friend std::ostream & operator<<(std::ostream & o, Response const & resp);
 };
 
 #endif

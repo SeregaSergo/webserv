@@ -405,6 +405,7 @@ void Request::clear(void)
 
 std::ostream & operator<<(std::ostream & o, Request const & req)
 {
+    o << "\n***** Request *****\n" << std::endl;
     o << "Method: " << req._method << std::endl;
     o << "URI: " << req._uri << std::endl;
     o << "HTTP version: " << req._http_version << std::endl;

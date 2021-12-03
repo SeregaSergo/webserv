@@ -98,6 +98,7 @@ void Webserv::setupParameters(Config & conf)
     constants::incoming_buffer = conf.incoming_buffer;
     init_codes_description();
     _mime_types.swap(conf.mime_types);
+    signal (SIGPIPE, SIG_IGN);
 }
 
 void Webserv::makeServ(std::vector<ConfigServ> & conf)

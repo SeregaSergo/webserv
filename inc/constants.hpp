@@ -114,7 +114,6 @@ namespace response
         enum ReturnCode
         {
             error,
-            disconnected,
             unfinished,
             completed
         };

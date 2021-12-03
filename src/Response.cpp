@@ -8,57 +8,64 @@ void Response::handleError(void)
         _resulting_uri = file;
 }
 
-void Response::processRedirection(Request const & request)
+void Response::processRedirection(void)
 {
-    Redirect * redir = request._location->getRedir();
-    int code = redir->get_code();
-
-    _response.append(request._http_version);
-    _response.push_back(' ');
-    _response.append(std::to_string(code));
-    _response.push_back(' ');
-    _response.append(constants::codes_description.find(code)->second);
-    _response.append("\r\nLocation: ");
-    _response.append(redir->rewrite_url(request._uri));
-    _response.append("\r\n\r\n");
+    Redirect * redir = _request->_location->getRedir();
+    _status_code = redir->get_code();
+    _headers["Location"] = redir->rewrite_url(_request->_uri);
 }
 
-void Response::processRequest(const Request * request)
+void Response::assembleResponse(void)
 {
-    _request = request;
-    if (request->_status_code == 200)
+    _response.append(_request->_http_version);
+    _response.push_back(' ');
+    _response.append(std::to_string(_status_code));
+    _response.push_back(' ');
+    _response.append(constants::codes_description.find(_status_code)->second);
+    if (!_body.empty())
+        _headers["Content-Length"] = std::to_string(_body.size());
+    for (std::map<std::string,std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
     {
-        switch (request->_location->getType())
+        _response.append("\r\n");
+        _response.append((*it).first);
+        _response.append(": ");
+        _response.append((*it).second);
+    }
+    _response.append("\r\n\r\n");
+    _response.append(_body);
+}
+
+void Response::processRequest()
+{
+    _status_code = _request->_status_code;
+    if (_status_code == 200)
+    {
+        switch (_request->_location->getType())
         {
+        
         case location::Type::redirection:
-            processRedirection(*request);
-            _client->_state = client::State::writing;
+            processRedirection();
             break;
+        
         case location::Type::cgi:
         {
-
+            break;
         }
+        
         case location::Type::file:  // временная затычка
         {
-            std::stringstream resp;
-            std::string body("<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n<h2>Select files to upload</h2>\
+            _body = "<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n<h2>Select files to upload</h2>\
             \n<form name=\"upload\" method=\"POST\" enctype=\"multipart/form-data\" action=\"/upload\">\n<input type=\"file\" name=\"file1\"><br>\
             <input type=\"file\" name=\"file2\"><br>\n<input type=\"submit\" name=\"submit\" value=\"Upload\">\n<input type=\"hidden\" name=\"test\" value=\"value\">\
-            </form>\n</body>\n</html>");
-            resp << "HTTP/1.1 " << _request->getStatusCode() << " " << constants::codes_description[_request->getStatusCode()] << "\r\n"
-                << "Version: HTTP/1.1\r\n"
-                << "Content-Type: text/html; charset=utf-8\r\n"
-                << "Content-Length: " << body.length()
-                << "\r\n\r\n"
-                << body;
-            _response = resp.str();
-            _client->_state = client::State::writing;
+            </form>\n</body>\n</html>";
+            _headers["Content-Type"] = "text/html; charset=utf-8";
             break;
         }
         }
-
     }
     handleError();
+    assembleResponse();
+    _client->_state = client::State::writing;
 }
 
 int Response::sendResponse(void)
@@ -67,8 +74,7 @@ int Response::sendResponse(void)
 
     if (ret < 0)
         return (response::ReturnCode::error);
-    if (ret == 0)
-        return (response::ReturnCode::disconnected);
+
     _sent += ret;
     if (_sent == _response.size())
         return (response::ReturnCode::completed);
@@ -80,5 +86,14 @@ void Response::clear(void)
 {
     _response.clear();
     _resulting_uri.clear();
+    _headers.clear();
+    _body.clear();
     _sent = 0;
+}
+
+std::ostream & operator<<(std::ostream & o, Response const & resp)
+{
+    o << "\n***** Response *****\n" << std::endl;
+    o << resp._response << std::endl;
+    return (o);
 }
