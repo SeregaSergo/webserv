@@ -41,20 +41,23 @@ public:
 	~Location() {}
 	Location & operator=(Location const & src);
 	
-	void		addIndex(std::string const & index);
-	void		clearMethodSet();
-	void		addMethod(std::string const & method);
-	void		setRedir(Redirect * redir);
-	void		setAutoindex(bool ai);
-	void		setRoot(std::string const & root);
-	void		setMaxBodySize(int body_size);
+	void			addIndex(std::string const & index);
+	void			clearMethodSet();
+	void			addMethod(std::string const & method);
+	void			setRedir(Redirect * redir);
+	void			setAutoindex(bool ai);
+	void			setRoot(std::string const & root);
+	void			setMaxBodySize(int body_size);
 
-	char		checkLocation(std::string const & uri);
-	bool		checkMethod(std::string & method);
-	bool		checkBodySize(int size);
-	Redirect *	getRedir();
-	void		delRedir();
-	int			getType();
+	char			checkLocation(std::string const & uri, int * num_symbols);
+	bool			checkMethod(std::string & method);
+	bool			checkBodySize(int size);
+	Redirect *		getRedir(void);
+	void			delRedir(void);
+	int				getType(void);
+	bool			getAutoindex(void);
+	std::string		getFile(std::string const & uri);
+	std::vector<std::string> & getIndexFiles(void);
 
 	// bool	check_access();   // methods, authorization, existence
 	friend std::ostream & operator<<(std::ostream & o, Location const & src);

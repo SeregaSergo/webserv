@@ -107,6 +107,21 @@ namespace client
     }
 }
 
+namespace processing
+{
+    namespace Type
+    {
+        enum Type
+        {
+            redirection,
+            cgi,
+            autoindex,
+            file,
+            error
+        };
+    }
+}
+
 namespace response
 {
     namespace ReturnCode

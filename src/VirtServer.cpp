@@ -43,14 +43,17 @@ Location * VirtServer::chooseLocation(std::string const & uri)
 {
 	std::vector<Location>::iterator winner_pos;
 	int ret;
+	int max_symbols = 0;
+	int num_symbols;
 	int win_prior = location::pathType::none;
 	for (std::vector<Location>::iterator it = _locations.begin(); it != _locations.end(); ++it)
 	{
-		ret = (*it).checkLocation(uri);
-		if (ret > win_prior)
+		ret = (*it).checkLocation(uri, &num_symbols);
+		if (ret > win_prior && max_symbols < num_symbols)
 		{
 			winner_pos = it;
 			win_prior = ret;
+			max_symbols = num_symbols;
 		}
 	}
 	if (win_prior == location::pathType::none)
