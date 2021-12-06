@@ -67,15 +67,14 @@ void	Location::setMaxBodySize(int body_size) {
 
 // if the location is suitable to uri then return
 // apropriate priority, else return 0
-char	Location::checkLocation(std::string const & uri, int * num_symbols)
+char	Location::checkLocation(std::string const & uri, unsigned int * max_symbols)
 {
+	std::cout << "Location: " << _loc_path[0] << std::endl;
 	if (_pathType == location::pathType::equal) {
-		*num_symbols = 0;
 		if (uri == _loc_path[0])
 			return (location::pathType::equal);
 	}
 	else if (_pathType == location::pathType::extention) {
-		*num_symbols = 0;
 		std::size_t found = uri.find_last_of(".");
 		if (found != std::string::npos) {
 			std::string ext_uri = uri.substr(found + 1);
@@ -85,18 +84,19 @@ char	Location::checkLocation(std::string const & uri, int * num_symbols)
 			}
 		}
 	}
-	else if (uri.compare(0, _loc_path[0].size(), _loc_path[0]) == 0)
+	else if (uri.compare(0, _loc_path[0].size(), _loc_path[0]) == 0 && \
+				_loc_path[0].size() > *max_symbols)
 	{
-		*num_symbols = _loc_path[0].size();
+		*max_symbols = _loc_path[0].size();
 		return (location::pathType::partial);
 	}
 	return (0);
 }
 
-std::string  Location::getFile(std::string const & uri)
+std::string  Location::getResoursePath(std::string const & uri)
 {
 	if (_pathType == location::pathType::partial)
-		return (_root + &uri[_loc_path.size()]);
+		return (_root + &uri[_loc_path[0].size()]);
 	else
 		return (_root + &uri[1]);
 }

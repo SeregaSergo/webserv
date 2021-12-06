@@ -23,21 +23,26 @@ private:
     Location *                          _location;
     std::string                         _resulting_uri;
     std::string                         _file;
-
-
     unsigned long                       _sent;
+
+    static std::map<std::string, int (Response::*)(void)>	_prepare_func;
+	static std::map<std::string, int (Response::*)(void)>	initPrepareFunc(void); 
 
     void handleError(void);
     void processRedirection(void);
     bool isConnectionAlive(void);
     void assembleResponse(void);
-    int prepareForProcessing(void);
     bool isRequestedADirectory(void);
     bool isFileExist(std::string const & temp_file);
-    
+    int errorCode(int code);
+
 public:
     Response(Client * client, Request * req) : _request(req), _client(client), _status_code(0), _sent(0) {}
     void processRequest(void);
+    int prepareForProcessing(void);
+    int prepareGET(void);
+    int preparePOST(void);
+    int prepareDELETE(void);
     int sendResponse(void);
     void clear(void);
 

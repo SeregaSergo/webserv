@@ -49,14 +49,14 @@ public:
 	void			setRoot(std::string const & root);
 	void			setMaxBodySize(int body_size);
 
-	char			checkLocation(std::string const & uri, int * num_symbols);
+	char			checkLocation(std::string const & uri, unsigned int * max_symbols);
 	bool			checkMethod(std::string & method);
 	bool			checkBodySize(int size);
 	Redirect *		getRedir(void);
 	void			delRedir(void);
 	int				getType(void);
 	bool			getAutoindex(void);
-	std::string		getFile(std::string const & uri);
+	std::string		getResoursePath(std::string const & uri);
 	std::vector<std::string> & getIndexFiles(void);
 
 	// bool	check_access();   // methods, authorization, existence

@@ -15,6 +15,7 @@
 #include <sys/select.h>
 #include <stdexcept>
 #include <string.h>
+#include <sstream>
 #include "Server.hpp"
 #include "Location.hpp"
 #include "Logger.hpp"
@@ -79,6 +80,14 @@ struct Config {
 };
 
 std::ostream & operator<<(std::ostream & o, Config const & conf);
+
+template <typename T>
+std::string numToStr(T num)
+{
+    std::ostringstream ss;
+    ss << num;
+    return ss.str();
+}
 
 int yyparse(Config *config);
 
