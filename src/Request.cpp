@@ -410,6 +410,9 @@ std::ostream & operator<<(std::ostream & o, Request const & req)
     o << "URI: " << req._uri << std::endl;
     o << "HTTP version: " << req._http_version << std::endl;
     o << "Status code: " << req._status_code << std::endl;
+    o << "Location:\n";
+    if (req._location)
+        o << *req._location << std::endl;
     o << "State: ";
     switch (req._state)
         {

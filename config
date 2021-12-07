@@ -27,13 +27,13 @@ server {
   listen 127.0.0.1:8080;
   access_log  /home/serega/Desktop/webserv/www/logs/access.log;
   client_max_body_size 5M;
-  root /Users/bswag/Desktop/;
+  root /Users/bswag/Desktop/webserv/www/;
   error_page 500 503 504 /custom_50x.html;
   error_page 404 /custom404.html;
   
   location / {
-      root      /home/serega/Desktop/webserv/www/;
-      index     index.html index.php;
+      index     upload_form.html index.html index.php;
+      allowed_methods   GET;
   };
 
 	location /images/ {
@@ -42,11 +42,17 @@ server {
   };
 
   location /storage/ {
-      autoindex     on;
+      root              /home/serega/Desktop/webserv/www/users_files;
+      allowed_methods   GET;
+      autoindex         on;
+  };
+
+  location /upload/ {
+      root              /home/serega/Desktop/webserv/www/users_files;
+      allowed_methods   POST DELETE;
   };
 
   location = /index.php {
-      root /home/serega/Desktop/webserv/www/;
       allowed_methods   GET;
   };
 

@@ -58,7 +58,10 @@ void	Location::setAutoindex(bool ai) {
 }
 
 void	Location::setRoot(std::string const & root) {
-	_root = root;
+	if (*root.rbegin() != '/')
+		_root = root + "/";
+	else
+		_root = root;
 }
 
 void	Location::setMaxBodySize(int body_size) {
