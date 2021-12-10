@@ -1,5 +1,6 @@
 #include "Request.hpp"
-#include "Client.hpp"
+// #include "Client.hpp"
+// #include "VirtServer.hpp"
 
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
@@ -7,53 +8,58 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <map>
 #include "constants.hpp"
 
 class Client;
+class Request;
+class Location;
 
 class Response {
 
 private:
     const Request *                     _request;
-    Client *                            _client;
+    int *                               _client_state;
 
+    // Data members for sending
     std::string                         _response;
+    unsigned long                       _sent;
+
+    // Data for contructing a response
+    int                                 _status_code;
     std::map<std::string,std::string>   _headers;
     std::stringstream                   _body;
 
-    int                                 _status_code;
+    // Data for file processing
+    VirtServer *                        _virt_serv;
     Location *                          _location;
     std::string                         _resulting_uri;
     std::string                         _file;
-    std::string                         _content_type;
-    unsigned long                       _sent;
 
-    static std::map<std::string, int (Response::*)(void)>	_prepare_func;
-	static std::map<std::string, int (Response::*)(void)>	initPrepareFunc(void); 
-
+    int processMethod(void);
     void handleError(void);
     void processRedirection(void);
     bool isConnectionAlive(void);
     void assembleResponse(void);
-    bool isRequestedADirectory(void);
-    bool isFileExist(std::string const & temp_file);
-    int errorCode(int code);
-    size_t split(const std::string &txt, std::vector<std::string> &strs, char c);
-    std::string decodeURLencoded(std::string str);
-    std::string getBoundary(std::string const & cont_type);
-    std::string getExtention(std::string const & uri);
 
 public:
-    Response(Client * client, Request * req) : _request(req), _client(client), _status_code(0), _sent(0) {}
+    Response(Request * req, int * cl_state)
+        : _request(req)
+        , _client_state(cl_state)
+        , _sent(0)
+        , _status_code(0)
+    {}
+
     Response(Response const & src);
+
     void processRequest(void);
-    int prepareForProcessing(void);
-    int prepareGET(void);
-    int preparePOST(void);
-    int prepareDELETE(void);
-    int sendResponse(void);
+    int sendResponse(int fd);
     void clear(void);
 
+    friend class AMethod;
+    friend class Get;
+    friend class Post;
+    friend class Delete;
     friend std::ostream & operator<<(std::ostream & o, Response const & resp);
 };
 

@@ -18,11 +18,12 @@ protected:
     int             _fd;
     struct timeval  _time;
 
-public:
     AFdHandler(int fd) : _fd(fd) {
         fcntl(fd, F_SETFL, O_NONBLOCK);
         gettimeofday(&_time, NULL);
     }
+    
+public:
     virtual ~AFdHandler() { close(_fd); }
     int getFd() const { return _fd; }
     virtual bool wantRead() const = 0;

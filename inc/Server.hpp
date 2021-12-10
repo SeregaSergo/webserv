@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <map>
-#include "Client.hpp"
+// #include "Client.hpp"
 #include "Webserv.hpp"
-#include "VirtServer.hpp"
+// #include "VirtServer.hpp"
 #include "AFdHandler.hpp"
 
 class Webserv;
@@ -40,7 +40,6 @@ public:
 	void removeClient(Client * c);
 	void sendErrMsg(std::string const & msg);
 	VirtServer * getVirtualServ(std::string const & serv_name);
-	const std::string & getMimeType(std::string & ext);
 	
 private:
 	virtual bool wantRead() const { return true; }

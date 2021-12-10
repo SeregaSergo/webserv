@@ -77,7 +77,3 @@ VirtServer * Server::getVirtualServ(std::string const & serv_name)
         it =_virt_servers.find("");
     return ((*it).second);
 }
-
-const std::string & Server::getMimeType(std::string & ext) {
-    return (_master->getMimeType(ext));
-}

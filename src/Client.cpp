@@ -9,7 +9,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     , _port(ntohs(addr.sin_port))
     , _state(client::State::reading)
     , _request(serv)
-    , _response(this, &_request)
+    , _response(&_request, &_state)
 {
     int optval = 1;
     socklen_t optlen = sizeof(optval);
@@ -93,7 +93,7 @@ void Client::handle(bool r, bool w)
     {
         std::cout << "[fd " << _fd << "] Client writting" << std::endl;
 
-        switch (_response.sendResponse())
+        switch (_response.sendResponse(_fd))
         {
         case response::ReturnCode::error:
             _master_serv->sendErrMsg("Client " + getAddress() + " - send error/disconnected");

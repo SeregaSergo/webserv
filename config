@@ -37,7 +37,7 @@ server {
   };
 
 	location /images/ {
-      root /home/serega/Desktop/webserv/www/static/;
+      root /Users/bswag/Desktop/webserv/www/static/;
       allowed_methods   GET;
   };
 

@@ -30,7 +30,11 @@ SRCS =			Webserv.cpp \
 				Redirect.cpp \
 				Request.cpp \
 				Response.cpp \
-				constants.cpp
+				constants.cpp \
+				AMethod.cpp \
+				Get.cpp \
+				Post.cpp \
+				Delete.cpp
 OBJS =			$(addprefix $(PATH_O)/,$(SRCS:%.cpp=%.o))
 
 # Lexer files

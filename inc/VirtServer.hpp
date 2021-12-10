@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include "constants.hpp"
 #include "Location.hpp"
 #include "Client.hpp"
 #include "Webserv.hpp"

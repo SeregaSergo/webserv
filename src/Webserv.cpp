@@ -79,6 +79,13 @@ void init_codes_description(void)
     constants::codes_description[505] = "HTTP Version Not Supported";
 }
 
+void Webserv::init_methods(void)
+{
+    constants::method["GET"] = new Get();
+    constants::method["Post"] = new Post();
+    constants::method["Delete"] = new Delete();
+}
+
 void Webserv::setupParameters(Config & conf)
 {
     int err_log_fd = open(&conf.err_log[0], O_WRONLY|O_CREAT|O_TRUNC, 0666);
@@ -96,8 +103,9 @@ void Webserv::setupParameters(Config & conf)
     constants::limit_uri_length = static_cast<unsigned long>(conf.limit_uri_length);
     constants::limit_headers_length = static_cast<unsigned long>(conf.limit_headers_length);
     constants::incoming_buffer = conf.incoming_buffer;
+    constants::mime_types.swap(conf.mime_types);
     init_codes_description();
-    _mime_types.swap(conf.mime_types);
+    init_methods();
     signal (SIGPIPE, SIG_IGN);
 }
 
@@ -149,18 +157,12 @@ Webserv::~Webserv(void)
         delete *it;
     for (std::vector<VirtServer *>::iterator it = _virt_servers.begin(); it != _virt_servers.end(); ++it)
         delete *it;
+    for (std::map<std::string, AMethod *>::iterator it = constants::method.begin(); it != constants::method.end(); ++it)
+        delete it->second;
 }
 
 void Webserv::sendErrMsg(std::string const & msg) {
     _err_log->sendMsg(msg);
-}
-
-const std::string & Webserv::getMimeType(std::string & ext)
-{
-    std::map<std::string, std::string>::iterator it = _mime_types.find(ext);
-    if (it == _mime_types.end())
-        it = _mime_types.find("");
-    return ((*it).second);
 }
 
 void Webserv::addHandler(AFdHandler * h)

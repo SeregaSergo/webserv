@@ -16,10 +16,14 @@
 #include <stdexcept>
 #include <string.h>
 #include <sstream>
+#include "constants.hpp"
 #include "Server.hpp"
+#include "VirtServer.hpp"
 #include "Location.hpp"
 #include "Logger.hpp"
-#include "constants.hpp"
+#include "Get.hpp"
+#include "Post.hpp"
+#include "Delete.hpp"
 
 #ifdef LINUX_COMPILATION
 #include <errno.h>
@@ -100,19 +104,18 @@ private:
     Logger *                            _err_log;
     std::vector<Server *>               _servers;
     std::vector<VirtServer *>           _virt_servers;
-    std::map<std::string, std::string>  _mime_types;    // (ext, MIME type)
     
     void fillSets(fd_set * rs, fd_set * ws);
     void demonize(void);
     void setupParameters(Config & conf);
     void init_code_descriptions(void);
+    void init_methods(void);
     void makeServ(std::vector<ConfigServ> & conf_servers);
 
 public:
     Webserv(const char * config_path);
     ~Webserv(void);
     void sendErrMsg(std::string const & msg);
-    const std::string & getMimeType(std::string & ext);
     void addHandler(AFdHandler * h);
     bool removeHandler(AFdHandler * h);
     void start();

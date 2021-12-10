@@ -15,8 +15,10 @@
 #include "Response.hpp"
 #include "Request.hpp"
 #include "AFdHandler.hpp"
+// #include "Server.hpp"
+// #include "VirtServer.hpp"
 #include "Webserv.hpp"
-#include "constants.hpp"
+// #include "constants.hpp"
 
 class Server;
 class Request;
@@ -40,8 +42,6 @@ public:
     static Client * create(int fd, struct sockaddr_in const & addr, Server * serv);
     Client(Client const & src);
     ~Client();
-
-    friend class Response;
 
 protected:
     virtual bool wantRead() const;
