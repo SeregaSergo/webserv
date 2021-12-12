@@ -23,7 +23,7 @@ int Get::findFile(Response & resp)
     if (index_files.empty() && resp._location->getAutoindex())
         return (processing::Type::autoindex);
     else
-        return (errorCode(resp, 404));
+        return (errorCode(&resp._status_code, 404));
 }
 
 const std::string & Get::getMimeType(std::string const & uri)
@@ -39,14 +39,12 @@ const std::string & Get::getMimeType(std::string const & uri)
 
 int Get::process(Response & resp)
 {
-    if (isRequestedADirectory(resp))
+    if (isRequestedADirectory(resp._resulting_uri))
     {
         int ret = findFile(resp);
         if (ret != processing::Type::file)
             return (ret);
     }
-    if (resp._location->getType() == location::Type::cgi)
-        return (processing::Type::cgi);
 
     std::ifstream file(resp._file.c_str());
     if (file.is_open())
@@ -55,12 +53,12 @@ int Get::process(Response & resp)
         if (file.fail())
         {
             file.close();
-            return (errorCode(resp, 500));
+            return (errorCode(&resp._status_code, 500));
         }
         resp._headers["Content-Type"] = getMimeType(resp._resulting_uri);
         file.close();
     }
     else
-        return (errorCode(resp, 404));
+        return (errorCode(&resp._status_code, 404));
     return (processing::Type::done);
 }

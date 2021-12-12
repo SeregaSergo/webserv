@@ -53,6 +53,8 @@ public:
     int getRequest(int socket);
     int parseData(void);
     int getStatusCode(void) const;
+    std::map<std::string, std::string> & getHeaders(void);
+    std::string const & getBody(void);
     void clear(void);
     friend std::ostream & operator<<(std::ostream & o, Request const & req);
     friend class Response;

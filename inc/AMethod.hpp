@@ -14,10 +14,10 @@ class AMethod {
 
 protected:
     AMethod() {}
-    bool isRequestedADirectory(Response & resp);
-    bool isFileExist(std::string const & temp_file);
-    int errorCode(Response & resp, int code);
-
+    bool isRequestedADirectory(std::string const & resp);
+    bool isFileExist(std::string const & file);
+    int errorCode(int * resp, int code);
+    
 public:
     virtual ~AMethod() {}
     virtual int process(Response & resp) = 0;

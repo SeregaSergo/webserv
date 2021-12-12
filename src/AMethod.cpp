@@ -1,18 +1,18 @@
 #include "../inc/AMethod.hpp"
 
-int AMethod::errorCode(Response & resp, int code)
+int AMethod::errorCode(int * status_code, int code)
 {
-    resp._status_code = code;
+    *status_code = code;
     return (processing::Type::error);
 }
 
-bool AMethod::isRequestedADirectory(Response & resp)
+bool AMethod::isRequestedADirectory(std::string const & uri)
 {
-    return (resp._resulting_uri[resp._resulting_uri.size() - 1] == '/');
+    return (uri[uri.size() - 1] == '/');
 }
 
-bool AMethod::isFileExist(std::string const & temp_file)
+bool AMethod::isFileExist(std::string const & file)
 {
     struct stat buffer;   
-    return (stat(&temp_file[0], &buffer) == 0);
+    return (stat(&file[0], &buffer) == 0);
 }

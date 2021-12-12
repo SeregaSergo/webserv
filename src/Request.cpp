@@ -1,7 +1,5 @@
 #include "../inc/Request.hpp"
 
-// #include <string.h>
-
 #ifdef LINUX_COMPILATION
 char * strnstr(const char *s, const char *find, size_t slen)
 {
@@ -387,6 +385,13 @@ int Request::parseData(void)
 int Request::getStatusCode(void) const
 {
     return (_status_code);
+}
+
+std::map<std::string, std::string> & Request::getHeaders(void) {
+    return (_headers);
+}
+std::string const & Request::getBody(void) {
+    return (_body);
 }
 
 void Request::clear(void)

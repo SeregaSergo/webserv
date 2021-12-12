@@ -82,8 +82,8 @@ void init_codes_description(void)
 void Webserv::init_methods(void)
 {
     constants::method["GET"] = new Get();
-    constants::method["Post"] = new Post();
-    constants::method["Delete"] = new Delete();
+    constants::method["POST"] = new Post();
+    constants::method["DELETE"] = new Delete();
 }
 
 void Webserv::setupParameters(Config & conf)

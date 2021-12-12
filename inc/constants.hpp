@@ -15,7 +15,7 @@ namespace constants
     extern int                                  ka_interval;
     extern const char *                         default_file;
 
-	extern const std::string                    methods[4];
+	extern const std::string                    methods[3];
     extern const std::string                    versions[2];
     extern std::map<int, std::string>           codes_description;
     extern std::map<std::string, AMethod *>     method;

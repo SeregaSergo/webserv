@@ -50,87 +50,6 @@ void Response::assembleResponse(void)
     _response.append(_body.str());
 }
 
-
-// int Response::preparePOST(void)
-// {
-//     bool isDirectory = isRequestedADirectory();
-//     size_t pos = 0;
-
-//     if (_location->getType() == location::Type::cgi && !isDirectory)
-//         return (processing::Type::cgi);
-    
-//     std::map<std::string,std::string>::const_iterator it = _request->_headers.find("Content-Type");
-//     if (it == _request->_headers.end())
-//         return (errorCode(415));
-
-    
-//     if ((pos = it->second.find(';')) != std::string::npos)
-//         _content_type = it->second.substr(0, pos);
-//     else
-//         _content_type = it->second;
-//     if (_content_type == "application/x-www-form-urlencoded")
-//     {
-//         if (isDirectory)
-//             return (errorCode(400));
-//         if (isFileExist(_file))
-//             return (errorCode(409));    // Conflict ?
-//         return (processing::Type::file);
-//     }
-//     else if (_content_type == "multipart/form-data")
-//     {
-//         if (isDirectory)
-//             return (processing::Type::file);
-//         return (errorCode(400));
-//     }
-//     else
-//         return (errorCode(415));    // Unsupported Media Type
-// }
-
-// int Response::prepareDELETE(void)
-// {
-//     if (isRequestedADirectory())
-//         return (errorCode(400));
-//     if (!isFileExist(_file))
-//         return (errorCode(404));
-//     if (_location->getType() == location::Type::cgi)
-//         return (processing::Type::cgi);
-//     else
-//         return (processing::Type::file);
-// }
-
-
-// void Response::processPOST(void)
-// {
-//     if (_content_type == "application/x-www-form-urlencoded")
-//     {
-//         std::ofstream file(_file.c_str(), std::ios::trunc);
-//         if (file.is_open())
-//         {
-//             std::vector<std::string>    tuples;
-//             split(_request->_body, tuples, '&');
-//             std::cout << tuples.size() << std::endl;
-//             while (!tuples.empty())
-//             {
-//                 file << decodeURLencoded(tuples[0]) << "\n";
-//                 tuples.erase(tuples.begin());
-//             }
-//             file.close();
-//         }
-//         else
-//             _status_code = 403; // Forbidden
-//     }
-//     else if (_content_type == "multipart/form-data")
-//     {
-//         std::string boundary = "--" + getBoundary(_request->_headers.find("Content-Type")->second);
-        
-//     }
-// }
-
-// void Response::processDELETE(void)
-// {
-
-// }
-
 int Response::processMethod(void)
 {
     _virt_serv = _request->_virt_serv;
@@ -138,11 +57,15 @@ int Response::processMethod(void)
     _resulting_uri = _request->_uri;
     _location = _request->_location;
     _file = _location->getResoursePath(_resulting_uri);
+    int location_type = _location->getType();
 
     if (_status_code != 200)
         return (processing::Type::error);
-    if (_location->getType() == location::Type::redirection)
+    if (location_type == location::Type::redirection)
         return (processing::Type::redirection);
+    if (location_type == location::Type::cgi)
+        return (processing::Type::cgi);
+
     return constants::method[_request->_method]->process(*this);
 }
 
@@ -163,9 +86,6 @@ void Response::processRequest()
 
     case processing::Type::error:
         handleError();  // пока ничего нет
-        break;
-    
-    case processing::Type::done:
         break;
     }
 
@@ -192,7 +112,7 @@ void Response::clear(void)
 {
     _response.clear();
     _headers.clear();
-    _body.clear();
+    _body.str(std::string());
     _sent = 0;
 }
 

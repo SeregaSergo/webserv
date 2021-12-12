@@ -18,7 +18,7 @@ class Location;
 class Response {
 
 private:
-    const Request *                     _request;
+    Request *                           _request;
     int *                               _client_state;
 
     // Data members for sending
@@ -56,7 +56,6 @@ public:
     int sendResponse(int fd);
     void clear(void);
 
-    friend class AMethod;
     friend class Get;
     friend class Post;
     friend class Delete;
