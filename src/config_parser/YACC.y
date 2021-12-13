@@ -35,6 +35,7 @@ int main(void)
 %token	ERRLOG ACCLOG DAEMON MIMETYPES ROOT ALLOWED_METHODS INDEX REDIRECTION
 		AUTOINDEX SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE 
 		CLIENT_MAX_BODY_SIZE URI QUOTE OBRACE EBRACE SEMICOLON COLON
+		CGI_INTERPRETER CGI_TIMOUT
 
 /*
 ** This is for using different return types (see 6.3)
@@ -333,6 +334,10 @@ location_statement:
 		index_loc
 		|
 		client_max_body_size
+		|
+		cgi_interpreter
+		|
+		cgi_timout
 		;
 autoindex_loc:
 		AUTOINDEX STATE
@@ -389,6 +394,25 @@ http_redirection:
 			Redirect * ptr = new Redirect($2, $3, false);
 			config->servers.back().locations.back().setRedir(ptr);
 			free($3);
+		}
+		;
+cgi_interpreter:
+		CGI_INTERPRETER PATH
+		{
+			config->servers.back().locations.back().setCgiInterpreter($2);
+			free($2);
+		}
+		|
+		CGI_INTERPRETER WORD
+		{
+			config->servers.back().locations.back().setCgiInterpreter($2);
+			free($2);
+		}
+		;
+cgi_timout:
+		CGI_TIMOUT NUMBER
+		{
+			config->servers.back().locations.back().setCgiTimout($2);
 		}
 		;
 %%

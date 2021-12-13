@@ -1,0 +1,81 @@
+error_log /home/serega/Desktop/webserv/www/logs/error.log;
+
+idle_timeout 5;
+keepalive_timeout 30;
+tcp_keepalive_time 300;
+tcp_keepalive_probes 3;
+tcp_keepalive_intvl 20;
+
+limit_uri_length  1024;
+limit_request_entity 4096;
+
+types {
+  text/html                             html htm shtml;
+  text/css                              css;
+  image/gif                             gif;
+  image/jpeg                            jpeg jpg;
+  application/x-x509-ca-cert            der pem crt;
+  application/zip                       zip;
+  application/octet-stream              deb bin exe dll dmg eot iso img;
+  audio/mpeg                            mp3;
+  video/mpeg                            mpeg mpg mov avi;
+};
+
+
+server {
+	server_name suzumaki.org www.suzumaki.org;
+  listen 127.0.0.1:8080;
+  access_log  /home/serega/Desktop/webserv/www/logs/access.log;
+  client_max_body_size 5M;
+  root /Users/bswag/Desktop/webserv/www/;
+  error_page 500 503 504 /custom_50x.html;
+  error_page 404 /custom404.html;
+  
+  location / {
+      index     upload_form.html index.html index.php;
+      allowed_methods   GET;
+  };
+
+	location /images/ {
+      root /Users/bswag/Desktop/webserv/www/static/;
+      allowed_methods   GET;
+  };
+
+  location /storage/ {
+      root              /home/serega/Desktop/webserv/www/users_files;
+      allowed_methods   GET;
+      autoindex         on;
+  };
+
+  location /upload/ {
+      root              /home/serega/Desktop/webserv/www/users_files;
+      allowed_methods   POST DELETE;
+  };
+
+  location = /index.php {
+      allowed_methods   GET;
+  };
+
+  location ~ php/py {
+      root /home/serega/Desktop/webserv/www/cgi-bin/;
+  };
+
+  location ~ html {
+      root /home/serega/Desktop/webserv/www/static/;
+  };
+
+  location ~ pdf {
+      root /home/serega/Desktop/webserv/www/documents/;
+      allowed_methods   GET;
+  };
+};
+
+server {
+
+  listen 127.0.0.1:8080;
+  server_name bswag.ru www.bswag.ru;
+  
+  location / {
+        redirect 301 http://www.cplusplus.com/info/description§$uri;
+  };
+};

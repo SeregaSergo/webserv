@@ -78,7 +78,7 @@ void Response::processRequest()
         break;
     
     case processing::Type::cgi:
-
+        std::cout << "CGI" << std::endl;
         break;
     
     case processing::Type::autoindex:

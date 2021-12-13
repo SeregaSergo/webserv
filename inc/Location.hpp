@@ -28,8 +28,8 @@ private:
 
 	Redirect *					_redir;
 
-	// std::string					_cgi_pass;
-	// int							_cgi_timeout;
+	std::string					_cgi_interpreter;
+	int							_cgi_timeout;
 
 	bool						_autoindex;
 
@@ -48,6 +48,8 @@ public:
 	void			setAutoindex(bool ai);
 	void			setRoot(std::string const & root);
 	void			setMaxBodySize(int body_size);
+	void			setCgiInterpreter(const char * interpreter);
+	void			setCgiTimout(int timout);
 
 	char			checkLocation(std::string const & uri, unsigned int * max_symbols);
 	bool			checkMethod(std::string & method);

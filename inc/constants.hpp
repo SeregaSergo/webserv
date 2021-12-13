@@ -14,6 +14,7 @@ namespace constants
     extern int                                  ka_probes;
     extern int                                  ka_interval;
     extern const char *                         default_file;
+    extern const int                            cgi_timout;
 
 	extern const std::string                    methods[3];
     extern const std::string                    versions[2];

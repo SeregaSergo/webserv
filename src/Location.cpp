@@ -6,6 +6,7 @@ Location::Location(int type, std::vector<std::string> & path, std::string & root
 		, _max_body_size(max_body_size)
 		, _root(root)
 		, _redir(NULL)
+		, _cgi_timeout(constants::cgi_timout)
 		, _autoindex(ai)
 {
 	for (int i = sizeof(constants::methods) / sizeof(std::string) - 1; i != -1; --i)
@@ -20,6 +21,8 @@ Location::Location(Location const & src)
 	, _max_body_size(src._max_body_size)
 	, _root(src._root)
 	, _redir(src._redir)
+	, _cgi_interpreter(src._cgi_interpreter)
+	, _cgi_timeout(src._cgi_timeout)
 	, _autoindex(src._autoindex)
 {}
 
@@ -66,6 +69,18 @@ void	Location::setRoot(std::string const & root) {
 
 void	Location::setMaxBodySize(int body_size) {
 	_max_body_size = body_size;
+}
+
+void	Location::setCgiInterpreter(const char * interpreter) {
+	_cgi_interpreter = interpreter;
+}
+
+void	Location::setCgiTimout(int timout)
+{
+	if (timout < 0)
+		_cgi_timeout = constants::cgi_timout;
+	else
+		_cgi_timeout = timout;
 }
 
 // if the location is suitable to uri then return
@@ -129,8 +144,8 @@ int	Location::getType(void)
 {
 	if (_redir)
 		return (location::Type::redirection);
-	// else if (!_cgi_pass.empty())
-	// 	return (location::Type::cgi);
+	else if (!_cgi_interpreter.empty())
+		return (location::Type::cgi);
 	else
 		return (location::Type::file);
 }
