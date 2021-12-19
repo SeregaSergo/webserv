@@ -3,7 +3,7 @@ HTTP(S) web server (I/O multiplexing, CGI, cookies, sessions)
 
 ### Config file description (example)
 
-* Path to error log file (default: "/dev/null")
+> Path to error log file (default: "/dev/null") <
 
 `error_log /logs/error.log;`
 
