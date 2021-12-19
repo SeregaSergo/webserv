@@ -2,28 +2,25 @@
 HTTP(S) web server (I/O multiplexing, CGI, cookies, sessions)
 
 ### Config file description (example)
-- Path to error log file (default: "/dev/null")
+###### Path to error log file (default: "/dev/null")
 
 `error_log /logs/error.log;`
 
-- Switch on daemon mode (default: non-daemon mode)
+###### Switch on daemon mode (default: non-daemon mode)
 
-`daemon_mode;
-`
+`daemon_mode;`
 
-- If after this time the client does not respond,
+###### If after this time the client does not respond,
 then it is deleted (default: 10 sec)
 
 `idle_timeout 5;`
 
 
-- Timeout for keep-alive connections. Server will close connections after this time
-and after responding to the current request (default: 86400 sec)
+###### Timeout for keep-alive connections. Server will close connections after this time and after responding to the current request (default: 86400 sec)
 
 `keepalive_timeout 30;`
 
-- Keep-alive parameters. Optional.
-You can use one of them (default settings of your OS).
+###### Keep-alive parameters. Optional. You can use one of them (default settings of your OS).
 https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
 
 `tcp_keepalive_time 300;`	after this time TCP will check connection (sec)
@@ -33,31 +30,37 @@ https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
 `tcp_keepalive_intvl 20;`	time iterval between two probes (sec)
 
 
-- URI limit: 414 Request-URI Too Long (default: 1024 bytes)
+###### URI limit: 414 Request-URI Too Long (default: 1024 bytes)
 
 `limit_uri_length  1024;`
 
 
-- Request headers limit: 413 Request Entity Too Large (default: 4096)
+###### Request headers limit: 413 Request Entity Too Large (default: 4096)
 
 `limit_request_entity 4096;`
 
 
-- MIME types depending on file extentions.
-If there is no extention: "application/octet-stream".
+###### MIME types depending on file extentions. If there is no extention: "application/octet-stream".
 
 `types {`
+
 `  text/html                             html htm;`
+
 `  text/css                              css;`
+
 `  image/jpeg                            jpeg jpg;`
+
 `  application/zip                       zip;`
+
 `  application/octet-stream              deb bin exe dll dmg eot iso img;`
+
 `  audio/mpeg                            mp3;`
+
 `  video/mpeg                            mpeg mpg mov avi;`
+
 `};`
 
-- Virtual server configuration.
-There may be several of these, at least one.
+###### Virtual server configuration. There may be several of these, at least one.
 
 `server {
   > "Host" http header field (optional)
