@@ -5,6 +5,7 @@ HTTP(S) web server (I/O multiplexing, CGI, cookies, sessions)
 Path to error log file (default: "/dev/null")
 
 `error_log /logs/error.log;
+
 `
 
 Switch on daemon mode (default: non-daemon mode)
