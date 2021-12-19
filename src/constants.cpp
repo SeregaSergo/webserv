@@ -12,7 +12,7 @@ namespace constants
     unsigned long   limit_uri_length = 1024;
     unsigned long   limit_headers_length = 4096;
     const int       client_max_body_size = 104857600;   // 100 Mb
-    const int       cgi_timout = 5;
+    const int       cgi_timeout = 5;
     
     int             incoming_buffer = 8192;
     // Implemented methods

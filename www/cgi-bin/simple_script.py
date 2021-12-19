@@ -1,8 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Very basic Python script that outputs static HTML content."""
 
 import cgi
-
+import sys
+import os
+import time
 
 def template():
     """Returns the a formatted templated. This can be placed in an HTML file."""
@@ -10,7 +12,8 @@ def template():
 <html>
 <title>{title}</title>
 <body>
-  Hello, {username}!
+  Hello, {username}!\n
+  I read {size} symbols from stdin!
 </body>
 </html>
             """
@@ -25,6 +28,8 @@ def render(**kwargs):
 def run():
     username = 'Bswag'
     title = 'My first tinyPy.cgi'
+    input_str = sys.stdin.read(-1)
+    size = len(input_str)
     render(**locals())
 
 

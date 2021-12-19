@@ -8,8 +8,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <map>
 #include "constants.hpp"
+#include "InCGI.hpp"
+#include "OutCGI.hpp"
 
 class Client;
 class Request;
@@ -25,7 +29,7 @@ private:
     std::string                         _response;
     unsigned long                       _sent;
 
-    // Data for contructing a response
+    // Data for constructing a response
     int                                 _status_code;
     std::map<std::string,std::string>   _headers;
     std::stringstream                   _body;
@@ -36,21 +40,39 @@ private:
     std::string                         _resulting_uri;
     std::string                         _file;
 
+    // Data for CGI processing
+    InCGI *                             _in_CGI;
+    OutCGI *                            _out_CGI;
+    int                                 _pid;
+
+    // Methods implementation
     int processMethod(void);
-    void handleError(void);
+
+    // Redirections
     void processRedirection(void);
-    bool isConnectionAlive(void);
+
+    // Assembling response
+    void handleError(void);
     void assembleResponse(void);
 
-public:
-    Response(Request * req, int * cl_state)
-        : _request(req)
-        , _client_state(cl_state)
-        , _sent(0)
-        , _status_code(0)
-    {}
+    // CGI methods
+    bool runCGI(void);
+    void finishCGI(void);
+    int processResponseCGI(void);
+    bool parseHeaderLine(std::string & line);
+    void removeInCGI(void);
+    void removeOutCGI(void);
+    void callbackFuncInCGI(int ret);
+    void callbackFuncOutCGI(int ret);
+    char * const * getArgv(std::vector<char*> & argv);
+    char * const * getEnvp(std::vector<char*> & envp);
+    
+    Response(void) {}
 
+public:
+    Response(Request * req, int * cl_state);
     Response(Response const & src);
+    ~Response(void);
 
     void processRequest(void);
     int sendResponse(int fd);

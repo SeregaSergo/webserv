@@ -33,14 +33,12 @@ Server * Server::create(std::string & host, const int port, Webserv * master, st
     return (serv);
 }
 
-void Server::handle(bool r, bool w)
+void Server::handle()
 {
     int                 connfd;
     struct sockaddr_in  addr;
     socklen_t addrlen = sizeof(addr);
 
-    (void)r;
-    (void)w;
     std::cout << "[fd "<< _fd << "] Server accepting" << std::endl;
 	connfd = accept(_fd, (struct sockaddr *)&addr, &addrlen);
 	if (connfd == -1)
@@ -64,6 +62,16 @@ void Server::removeClient(Client * c)
     _master->removeHandler(c);
     _clients.erase(fd);
     delete c;
+}
+
+void Server::removeHandler(AFdHandler * h)
+{
+    _master->removeHandler(h);
+}
+
+void Server::addHandler(AFdHandler * h)
+{
+    _master->addHandler(h);
 }
 
 void Server::sendErrMsg(std::string const & msg) {

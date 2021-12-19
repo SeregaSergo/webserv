@@ -10,7 +10,6 @@
 // Server class
 // Client class
 // Logger class
-// File class
 // CGI class
 class AFdHandler {
 
@@ -28,7 +27,7 @@ public:
     int getFd() const { return _fd; }
     virtual bool wantRead() const = 0;
     virtual bool wantWrite() const = 0;
-    virtual void handle(bool r, bool w) = 0;
+    virtual void handle(void) = 0;
     virtual bool checkTimeout(struct timeval & cur_time) = 0;
 };
 

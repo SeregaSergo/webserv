@@ -236,10 +236,8 @@ void Webserv::start(void)
             for (int i = 0; i <= _max_fd; ++i) {
                 if (!_fds[i] || _fds[i]->checkTimeout(time))
                     continue;
-                bool r = FD_ISSET(i, &rs);
-                bool w = FD_ISSET(i, &ws);
-                if (r || w)
-                    _fds[i]->handle(r, w);
+                if (FD_ISSET(i, &rs) || FD_ISSET(i, &ws))
+                    _fds[i]->handle();
             }
         }
     }

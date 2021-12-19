@@ -6,7 +6,7 @@ Location::Location(int type, std::vector<std::string> & path, std::string & root
 		, _max_body_size(max_body_size)
 		, _root(root)
 		, _redir(NULL)
-		, _cgi_timeout(constants::cgi_timout)
+		, _cgi_timeout(constants::cgi_timeout)
 		, _autoindex(ai)
 {
 	for (int i = sizeof(constants::methods) / sizeof(std::string) - 1; i != -1; --i)
@@ -75,10 +75,10 @@ void	Location::setCgiInterpreter(const char * interpreter) {
 	_cgi_interpreter = interpreter;
 }
 
-void	Location::setCgiTimout(int timout)
+void	Location::setCgiTimeout(int timout)
 {
 	if (timout < 0)
-		_cgi_timeout = constants::cgi_timout;
+		_cgi_timeout = constants::cgi_timeout;
 	else
 		_cgi_timeout = timout;
 }
@@ -87,7 +87,6 @@ void	Location::setCgiTimout(int timout)
 // apropriate priority, else return 0
 char	Location::checkLocation(std::string const & uri, unsigned int * max_symbols)
 {
-	std::cout << "Location: " << _loc_path[0] << std::endl;
 	if (_pathType == location::pathType::equal) {
 		if (uri == _loc_path[0])
 			return (location::pathType::equal);
@@ -154,6 +153,14 @@ bool Location::getAutoindex(void) {
 	return (_autoindex);
 }
 
+const char *	Location::getCgiInterpreter(void) {
+	return (_cgi_interpreter.c_str());
+}
+
+int	Location::getCgiTimout(void) {
+	return (_cgi_timeout);
+}
+
 std::ostream & operator<<(std::ostream & o, Location const & src) {
     o << "Type: " << (int)src._pathType << std::endl;
 	o << "Location path: ";
@@ -172,5 +179,6 @@ std::ostream & operator<<(std::ostream & o, Location const & src) {
 		o << "none" << std::endl;
 	o << "Autoindex: " << src._autoindex << std::endl;
 	o << "Root: " << src._root << std::endl;
+	o << "CGI interpreter: " << src._cgi_interpreter << std::endl;
 	return (o);
 }

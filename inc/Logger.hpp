@@ -22,13 +22,13 @@ private:
     
 public:
     Logger(int fd) : AFdHandler(fd), _write(false) {}
-    virtual ~Logger() {}
-    virtual bool wantRead() const { return false; }
-    virtual bool wantWrite() const { return _write; }
+    virtual ~Logger(void) {}
+    virtual bool wantRead(void) const { return false; }
+    virtual bool wantWrite(void) const { return _write; }
     void sendMsg(std::string const & msg);
 
 protected:
-    virtual void handle(bool r, bool w);
+    virtual void handle(void);
     virtual bool checkTimeout(struct timeval & cur_time);
 };
 

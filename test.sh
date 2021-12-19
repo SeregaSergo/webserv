@@ -12,3 +12,4 @@ make client
 # curl -X 'DELETE' http://bswag.com:8080/upload/test_file.txt  # different methods
 # curl -X 'PUT' -d '{"param1":"test1","param2":"test3"}' http://bswag.com:8080/upload/test_file.txt  # different methods
 # curl -w "%{time_total}\n" -o /dev/null -s bswag.com:8080    # time tracing
+curl --data "param1=test1&param2=test2" "http://127.0.0.1:8080/python_script.py"

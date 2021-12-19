@@ -41,12 +41,12 @@ private:
 public:
     static Client * create(int fd, struct sockaddr_in const & addr, Server * serv);
     Client(Client const & src);
-    ~Client();
+    ~Client(void);
 
 protected:
-    virtual bool wantRead() const;
-    virtual bool wantWrite() const;
-    virtual void handle(bool r, bool w);
+    virtual bool wantRead(void) const;
+    virtual bool wantWrite(void) const;
+    virtual void handle(void);
     virtual bool checkTimeout(struct timeval & cur_time);
 
 private:

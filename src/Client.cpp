@@ -59,9 +59,31 @@ bool Client::wantWrite() const
     return false;
 }
 
-void Client::handle(bool r, bool w)
+void Client::handle(void)
 {
-    if (r)
+    if (_state == client::State::writing)
+    {
+        std::cout << "[fd " << _fd << "] Client writting" << std::endl;
+
+        switch (_response.sendResponse(_fd))
+        {
+        case response::ReturnCode::error:
+            _master_serv->sendErrMsg("Client " + getAddress() + " - send error/disconnected");
+            _master_serv->removeClient(this);
+            return;
+        
+        case response::ReturnCode::unfinished:
+            break;
+
+        case response::ReturnCode::completed:
+            std::cout << _response << std::endl;
+            _request.clear();
+            _response.clear();
+            _state = client::State::waitingForReq;
+            break;
+        }
+    }
+    else
     {
         std::cout << "[fd "<< _fd << "] Client reading" << std::endl;
 
@@ -85,28 +107,6 @@ void Client::handle(bool r, bool w)
             _state = client::State::processing;
             std::cout << _request << std::endl;
             _response.processRequest();
-            std::cout << _response << std::endl;
-            break;
-        }
-    }
-    else if (w)
-    {
-        std::cout << "[fd " << _fd << "] Client writting" << std::endl;
-
-        switch (_response.sendResponse(_fd))
-        {
-        case response::ReturnCode::error:
-            _master_serv->sendErrMsg("Client " + getAddress() + " - send error/disconnected");
-            _master_serv->removeClient(this);
-            return;
-        
-        case response::ReturnCode::unfinished:
-            break;
-
-        case response::ReturnCode::completed:
-            _request.clear();
-            _response.clear();
-            _state = client::State::waitingForReq;
             break;
         }
     }

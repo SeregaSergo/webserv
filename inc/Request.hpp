@@ -19,6 +19,7 @@ class Request {
 private:
     std::string                         _method;
     std::string                         _uri;
+    std::string                         _query;
     std::string                         _http_version;
     std::map<std::string, std::string>  _headers;
     std::string                         _body;

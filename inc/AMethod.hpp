@@ -6,6 +6,7 @@
 #include <iostream>
 
 class Response;
+
 // Absract parent class for
 // Get class
 // Post class

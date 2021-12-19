@@ -34,7 +34,9 @@ SRCS =			Webserv.cpp \
 				AMethod.cpp \
 				Get.cpp \
 				Post.cpp \
-				Delete.cpp
+				Delete.cpp \
+				InCGI.cpp \
+				OutCGI.cpp
 OBJS =			$(addprefix $(PATH_O)/,$(SRCS:%.cpp=%.o))
 
 # Lexer files

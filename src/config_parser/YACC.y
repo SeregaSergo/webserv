@@ -35,7 +35,7 @@ int main(void)
 %token	ERRLOG ACCLOG DAEMON MIMETYPES ROOT ALLOWED_METHODS INDEX REDIRECTION
 		AUTOINDEX SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE 
 		CLIENT_MAX_BODY_SIZE URI QUOTE OBRACE EBRACE SEMICOLON COLON
-		CGI_INTERPRETER CGI_TIMOUT
+		CGI_INTERPRETER CGI_TIMEOUT
 
 /*
 ** This is for using different return types (see 6.3)
@@ -337,7 +337,7 @@ location_statement:
 		|
 		cgi_interpreter
 		|
-		cgi_timout
+		cgi_timeout
 		;
 autoindex_loc:
 		AUTOINDEX STATE
@@ -409,10 +409,10 @@ cgi_interpreter:
 			free($2);
 		}
 		;
-cgi_timout:
-		CGI_TIMOUT NUMBER
+cgi_timeout:
+		CGI_TIMEOUT NUMBER
 		{
-			config->servers.back().locations.back().setCgiTimout($2);
+			config->servers.back().locations.back().setCgiTimeout($2);
 		}
 		;
 %%

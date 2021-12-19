@@ -9,12 +9,10 @@ void Logger::sendMsg(std::string const & msg)
         _write = true;
 }
 
-void Logger::handle(bool r, bool w)
+void Logger::handle(void)
 {
     int ret = 0;
     int buf_size = _buffer.size();
-    (void)r;
-    (void)w;
     
     ret = write(_fd, _buffer.c_str(), buf_size);
     if (ret == buf_size || ret == -1)

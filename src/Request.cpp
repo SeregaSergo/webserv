@@ -20,6 +20,19 @@ char * strnstr(const char *s, const char *find, size_t slen)
 	}
 	return ((char *)s);
 }
+
+char * strnchr(char *str, size_t n, int ch)
+{
+    size_t i = 0;
+    while (str[i] && i != n)
+    {
+        if (str[i] == ch)
+            return (&str[i]);
+        ++i;
+    }
+    return (NULL);
+}
+
 #endif
 
 Request::Request(Server * server)
@@ -71,8 +84,11 @@ inline int Request::filledSpace(void) const
 bool Request::getUri(void)
 {
     int size = (_tail - _head) / sizeof(char);
+    char * query_ptr = strnchr(_head, size, '?');
+    if (query_ptr == NULL)
+        query_ptr = _tail;
     if (*_head == '/')
-        _uri = std::string(_head, _tail);
+        _uri = std::string(_head, query_ptr);
     else if (size < 9 && strcmp(_head, "http://"))
         return (1);
     else
@@ -89,13 +105,14 @@ bool Request::getUri(void)
             }
             if (_head[pos] == '/')
             {
-                _uri = std::string(&_head[pos], _tail);
+                _uri = std::string(&_head[pos], query_ptr);
                 break;
             }
             ++pos;
         }
         _headers.insert(std::make_pair("Host", std::string(_head, &_head[pos])));
     }
+    _query = std::string(query_ptr, _tail);
     return (0);
 }
 

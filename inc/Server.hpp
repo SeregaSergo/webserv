@@ -6,9 +6,7 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <map>
-// #include "Client.hpp"
 #include "Webserv.hpp"
-// #include "VirtServer.hpp"
 #include "AFdHandler.hpp"
 
 class Webserv;
@@ -40,12 +38,15 @@ public:
 	void removeClient(Client * c);
 	void sendErrMsg(std::string const & msg);
 	VirtServer * getVirtualServ(std::string const & serv_name);
-	
+	void removeHandler(AFdHandler * h);
+	void addHandler(AFdHandler * h);
+
 private:
-	virtual bool wantRead() const { return true; }
-    virtual bool wantWrite() const { return false; }
-	virtual void handle(bool r, bool w);
-	virtual bool checkTimeout(struct timeval & cur_time) {
+	virtual bool wantRead(void) const { return true; }
+    virtual bool wantWrite(void) const { return false; }
+	virtual void handle(void);
+	virtual bool checkTimeout(struct timeval & cur_time)
+	{
 		(void)cur_time;
 		return false;
 	}
