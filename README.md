@@ -4,18 +4,22 @@ HTTP(S) web server (I/O multiplexing, CGI, cookies, sessions)
 ### Config file description (example)
 
 Path to error log file (default: "/dev/null")
+
 `error_log /logs/error.log;`
 
 Switch on daemon mode (default: non-daemon mode)
+
 `daemon_mode;`
 
-> If after this time the client does not respond,
-> then it is deleted (default: 10 sec)
-idle_timeout 5;
+If after this time the client does not respond,
+then it is deleted (default: 10 sec)
 
-> Timeout for keep-alive connections. Server will close connections after this time
-> and after responding to the current request (default: 86400 sec)
-keepalive_timeout 30;
+`idle_timeout 5;`
+
+Timeout for keep-alive connections. Server will close connections after this time
+and after responding to the current request (default: 86400 sec)
+
+`keepalive_timeout 30;`
 
 > Keep-alive parameters. Optional.
 > You can use one of them (default settings of your OS).
