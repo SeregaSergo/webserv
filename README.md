@@ -3,11 +3,11 @@ HTTP(S) web server (I/O multiplexing, CGI, cookies, sessions)
 
 ### Config file description (example)
 
-> Path to error log file (default: "/dev/null") 
-error_log /logs/error.log;
+Path to error log file (default: "/dev/null")
+`error_log /logs/error.log;`
 
-> Switch on daemon mode (default: non-daemon mode)
-daemon_mode;
+Switch on daemon mode (default: non-daemon mode)
+`daemon_mode;`
 
 > If after this time the client does not respond,
 > then it is deleted (default: 10 sec)
