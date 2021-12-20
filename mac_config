@@ -28,7 +28,7 @@ server {
     access_log  /Users/bswag/Desktop/webserv/www/logs/access.log;
     client_max_body_size 5M;
     root /Users/bswag/Desktop/webserv/www/;
-    error_page 500 503 504 /custom_50x.html;
+    error_page 500 502 503 504 /custom_50x.html;
     error_page 404 /custom404.html;
   
     location / {
@@ -58,12 +58,14 @@ server {
 
     location ~ php {
         root /Users/bswag/Desktop/webserv/www/cgi-bin/;
-        cgi_interpreter /Users/bswag/.brew/bin/php-cgi;
+        cgi_interpreter /usr/bin/php;
+        cgi_timeout  10;
     };
 
     location ~ py {
         root /Users/bswag/Desktop/webserv/www/cgi-bin/;
         cgi_interpreter /usr/local/bin/python3;
+        cgi_timeout  5;
     };
 
     location ~ html {
@@ -74,7 +76,7 @@ server {
         root /Users/bswag/Desktop/webserv/www/documents/;
         allowed_methods   GET;
     };
-    };
+};
 
 server {
 

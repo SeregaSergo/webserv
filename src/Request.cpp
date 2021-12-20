@@ -21,6 +21,8 @@ char * strnstr(const char *s, const char *find, size_t slen)
 	return ((char *)s);
 }
 
+#endif
+
 char * strnchr(char *str, size_t n, int ch)
 {
     size_t i = 0;
@@ -32,8 +34,6 @@ char * strnchr(char *str, size_t n, int ch)
     }
     return (NULL);
 }
-
-#endif
 
 Request::Request(Server * server)
     : _server(server)

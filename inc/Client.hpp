@@ -15,10 +15,8 @@
 #include "Response.hpp"
 #include "Request.hpp"
 #include "AFdHandler.hpp"
-// #include "Server.hpp"
-// #include "VirtServer.hpp"
 #include "Webserv.hpp"
-// #include "constants.hpp"
+
 
 class Server;
 class Request;

@@ -133,7 +133,7 @@ int Response::processResponseCGI(void)
             return (response::CGI::document);
         }
     }
-    std::cout << "502 is HERE" << std::endl;
+    _body.clear();
     _status_code = 502;
     return (response::CGI::document);
 }
@@ -143,7 +143,6 @@ int Response::processResponseCGI(void)
 //          false in oposite
 bool Response::parseHeaderLine(std::string & line)
 {
-    std::cout << "Parse line: " << line << std::endl;
     if (line.empty() || line == "\r")
         return (true);
     size_t pos_delim = line.find(':');
@@ -307,6 +306,7 @@ void Response::processRequest()
         return;
     
     case processing::Type::autoindex:
+        // processAI();
         break;
     }
 

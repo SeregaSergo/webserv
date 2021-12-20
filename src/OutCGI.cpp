@@ -25,6 +25,5 @@ void OutCGI::handle(void)
         (_resp.*_callback_func)(0);
         return;
     }
-    _stream.write(_buffer, ret);
-    std::cout << _stream.str() << std::endl;
+    std::ostream & r = _stream.write(_buffer, ret);
 }
