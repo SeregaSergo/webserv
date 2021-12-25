@@ -1,6 +1,4 @@
 #include "Request.hpp"
-// #include "Client.hpp"
-// #include "VirtServer.hpp"
 
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
@@ -78,6 +76,9 @@ public:
     int sendResponse(int fd);
     void clear(void);
 
+    int getStatusCode(void);
+    unsigned long getBytesSent(void);
+    
     friend class Get;
     friend class Post;
     friend class Delete;

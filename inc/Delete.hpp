@@ -2,7 +2,6 @@
 #define DELETE_HPP
 
 #include "AMethod.hpp"
-#include <cstdio>
 
 class Delete : public AMethod {
 

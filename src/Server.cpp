@@ -5,10 +5,8 @@ Server::Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & v
         , _master(master)
         , _virt_servers(virt_servers) {}
 
-Server::~Server(void)
-{
-    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-        delete (*it).second;
+Server::~Server(void) {
+    removeAllClients();
 }
 
 Server * Server::create(std::string & host, const int port, Webserv * master, std::map<std::string, VirtServer *> & virt_servers)
@@ -25,7 +23,7 @@ Server * Server::create(std::string & host, const int port, Webserv * master, st
 	if (fd == -1)
         throw std::runtime_error("Could not create socket.");
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
-	    throw std::runtime_error("Could not bind port.");
+	    throw std::runtime_error("Could not bind port: " + numToStr(port));
 	if (listen(fd, 1024) == -1)
 	    throw std::runtime_error("Port could not listen.");
     Server * serv = new Server(master, fd, virt_servers);
@@ -39,11 +37,10 @@ void Server::handle()
     struct sockaddr_in  addr;
     socklen_t addrlen = sizeof(addr);
 
-    std::cout << "[fd "<< _fd << "] Server accepting" << std::endl;
+    DISPLAY(std::cout << "[fd "<< _fd << "] Server accepting" << std::endl);
 	connfd = accept(_fd, (struct sockaddr *)&addr, &addrlen);
 	if (connfd == -1)
     {
-        std::cout << "Error: " << strerror(errno) << std::endl;
         std::string er("Error of accepting connection: ");
         er += strerror(errno);
 		_master->sendErrMsg(er);
@@ -76,6 +73,12 @@ void Server::addHandler(AFdHandler * h)
 
 void Server::sendErrMsg(std::string const & msg) {
     _master->sendErrMsg(msg);
+}
+
+void Server::removeAllClients(void)
+{
+    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+        removeClient(it->second);
 }
 
 VirtServer * Server::getVirtualServ(std::string const & serv_name)

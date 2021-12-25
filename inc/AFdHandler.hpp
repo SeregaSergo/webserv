@@ -6,11 +6,27 @@
 #include <sys/time.h>
 #include <fcntl.h>
 
-// Absract parent class for
-// Server class
-// Client class
-// Logger class
-// CGI class
+// Macros for debug printing
+#ifdef DEBUG_FLAG
+    #define DEBUG(x) x
+#else 
+    #define DEBUG(x)
+#endif
+
+// Macros for printing information to show how the program works 
+#ifdef DISPLAY_FLAG
+    #define DISPLAY(x) x
+#else 
+    #define DISPLAY(x)
+#endif
+
+// This is an absract parent class for all classes that represent FD:
+//      Server class (listening socket)
+//      Client class (recv/send socket)
+//      Logger class (log file)
+//      InCGI  class (input pipe of CGI process)
+//      OutCGI class (output pipe of CGI process)
+
 class AFdHandler {
 
 protected:

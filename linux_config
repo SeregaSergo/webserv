@@ -1,5 +1,4 @@
 error_log /home/serega/Desktop/webserv/www/logs/error.log;
-
 idle_timeout 5;
 keepalive_timeout 30;
 tcp_keepalive_time 300;
@@ -23,13 +22,13 @@ types {
 
 
 server {
-    server_name suzumaki.org www.suzumaki.org;
-    listen 127.0.0.1:8080;
-    access_log  /home/serega/Desktop/webserv/www/logs/access.log;
+    server_name suzumaki.com www.suzumaki.com;
+    listen 127.0.0.1:80;
+    access_log  /home/serega/Desktop/webserv/www/logs/suzumaki.log;
     client_max_body_size 5M;
     root /home/serega/Desktop/webserv/www/;
-    error_page 500 503 504 /custom_50x.html;
-    error_page 404 /custom404.html;
+    error_page 500 502 503 504 /500.html;
+    error_page 404 /404.html;
     
     location / {
         index     upload_form.html index.html index.php;
@@ -53,6 +52,7 @@ server {
     };
 
     location = /index.php {
+        root /home/serega/Desktop/webserv/www/static/;
         allowed_methods   GET;
     };
 
@@ -80,10 +80,11 @@ server {
 
 server {
 
-    listen 127.0.0.1:8080;
-    server_name bswag.ru www.bswag.ru;
+    listen 127.0.0.1:80;
+    access_log  /home/serega/Desktop/webserv/www/logs/bswag.log;
+    server_name bswag.com www.bswag.com;
     
     location / {
-        redirect 301 http://www.cplusplus.com/info/description§$uri;
+        redirect 301 http://www.cplusplus.com/info/description$uri;
     };
 };

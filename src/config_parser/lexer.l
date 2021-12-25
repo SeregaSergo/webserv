@@ -11,14 +11,6 @@
 %option noinput
 
 %%
-	/*
-	server | 
-	listen | 
-	server_name | 
-	location | 
-	error_page | 
-	client_max_body_size 			printf(" DIRECTIVE");
-	*/
 
 access_log					return ACCLOG;
 allowed_methods				return ALLOWED_METHODS;

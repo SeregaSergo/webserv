@@ -43,7 +43,7 @@ private:
     bool findEndOfWord(char c);
     bool findEndOfLine(void);
     bool isVersionSupported(void);
-    bool getUri(void);
+    bool parseUri(void);
     bool isMethodImplemented(void);
     int errorCode(int code);
     void addToBody(void);
@@ -53,10 +53,16 @@ public:
     ~Request(void);
     int getRequest(int socket);
     int parseData(void);
-    int getStatusCode(void) const;
+    bool isLastRequest(void);
+    void clear(void);
+
+    std::string & getMethod(void);
+    std::string & getURI(void);
+    std::string & getQuery(void);
     std::map<std::string, std::string> & getHeaders(void);
     std::string const & getBody(void);
-    void clear(void);
+    VirtServer * getVirtualServer(void);
+
     friend std::ostream & operator<<(std::ostream & o, Request const & req);
     friend class Response;
 };

@@ -1,26 +1,22 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
-#include <iostream>
-#include <vector>
-#include <sys/socket.h>
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 #include <sys/resource.h>
-
-#ifdef LINUX_COMPILATION
-#define TCP_KEEPALIVE TCP_KEEPIDLE
-#endif
 
 #include "Response.hpp"
 #include "Request.hpp"
 #include "AFdHandler.hpp"
 #include "Webserv.hpp"
 
+#ifdef LINUX_COMPILATION
+#define TCP_KEEPALIVE TCP_KEEPIDLE
+#endif
 
-class Server;
-class Request;
-class Response;
+// This class represent socket connected to client.
+// It gets a request, processes and send back a response. 
 
 class Client : public AFdHandler {
 
@@ -35,6 +31,10 @@ private:
     Response        _response;
 
     Client(int fd, struct sockaddr_in const & addr, Server * serv);
+    int recieveData(void);
+    int freeSpace(void);
+    std::string getAddress(void);
+    void sendLogMessage(void);
 
 public:
     static Client * create(int fd, struct sockaddr_in const & addr, Server * serv);
@@ -47,10 +47,6 @@ protected:
     virtual void handle(void);
     virtual bool checkTimeout(struct timeval & cur_time);
 
-private:
-    int recieveData(void);
-    int freeSpace(void);
-    std::string getAddress(void);
 };
 
 #endif

@@ -14,6 +14,7 @@ void Logger::handle(void)
     int ret = 0;
     int buf_size = _buffer.size();
     
+    DISPLAY(std::cout << "[fd " << _fd << "] Logger writing" << std::endl);
     ret = write(_fd, _buffer.c_str(), buf_size);
     if (ret == buf_size || ret == -1)
     {

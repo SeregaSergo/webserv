@@ -10,14 +10,38 @@ void    print_token(int t)
 {
     switch (t)
     {
-    case ERRLOG:
-        printf("ERRLOG");
-        break;
     case ACCLOG:
         printf("ACCLOG");
         break;
+    case ALLOWED_METHODS:
+        printf("ALLOWED_METHODS");
+        break;
+    case AUTOINDEX:
+        printf("AUTOINDEX");
+        break;
+    case CGI_INTERPRETER:
+        printf("CGI_INTERPRETER");
+        break;
+    case CGI_TIMEOUT:
+        printf("CGI_TIMEOUT");
+        break;
+    case CLIENT_MAX_BODY_SIZE:
+        printf("C_M_B_S");
+        break;
     case DAEMON:
         printf("DAEMON");
+        break;
+    case ERRLOG:
+        printf("ERRLOG");
+        break;
+    case ERROR_PAGE:
+        printf("ERROR_PAGE");
+        break;
+    case IDLE_TIMEOUT:
+        printf("IDLE_TIMEOUT");
+        break;
+    case INDEX:
+        printf("INDEX");
         break;
     case MIMETYPES:
         printf("MIMETYPES");
@@ -25,17 +49,8 @@ void    print_token(int t)
     case ROOT:
         printf("ROOT");
         break;
-    case ALLOWED_METHODS:
-        printf("ALLOWED_METHODS");
-        break;
-    case INDEX:
-        printf("INDEX");
-        break;
     case REDIRECTION:
         printf("REDIR");
-        break;
-    case AUTOINDEX:
-        printf("AUTOINDEX");
         break;
     case SERVER:
         printf("SERVER");
@@ -48,12 +63,6 @@ void    print_token(int t)
         break;
     case LOCATION:
         printf("LOCATION");
-        break;
-    case ERROR_PAGE:
-        printf("ERROR_PAGE");
-        break;
-    case CLIENT_MAX_BODY_SIZE:
-        printf("CMBS");
         break;
     case URI:
         printf("URI");
@@ -93,9 +102,6 @@ void    print_token(int t)
         break;
     case IP:
         printf("IP");
-        break;
-    case IDLE_TIMEOUT:
-        printf("IDLE_TIMEOUT");
         break;
     case KA_TIMEOUT:
         printf("KA_TIMEOUT");

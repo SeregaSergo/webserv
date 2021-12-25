@@ -25,12 +25,12 @@ Webserv::Webserv(const char * config_path)
     Config conf;
     int file = open(config_path, O_RDONLY);
     if (file < 0)
-        throw std::runtime_error("Can't open file: " + std::string(config_path));
+        throw std::runtime_error("Can't open file - " + std::string(config_path));
     dup2(file, 0);
-    close(file);
     if (yyparse(&conf))
         throw std::runtime_error("Сonfig file is not valid");
-    // std::cout << conf << std::endl;     // debug print
+    close(file);
+    DEBUG(std::cout << conf << std::endl);
     setupParameters(conf);
     while (conf.servers.size() != 0)
         makeServ(conf.servers);
@@ -39,6 +39,7 @@ Webserv::Webserv(const char * config_path)
     std::cout << "Starting webserv!" << std::endl;
     if (conf.daemon)
         demonize();
+    sendErrMsg(std::string("Webserv has pid ") + numToStr(getpid()));
 }
 
 void init_codes_description(void)
@@ -104,6 +105,7 @@ void Webserv::setupParameters(Config & conf)
     constants::limit_headers_length = static_cast<unsigned long>(conf.limit_headers_length);
     constants::incoming_buffer = conf.incoming_buffer;
     constants::mime_types.swap(conf.mime_types);
+    constants::mime_types[""] = "application/octet-stream";
     init_codes_description();
     init_methods();
     signal (SIGPIPE, SIG_IGN);
@@ -145,8 +147,8 @@ void Webserv::makeServ(std::vector<ConfigServ> & conf)
     virt_map.insert(std::pair<std::string, VirtServer *>("", _virt_servers[pos_new]));
     
     // Creating real server
-    std::cout << "IP: " << ip << "\nPort: " << port << std::endl;
     _servers.push_back(Server::create(ip, port, this, virt_map));
+    std::cout << "[fd " << _servers.back()->getFd() << "] Server created " << ip << ":" << port << std::endl;
 }
 
 Webserv::~Webserv(void)
@@ -168,7 +170,7 @@ void Webserv::sendErrMsg(std::string const & msg) {
 void Webserv::addHandler(AFdHandler * h)
 {
     int fd = h->getFd();
-    if (fd > _max_fd)
+    if (fd >= _max_fd)
     {
         _fds.insert(_fds.end(), fd - _max_fd + 1, NULL);
         _max_fd = fd;
@@ -217,14 +219,13 @@ void Webserv::start(void)
         time.tv_usec = 0;
         res = select(_max_fd + 1, &rs, &ws, 0, &time);
         if (res < 0) {
-            std::cout << "*** select < 0" << std::endl;
             if (errno == EINTR)
                 continue;
             throw std::runtime_error("select error: " + std::string(strerror(errno)));
         }
         gettimeofday(&time, NULL);
         if (res == 0) {
-            std::cout << "*** select == 0" << std::endl;
+            DISPLAY(std::cout << "waiting..." << std::endl);
             for (int i = 0; i <= _max_fd; ++i) {
                 if (!_fds[i])
                     continue;
@@ -232,7 +233,6 @@ void Webserv::start(void)
             }
         }
         else {
-            std::cout << "*** select > 0" << std::endl;
             for (int i = 0; i <= _max_fd; ++i) {
                 if (!_fds[i] || _fds[i]->checkTimeout(time))
                     continue;
@@ -264,15 +264,20 @@ void Webserv::demonize()
 
     umask(0);
 
-    // freopen(MUTE_FILE, "r", stdin);
     chdir("/");
-
-    close(STDIN_FILENO);
-    close(STDOUT_FILENO);
-    close(STDERR_FILENO);
-
+    
+    freopen("/dev/null", "r", stdin);
+    freopen("/dev/null", "w", stdout);
+    freopen("/dev/null", "w", stderr);
+    
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
+}
+
+void Webserv::removeAllClients(void)
+{
+    for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+        (*it)->removeAllClients();
 }
 
 std::ostream & operator<<(std::ostream & o, Config const & conf)

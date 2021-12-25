@@ -1,11 +1,6 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
-#include <iostream>
-#include <vector>
-#include <list>
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <map>
+
 #include "Webserv.hpp"
 #include "AFdHandler.hpp"
 
@@ -14,13 +9,13 @@ class VirtServer;
 class AFdHandler;
 class Client;
 
-// Server creates new clients, process client's requests of
-// choosing locations, delete clients at their requests.
+// This class represent server's listening socket. It creates new clients,
+// process client's requests of choosing virtual servers, delete clients at their requests.
 // Virtual servers are stored at map structure, where:
 // key = server_name,
 // value = pointer to virtual server;
 // There is also server_name = "" for default virtual server.
-// WATCH OUT WITH DISTRUCTOR!!!
+// BE CAREFUL WITH THE DISTRUCTOR!!!
 
 class Server : public AFdHandler {
 
@@ -40,6 +35,7 @@ public:
 	VirtServer * getVirtualServ(std::string const & serv_name);
 	void removeHandler(AFdHandler * h);
 	void addHandler(AFdHandler * h);
+	void removeAllClients(void);
 
 private:
 	virtual bool wantRead(void) const { return true; }

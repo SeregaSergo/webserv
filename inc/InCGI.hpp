@@ -7,7 +7,12 @@
 
 class Response;
 
-// Class working with input to CGI process
+// This class puts data into CGI process.
+// It takes data from request body and writes into
+// one side of the pipe that emulates stdin of CGI process.
+// When it's done it calls callback function of Response class
+// for it's deletion.
+
 class InCGI : public AFdHandler {
 
 private:
@@ -29,7 +34,7 @@ public:
     , _callback_func(f)
     {}
 
-    virtual ~InCGI(void) {std::cout << "[fd " << _fd << "] InCGI deleted" << std::endl; }
+    virtual ~InCGI(void) {DISPLAY(std::cout << "[fd " << _fd << "] InCGI deleted" << std::endl); }
 
     virtual bool wantRead(void) const { return false; }
     virtual bool wantWrite(void) const { return true; }

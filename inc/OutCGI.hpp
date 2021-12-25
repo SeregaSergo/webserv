@@ -12,7 +12,11 @@ namespace constants
     const size_t  CGI_bufsize = 4096;
 }
 
-// Class working with input to CGI process
+// This class gets data from CGI process. It reads CGI response 
+// from one side of the pipe that emulates stdout of CGI process.
+// When it's done it calls callback function of Response class
+// for it's deletion and post processing of CGI response.
+
 class OutCGI : public AFdHandler {
 
 private:
@@ -33,7 +37,7 @@ public:
     , _callback_func(f)
     {}
 
-    virtual ~OutCGI(void) { std::cout << "[fd " << _fd << "] OutCGI deleted" << std::endl; }
+    virtual ~OutCGI(void) { DISPLAY(std::cout << "[fd " << _fd << "] OutCGI deleted" << std::endl); }
 
     virtual bool wantRead(void) const { return true; }
     virtual bool wantWrite(void) const { return false; }

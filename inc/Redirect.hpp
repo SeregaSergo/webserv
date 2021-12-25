@@ -24,6 +24,4 @@ public:
     friend std::ostream & operator<<(std::ostream & o, Redirect const & src);
 };
 
-std::ostream & operator<<(std::ostream & o, Redirect const & src);
-
 #endif

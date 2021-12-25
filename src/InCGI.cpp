@@ -12,9 +12,9 @@ bool InCGI::checkTimeout(struct timeval & cur_time)
 
 void InCGI::handle(void)
 {
-    std::cout << "[fd "<< _fd << "] InCGI writting" << std::endl;
+    DISPLAY(std::cout << "[fd "<< _fd << "] InCGI writting" << std::endl);
     int ret = write(_fd, &_body[_sent], _body.size() - _sent);
-    std::cout << ret << std::endl;
+
     if (ret < 0)
     {
         (_resp.*_callback_func)(502);

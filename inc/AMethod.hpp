@@ -3,14 +3,13 @@
 #ifndef AMETHOD_HPP
 #define AMETHOD_HPP
 
-#include <iostream>
-
 class Response;
 
-// Absract parent class for
-// Get class
-// Post class
-// Delete class
+// Absract parent class for all method classes:
+//      Get class
+//      Post class
+//      Delete class
+
 class AMethod {
 
 protected:

@@ -1,9 +1,6 @@
 #ifndef WEBSERV_HPP
 #define WEBSERV_HPP
 
-// #define FD_SETSIZE 2048
-// #define _DARWIN_UNLIMITED_SELECT
-
 #include <iostream>
 #include <vector>
 #include <map>
@@ -25,14 +22,13 @@
 #include "Post.hpp"
 #include "Delete.hpp"
 
-#ifdef LINUX_COMPILATION
-#include <errno.h>
-#include <stdlib.h>
-#endif
-
 class VirtServer;
 class Server;
 class Location;
+
+////////////////////////////////////////
+// Config structure of virtual server //
+////////////////////////////////////////
 
 struct ConfigServ {
     std::vector<std::string>    server_names;
@@ -53,6 +49,11 @@ struct ConfigServ {
     
     ConfigServ & operator=(ConfigServ const & src);
 };
+
+
+////////////////////////////////////////
+// Config structure of whole webserv  //
+////////////////////////////////////////
 
 struct Config {
     std::string                         err_log;
@@ -95,10 +96,19 @@ std::string numToStr(T num)
 
 int yyparse(Config *config);
 
+
+////////////////////////////////////////
+//            Webserv class           //
+////////////////////////////////////////
+//
+// It contains select loop that works with
+// classes inherited from AFdHandler abstract
+// parent class.
+//
 class Webserv {
 
 private:
-    std::vector<AFdHandler*>            _fds;
+    std::vector<AFdHandler *>           _fds;
     int                                 _max_fd;
     bool                                _quit;
     Logger *                            _err_log;
@@ -118,6 +128,8 @@ public:
     void sendErrMsg(std::string const & msg);
     void addHandler(AFdHandler * h);
     bool removeHandler(AFdHandler * h);
+    void removeAllClients(void);
+
     void start();
     void stop() { _quit = true; }  
     void reset();

@@ -1,9 +1,10 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-#include <iostream>
-#include <sys/time.h>
 #include "AFdHandler.hpp"
+
+// This class associated with log files. And writes masseges
+// when buffer is full or when timeout comes.
 
 namespace constants
 {
@@ -11,7 +12,6 @@ namespace constants
     const time_t loggerTimeout = 5;
 }
 
-// Absract parent class for Server, Client and Logger classes
 class Logger : public AFdHandler {
 
 private:

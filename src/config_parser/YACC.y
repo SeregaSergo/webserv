@@ -10,7 +10,7 @@ extern "C"
 	void yyerror(Config *config, const char *str)
 	{
 		(void)config;
-		fprintf(stderr,"ошибка: %s\n",str);
+		(void)str;
 	}
 	int yyparse(void);
 	int yylex(void); 

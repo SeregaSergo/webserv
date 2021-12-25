@@ -1,6 +1,4 @@
 #include "../inc/Client.hpp"
-#include <iostream>     // std::cout
-#include <sstream>
 
 Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     : AFdHandler(fd)
@@ -20,7 +18,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     
     gettimeofday(&_timer, NULL);
 
-    std::cout << "[fd " << _fd << "] Client connected(" << _addr << ":" << _port << ") time: " << _time.tv_sec << std::endl;
+    DISPLAY(std::cout << "[fd " << _fd << "] Client connected(" << _addr << ":" << _port << ") time: " << _time.tv_sec << std::endl);
 }
 
 Client * Client::create(int fd, struct sockaddr_in const & addr, Server * serv)
@@ -42,7 +40,7 @@ Client::~Client(void)
 {
     struct timeval  tm;
     gettimeofday(&tm, NULL);
-    std::cout << "[fd " << _fd << "] Client deleted(" << _addr << ":" << _port << ") time: " << tm.tv_sec << std::endl;
+    DISPLAY(std::cout << "[fd " << _fd << "] Client deleted(" << _addr << ":" << _port << ") time: " << tm.tv_sec << std::endl);
 }
 
 bool Client::wantRead() const
@@ -63,7 +61,7 @@ void Client::handle(void)
 {
     if (_state == client::State::writing)
     {
-        std::cout << "[fd " << _fd << "] Client writting" << std::endl;
+        DISPLAY(std::cout << "[fd " << _fd << "] Client writting" << std::endl);
 
         switch (_response.sendResponse(_fd))
         {
@@ -73,19 +71,28 @@ void Client::handle(void)
             return;
         
         case response::ReturnCode::unfinished:
+            gettimeofday(&_timer, NULL);
             break;
 
         case response::ReturnCode::completed:
-            std::cout << _response << std::endl;
-            _request.clear();
-            _response.clear();
-            _state = client::State::waitingForReq;
+            sendLogMessage();
+            if (_request.isLastRequest())
+            {
+                shutdown(_fd, SHUT_RDWR);
+                _state = client::State::shutdown;
+            }
+            else
+            {
+                _request.clear();
+                _response.clear();
+                _state = client::State::waitingForReq;
+            }
             break;
         }
     }
     else
     {
-        std::cout << "[fd "<< _fd << "] Client reading" << std::endl;
+        DISPLAY(std::cout << "[fd "<< _fd << "] Client reading" << std::endl);
 
         switch (_request.getRequest(_fd))
         {
@@ -103,13 +110,26 @@ void Client::handle(void)
             break;
 
         case request::ReturnCode::completed:
-            gettimeofday(&_timer, NULL);
             _state = client::State::processing;
-            std::cout << _request << std::endl;
             _response.processRequest();
             break;
         }
     }
+}
+
+void Client::sendLogMessage(void)
+{
+    std::string msg;
+    msg += getAddress();
+    msg += " \"" + _request.getMethod();
+    msg += ' ' + _request.getURI();
+    msg += _request.getQuery() + "\" ";
+    msg += numToStr(_response.getStatusCode()) + " ";
+    msg += numToStr(_response.getBytesSent()) + "B";
+    _request.getVirtualServer()->sendAccMsg(msg);
+
+    DISPLAY(std::cout << _request << std::endl);
+    DISPLAY(std::cout << _response << std::endl);
 }
 
 std::string Client::getAddress(void)

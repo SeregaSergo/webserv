@@ -12,9 +12,9 @@ bool OutCGI::checkTimeout(struct timeval & cur_time)
 
 void OutCGI::handle(void)
 {
-    std::cout << "[fd "<< _fd << "] OutCGI reading" << std::endl;
+    DISPLAY(std::cout << "[fd "<< _fd << "] OutCGI reading" << std::endl);
     int ret = read(_fd, _buffer, constants::CGI_bufsize);
-    std::cout << ret << std::endl;
+    
     if (ret < 0)
     {
         (_resp.*_callback_func)(502);
@@ -25,5 +25,5 @@ void OutCGI::handle(void)
         (_resp.*_callback_func)(0);
         return;
     }
-    std::ostream & r = _stream.write(_buffer, ret);
+    _stream.write(_buffer, ret);
 }

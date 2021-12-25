@@ -1,20 +1,18 @@
 #ifndef VIRTSERVER_HPP
 #define VIRTSERVER_HPP
-#include <iostream>
-#include <vector>
-#include <list>
-#include <map>
+
 #include "constants.hpp"
 #include "Location.hpp"
 #include "Client.hpp"
 #include "Webserv.hpp"
 #include "Logger.hpp"
 
-// Access message format :
-// client address | request | status | body_bytes_sent | user_agent
-
 class Webserv;
 struct ConfigServ;
+
+// This class is represents virtual server that described in
+// a config file. The main purpose of this class is choosing
+// location.
 
 class VirtServer {
 

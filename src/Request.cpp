@@ -81,7 +81,7 @@ inline int Request::filledSpace(void) const
 //     return parm;
 // }
 
-bool Request::getUri(void)
+bool Request::parseUri(void)
 {
     int size = (_tail - _head) / sizeof(char);
     char * query_ptr = strnchr(_head, size, '?');
@@ -250,7 +250,7 @@ int Request::parseData(void)
         {
             if ((_tail - _head) / sizeof(char) > constants::limit_uri_length)
                 return (errorCode(414));    // Request-URI Too Long
-            if (getUri())
+            if (parseUri())
                 return (errorCode(400));     // Bad Request
             _state = request::State::version;
         }
@@ -399,16 +399,40 @@ int Request::parseData(void)
     return (0);
 }
 
-int Request::getStatusCode(void) const
+bool Request::isLastRequest(void)
 {
-    return (_status_code);
+    std::map<std::string, std::string>::iterator    connection = _headers.find("Connection");
+    if (_http_version == "HTTP/1.1")
+    {
+        if (connection != _headers.end() && connection->second == "close")
+            return (true);
+        return (false);
+    }
+    return (true);
+}
+
+std::string & Request::getMethod(void) {
+    return (_method);
+}
+
+std::string & Request::getURI(void) {
+    return (_uri);
+}
+
+std::string & Request::getQuery(void) {
+    return (_query);
 }
 
 std::map<std::string, std::string> & Request::getHeaders(void) {
     return (_headers);
 }
+
 std::string const & Request::getBody(void) {
     return (_body);
+}
+
+VirtServer * Request::getVirtualServer(void) {
+    return (_virt_serv);
 }
 
 void Request::clear(void)
@@ -430,54 +454,63 @@ std::ostream & operator<<(std::ostream & o, Request const & req)
     o << "\n***** Request *****\n" << std::endl;
     o << "Method: " << req._method << std::endl;
     o << "URI: " << req._uri << std::endl;
+    o << "Query: " << req._query << std::endl;
     o << "HTTP version: " << req._http_version << std::endl;
-    o << "Status code: " << req._status_code << std::endl;
-    o << "Location:\n";
-    if (req._location)
-        o << *req._location << std::endl;
-    o << "State: ";
-    switch (req._state)
-        {
-        case request::State::getting_headers:
-            o << "getting headers" << std::endl;
-            break;
-        case request::State::endOfHeaders:
-            o << "end of headers" << std::endl;
-            break;
-        case request::State::method:
-            o << "method" << std::endl;
-            break;
-        case request::State::uri:
-            o << "uri" << std::endl;
-            break;
-        case request::State::version:
-            o << "version" << std::endl;
-            break;
-        case request::State::headerName:
-            o << "header name" << std::endl;
-            break;
-        case request::State::headerValue:
-            o << "header value" << std::endl;
-            break;
-        case request::State::chunk:
-            o << "chunk" << std::endl;
-            break;
-        case request::State::chunk_size:
-            o << "chunk size" << std::endl;
-            break;
-        case request::State::body:
-            o << "body" << std::endl;
-            break;
-        case request::State::done:
-            o << "done" << std::endl;
-            break;
-        }
+    DEBUG
+    (
+        o << "Status code: " << req._status_code << std::endl;
+        o << "Location:\n";
+        if (req._location)
+            o << *req._location << std::endl;
+        o << "State: ";
+        switch (req._state)
+            {
+            case request::State::getting_headers:
+                o << "getting headers" << std::endl;
+                break;
+            case request::State::endOfHeaders:
+                o << "end of headers" << std::endl;
+                break;
+            case request::State::method:
+                o << "method" << std::endl;
+                break;
+            case request::State::uri:
+                o << "uri" << std::endl;
+                break;
+            case request::State::version:
+                o << "version" << std::endl;
+                break;
+            case request::State::headerName:
+                o << "header name" << std::endl;
+                break;
+            case request::State::headerValue:
+                o << "header value" << std::endl;
+                break;
+            case request::State::chunk:
+                o << "chunk" << std::endl;
+                break;
+            case request::State::chunk_size:
+                o << "chunk size" << std::endl;
+                break;
+            case request::State::body:
+                o << "body" << std::endl;
+                break;
+            case request::State::done:
+                o << "done" << std::endl;
+                break;
+            }
+    )
     o << "Headers:" << std::endl;
     for (std::map<std::string, std::string>::const_iterator it = req._headers.begin(); \
             it != req._headers.end(); ++it)
         o << "    " << it->first << ": " << it->second <<std::endl;
     o << "\nBody:\n" << req._body << std::endl;
-    o << "\nBuffer:\n" << std::string(req._buffer, req._ptr) << std::endl;
-    o << "\nBuffer size: " << req.filledSpace() << std::endl;
+
+    DEBUG
+    (
+        o << "\nBuffer:\n" << std::string(req._buffer, req._ptr) << std::endl;
+        o << "\nBuffer size: " << req.filledSpace() << std::endl;
+    )
+    
     return (o);
 }

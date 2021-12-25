@@ -64,6 +64,8 @@ bool Response::runCGI(void)
         close(cgi_out_pipe[0]);
         close(cgi_in_pipe[1]);
 
+        freopen("/dev/null", "w", stderr);  // mute stderr
+
         std::vector<char*>  argv;
         std::vector<char*>  envp;
 
@@ -81,7 +83,7 @@ bool Response::runCGI(void)
         close(cgi_out_pipe[1]);
         close(cgi_in_pipe[0]);
     }
-    std::cout << "CGI was run" << std::endl;
+    DISPLAY(std::cout << "[pid " << _pid << "] CGI was run" << std::endl);
     return (true);
 }
 
@@ -93,13 +95,9 @@ void Response::finishCGI(void)
     {
         kill(_pid, SIGKILL);
         ret = waitpid(_pid, &status, 0);
+        _status_code = 502;
     }
-    std::cout << "[pid " << _pid << "] was stopped" << std::endl;
-    // if (WIFEXITED(status))
-    // {
-    //     std::cout << "Script exited with error " << WEXITSTATUS(status) << std::endl;
-    //     _status_code = 502;
-    // }
+    DISPLAY(std::cout << "[pid " << _pid << "] was stopped" << std::endl);
     _pid = 0;
 }
 
@@ -123,7 +121,7 @@ int Response::processResponseCGI(void)
                 if (it->second == _resulting_uri || it->second == _request->_uri)
                     break;
                 _request->_uri = it->second;
-                if ((_request->_location = _virt_serv->chooseLocation(_request->_uri)) == NULL)
+                if ((_request->_location = _virt_serv->chooseLocation(it->second)) == NULL)
                 {
                     _status_code = 404;
                     return (response::CGI::document);
@@ -204,7 +202,23 @@ char * const * Response::getArgv(std::vector<char*> & argv)
 
 char * const * Response::getEnvp(std::vector<char*> & envp)
 {
-    envp.push_back(std::getenv("PATH"));
+    // envp.push_back("AUTH_TYPE=");
+	// envp.push_back("CONTENT_LENGTH=");
+	// envp.push_back("CONTENT_TYPE=");
+	// envp.push_back("GATEWAY_INTERFACE=CGI/1.1");
+	// envp.push_back("PATH_INFO=");
+	// envp.push_back("PATH_TRANSLATED=");
+	// envp.push_back("QUERY_STRING=");
+	// envp.push_back("REMOTE_ADDR=");
+    // envp.push_back("REMOTE_HOST=");
+	// envp.push_back("REMOTE_IDENT=");
+	// envp.push_back("REMOTE_USER=");
+	// envp.push_back("REQUEST_METHOD=");
+	// envp.push_back("SCRIPT_NAME=");
+	// envp.push_back("SERVER_NAME=");
+	// envp.push_back("SERVER_PORT=");
+	// envp.push_back("SERVER_PROTOCOL=");
+	// envp.push_back("SERVER_SOFTWARE=");
     envp.push_back(NULL);
     return (&envp[0]);
 }
@@ -252,7 +266,6 @@ int Response::processMethod(void)
 
 void Response::handleError(void)
 {
-    std::cout << "Handle error: "<< _status_code << std::endl;
     clear();
     _resulting_uri = _virt_serv->getPage(_status_code);
     if (_resulting_uri.empty())
@@ -262,6 +275,7 @@ void Response::handleError(void)
         return;
 
     int saved_code = _status_code;
+    _file = _location->getResoursePath(_resulting_uri);
     if (constants::method["GET"]->process(*this) != processing::Type::done)
         _status_code = saved_code;
 }
@@ -276,6 +290,8 @@ void Response::assembleResponse(void)
     _response.push_back(' ');
     _response.append(constants::codes_description.find(_status_code)->second);
     _headers["Content-Length"] = numToStr(_body.tellp() - _body.tellg());
+    if (_request->isLastRequest())
+        _headers["Connection"] = "close";
     for (std::map<std::string,std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
     {
         _response.append("\r\n");
@@ -336,13 +352,21 @@ void Response::clear(void)
     _sent = 0;
 }
 
+int Response::getStatusCode(void) {
+    return (_status_code);
+}
+
+unsigned long Response::getBytesSent(void) {
+    return (_sent);
+}
+
 std::ostream & operator<<(std::ostream & o, Response const & resp)
 {
     o << "\n***** Response *****\n" << std::endl;
-    o << "Location:\n" << *resp._location << std::endl;
-    o << "Resulting_URI: " << resp._resulting_uri << std::endl;
-    o << "File: " << resp._file << std::endl;
-    o << "Sent: " << resp._sent << std::endl << std::endl;
+    DEBUG(o << "Location:\n" << *resp._location << std::endl);
+    DEBUG(o << "Resulting_URI: " << resp._resulting_uri << std::endl);
+    DEBUG(o << "File: " << resp._file << std::endl);
+    DEBUG(o << "Sent: " << resp._sent << std::endl << std::endl);
     o << resp._response << std::endl;
     return (o);
 }

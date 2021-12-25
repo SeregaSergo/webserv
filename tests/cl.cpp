@@ -319,5 +319,6 @@ int main(int argc, char ** argv)
         POST(argv[2], num_req, false);
     // if (!strcmp(argv[1],"DELETE")
         // DELETE(argv[2], )
+    sleep(10);
     return (0);
 }

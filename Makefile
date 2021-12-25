@@ -54,8 +54,11 @@ YACC_OBJ =		$(addprefix $(PATH_O)/, $(YACC_PROD:%.cpp=%.o))
 
 CC =			clang
 CXX =			clang++
-CFLAGS =		-Wall -Wextra -Werror -fsanitize=address
+CFLAGS =		-Wall -Wextra -Werror -MMD
 CXXFLAGS =		-std=c++98
+all: CMDL_FLAGS =
+display: CMDL_FLAGS = -DDISPLAY_FLAG
+debug: CMDL_FLAGS = -DDISPLAY_FLAG -DDEBUG_FLAG -fsanitize=address
 
 OS := $(shell uname)
 ifeq ($(OS), Linux)
@@ -76,40 +79,47 @@ DEPS =			$(MAIN_OBJ:%.o=%.d) \
 
 all: directories $(NAME)
 $(NAME): $(OBJS) $(MAIN_OBJ) $(YACC_OBJ) $(LEX_OBJ)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $^ -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) $^ -o $@
 
+display: directories $(NAME)
+
+debug: directories $(NAME)
+
+# Rule for testing lexer's output
 debug_lex: directories $(NAME_D_LEX)
 $(NAME_D_LEX): $(OBJS)  $(YACC_OBJ) $(LEX_OBJ) $(MAIN_LEX_OBJ)
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $^ -o $@
 
 $(OBJS) $(MAIN_OBJ): $(addprefix $(PATH_O)/, %.o) : $(addprefix $(PATH_S)/, %.cpp)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 
 $(MAIN_LEX_OBJ): $(addprefix $(PATH_O)/, %.o) : $(addprefix $(PATH_T)/, %.cpp)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 
 $(LEX_OBJ): $(LEX_C) $(YACC_HPP)
-	$(CC) $(CFLAGS) $(OSFLAGS) -MMD -c $< -o $@
+	$(CC) $(CFLAGS) $(OSFLAGS) -c $< -o $@
 
 $(LEX_C): $(addprefix $(PATH_P)/, $(LEX_SRC))
 	flex $<
 	@mv $(LEX_PROD) $(PATH_P)
 
 $(YACC_OBJ): $(YACC_CPP)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -c $< -o $@
 
 $(YACC_CPP) $(YACC_HPP) &: $(addprefix $(PATH_P)/, $(YACC_SRC))
 	yacc $< -d -o $(YACC_CPP)
 
 -include $(DEPS)
 
+# Client for sending requests / testing
 client: directories $(addprefix $(PATH_T)/,$(NAME_CLIENT))
 $(addprefix $(PATH_T)/,$(NAME_CLIENT)): $(MAIN_CL_OBJ)
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $< -o $@
 
 $(MAIN_CL_OBJ): $(addprefix $(PATH_T)/, $(MAIN_CLIENT))
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -MMD -c $< -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -c $< -o $@
 
+# Rule for creating derictory
 directories:
 	@mkdir -p $(PATH_O)
 
