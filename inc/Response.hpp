@@ -65,6 +65,7 @@ private:
     void callbackFuncOutCGI(int ret);
     char * const * getArgv(std::vector<char*> & argv);
     char * const * getEnvp(std::vector<char*> & envp);
+	void put_env_into_vec(std::vector<char *> &envp, std::string new_env);
     
     Response(void) {}
 

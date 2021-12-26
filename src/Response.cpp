@@ -203,13 +203,26 @@ char * const * Response::getArgv(std::vector<char*> & argv)
     return (&argv[0]);
 }
 
+void	Response::put_env_into_vec(std::vector<char *> &envp, std::string new_env) {
+	envp.push_back(strdup(new_env.c_str()));
+}
+
 char * const * Response::getEnvp(std::vector<char*> & envp)
 {
 	std::string str;
+	std::map<std::string, std::string>::iterator map_it;
+	// envp.push_back("AUTH_TYPE=");
+
 	str = "CONTENT_LENGTH=" + numToStr(this->_request->_body.size());
-	envp.push_back(strdup(str.c_str()));
-//	envp.push_back(("CONTENT_LENGTH=" + numToStr(this->_request->_body.size())).c_str());
-	// envp.push_back("CONTENT_TYPE=");+
+	put_env_into_vec(envp, str);
+
+	map_it = this->_request->_headers.find("Content-Type");
+	if (map_it != this->_request->_headers.end())
+	{
+		str = "CONTENT_TYPE=" + map_it->second;
+		put_env_into_vec(envp, str);
+	}
+	// envp.push_back("CONTENT_TYPE=");
 	// envp.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	// envp.push_back("PATH_INFO=");
 	// envp.push_back("PATH_TRANSLATED=");
