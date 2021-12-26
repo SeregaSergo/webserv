@@ -27,6 +27,7 @@ private:
     VirtServer *                        _virt_serv;
     Location *                          _location;
 
+    // Temporary variables for parsing
     int                                 _state;
     int                                 _status_code;
     int                                 _body_size;

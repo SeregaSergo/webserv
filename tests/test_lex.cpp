@@ -19,8 +19,8 @@ void    print_token(int t)
     case AUTOINDEX:
         printf("AUTOINDEX");
         break;
-    case CGI_INTERPRETER:
-        printf("CGI_INTERPRETER");
+    case CGI_ENABLED:
+        printf("CGI_ENABLED");
         break;
     case CGI_TIMEOUT:
         printf("CGI_TIMEOUT");

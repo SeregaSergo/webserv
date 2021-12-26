@@ -6,6 +6,7 @@ Location::Location(int type, std::vector<std::string> & path, std::string & root
 		, _max_body_size(max_body_size)
 		, _root(root)
 		, _redir(NULL)
+		, _cgi_enabled(false)
 		, _cgi_timeout(constants::cgi_timeout)
 		, _autoindex(ai)
 {
@@ -21,7 +22,7 @@ Location::Location(Location const & src)
 	, _max_body_size(src._max_body_size)
 	, _root(src._root)
 	, _redir(src._redir)
-	, _cgi_interpreter(src._cgi_interpreter)
+	, _cgi_enabled(src._cgi_enabled)
 	, _cgi_timeout(src._cgi_timeout)
 	, _autoindex(src._autoindex)
 {}
@@ -71,8 +72,8 @@ void	Location::setMaxBodySize(int body_size) {
 	_max_body_size = body_size;
 }
 
-void	Location::setCgiInterpreter(const char * interpreter) {
-	_cgi_interpreter = interpreter;
+void	Location::switchOnCgi(void) {
+	_cgi_enabled = true;
 }
 
 void	Location::setCgiTimeout(int timout)
@@ -143,7 +144,7 @@ int	Location::getType(void)
 {
 	if (_redir)
 		return (location::Type::redirection);
-	else if (!_cgi_interpreter.empty())
+	else if (_cgi_enabled)
 		return (location::Type::cgi);
 	else
 		return (location::Type::file);
@@ -151,10 +152,6 @@ int	Location::getType(void)
 
 bool Location::getAutoindex(void) {
 	return (_autoindex);
-}
-
-const char *	Location::getCgiInterpreter(void) {
-	return (_cgi_interpreter.c_str());
 }
 
 int	Location::getCgiTimout(void) {
@@ -179,6 +176,6 @@ std::ostream & operator<<(std::ostream & o, Location const & src) {
 		o << "none" << std::endl;
 	o << "Autoindex: " << src._autoindex << std::endl;
 	o << "Root: " << src._root << std::endl;
-	o << "CGI interpreter: " << src._cgi_interpreter << std::endl;
+	o << "CGI enabled: " << src._cgi_enabled << std::endl;
 	return (o);
 }

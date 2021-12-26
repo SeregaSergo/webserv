@@ -16,7 +16,7 @@ private:
 	int							_max_body_size;
 	std::string					_root;
 	Redirect *					_redir;
-	std::string					_cgi_interpreter;
+	bool						_cgi_enabled;
 	int							_cgi_timeout;
 	bool						_autoindex;
 
@@ -33,7 +33,7 @@ public:
 	void						setAutoindex(bool ai);
 	void						setRoot(std::string const & root);
 	void						setMaxBodySize(int body_size);
-	void						setCgiInterpreter(const char * interpreter);
+	void						switchOnCgi(void);
 	void						setCgiTimeout(int timout);
 
 	char						checkLocation(std::string const & uri, unsigned int * max_symbols);
@@ -44,7 +44,6 @@ public:
 	int							getType(void);
 	bool						getAutoindex(void);
 	std::string					getResoursePath(std::string const & uri);
-	const char *				getCgiInterpreter(void);
 	int							getCgiTimout(void);
 	std::vector<std::string> &	getIndexFiles(void);
 

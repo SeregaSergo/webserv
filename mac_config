@@ -25,11 +25,11 @@ types {
 server {
     server_name suzumaki.org www.suzumaki.org;
     listen 127.0.0.1:8080;
-    access_log  /Users/bswag/Desktop/webserv/www/logs/access.log;
+    access_log  /Users/bswag/Desktop/webserv/www/logs/suzumaki.log;
     client_max_body_size 5M;
     root /Users/bswag/Desktop/webserv/www/;
-    error_page 500 502 503 504 /custom_50x.html;
-    error_page 404 /custom404.html;
+    error_page 500 502 503 504 /500.html;
+    error_page 404 /404.html;
   
     location / {
         index     upload_form.html index.html index.php;
@@ -56,15 +56,9 @@ server {
         allowed_methods   GET;
     };
 
-    location ~ php {
-        root /Users/bswag/Desktop/webserv/www/cgi-bin/;
-        cgi_interpreter /usr/bin/php;
-        cgi_timeout  10;
-    };
-
-    location ~ py {
-        root /Users/bswag/Desktop/webserv/www/cgi-bin/;
-        cgi_interpreter /usr/local/bin/python3;
+    location ~ py/php {
+        root /Users/bswag/Desktop/webserv/www/cgi-bin_mac/;
+        cgi_enabled;
         cgi_timeout  5;
     };
 
@@ -82,8 +76,9 @@ server {
 
   listen 127.0.0.1:8080;
   server_name bswag.ru www.bswag.ru;
-  
+  access_log  /Users/bswag/Desktop/webserv/www/logs/bswag.log;
+
   location / {
-        redirect 301 http://www.cplusplus.com/info/description§$uri;
+        redirect 301 http://www.cplusplus.com/info/description$uri;
   };
 };

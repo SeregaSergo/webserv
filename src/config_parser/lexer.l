@@ -15,7 +15,7 @@
 access_log					return ACCLOG;
 allowed_methods				return ALLOWED_METHODS;
 autoindex					return AUTOINDEX;
-cgi_interpreter				return CGI_INTERPRETER;
+cgi_enabled					return CGI_ENABLED;
 cgi_timeout					return CGI_TIMEOUT;
 client_max_body_size		return CLIENT_MAX_BODY_SIZE;
 daemon_mode					return DAEMON;

@@ -69,7 +69,7 @@ bool Response::runCGI(void)
         std::vector<char*>  argv;
         std::vector<char*>  envp;
 
-        if (execve(_location->getCgiInterpreter(), getArgv(argv), getEnvp(envp)) == -1)
+        if (execve(&_file[0], getArgv(argv), getEnvp(envp)) == -1)
             exit(502);
     }
     else
@@ -194,7 +194,7 @@ void Response::callbackFuncOutCGI(int ret)
 
 char * const * Response::getArgv(std::vector<char*> & argv)
 {
-    argv.push_back((char *)_location->getCgiInterpreter());
+    // argv.push_back((char *)_location->getCgiInterpreter());
     argv.push_back(&_file[0]);
     argv.push_back(NULL);
     return (&argv[0]);
@@ -202,6 +202,7 @@ char * const * Response::getArgv(std::vector<char*> & argv)
 
 char * const * Response::getEnvp(std::vector<char*> & envp)
 {
+    
     // envp.push_back("AUTH_TYPE=");
 	// envp.push_back("CONTENT_LENGTH=");
 	// envp.push_back("CONTENT_TYPE=");
