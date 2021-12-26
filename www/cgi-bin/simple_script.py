@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 """Very basic Python script that outputs static HTML content."""
 
 import cgi
@@ -29,7 +29,8 @@ def run():
     username = 'Bswag'
     title = 'My first tinyPy.cgi'
     input_str = sys.stdin.read(-1)
-    size = len(input_str)
+    # size = len(input_str)
+    size = os.environ
     render(**locals())
 
 

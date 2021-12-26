@@ -44,6 +44,7 @@ Response::~Response(void)
 
 bool Response::runCGI(void)
 {
+	std::cout << "AaaaaaaaaaaaaaaaaAAAAAAAAAAAA" << std::endl;
     int cgi_out_pipe[2];
     int cgi_in_pipe[2];
 
@@ -64,13 +65,15 @@ bool Response::runCGI(void)
         close(cgi_out_pipe[0]);
         close(cgi_in_pipe[1]);
 
-        freopen("/dev/null", "w", stderr);  // mute stderr
+//        freopen("/dev/null", "w", stderr);  // mute stderr
 
         std::vector<char*>  argv;
         std::vector<char*>  envp;
 
-        if (execve(_location->getCgiInterpreter(), getArgv(argv), getEnvp(envp)) == -1)
-            exit(502);
+        if (execve(_location->getCgiInterpreter(), getArgv(argv), getEnvp(envp)) == -1) {
+			DEBUG(std::cerr << "Cant' execute execve" << std::endl);
+			exit(502);
+		}
     }
     else
     {
@@ -202,9 +205,11 @@ char * const * Response::getArgv(std::vector<char*> & argv)
 
 char * const * Response::getEnvp(std::vector<char*> & envp)
 {
-    // envp.push_back("AUTH_TYPE=");
-	// envp.push_back("CONTENT_LENGTH=");
-	// envp.push_back("CONTENT_TYPE=");
+	std::string str;
+	str = "CONTENT_LENGTH=" + numToStr(this->_request->_body.size());
+	envp.push_back(strdup(str.c_str()));
+//	envp.push_back(("CONTENT_LENGTH=" + numToStr(this->_request->_body.size())).c_str());
+	// envp.push_back("CONTENT_TYPE=");+
 	// envp.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	// envp.push_back("PATH_INFO=");
 	// envp.push_back("PATH_TRANSLATED=");
@@ -220,6 +225,7 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 	// envp.push_back("SERVER_PROTOCOL=");
 	// envp.push_back("SERVER_SOFTWARE=");
     envp.push_back(NULL);
+
     return (&envp[0]);
 }
 

@@ -12,6 +12,7 @@
 #include "constants.hpp"
 #include "InCGI.hpp"
 #include "OutCGI.hpp"
+#include "string.h"
 
 class Client;
 class Request;
