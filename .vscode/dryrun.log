@@ -1,0 +1,29 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/suzumaki/Desktop/webserv'
+mkdir -p obj
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Webserv.cpp -o obj/Webserv.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Server.cpp -o obj/Server.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/VirtServer.cpp -o obj/VirtServer.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Location.cpp -o obj/Location.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Client.cpp -o obj/Client.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Logger.cpp -o obj/Logger.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Redirect.cpp -o obj/Redirect.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Request.cpp -o obj/Request.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Response.cpp -o obj/Response.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/constants.cpp -o obj/constants.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/AMethod.cpp -o obj/AMethod.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Get.cpp -o obj/Get.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Post.cpp -o obj/Post.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Delete.cpp -o obj/Delete.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/InCGI.cpp -o obj/InCGI.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/OutCGI.cpp -o obj/OutCGI.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/main.cpp -o obj/main.o
+yacc src/config_parser/YACC.y -d -o src/config_parser/ConfigParser.cpp
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98 -DMACOS_COMPILATION -c src/config_parser/ConfigParser.cpp -o obj/ConfigParser.o
+flex src/config_parser/lexer.l
+mv lex.yy.c src/config_parser
+yacc src/config_parser/YACC.y -d -o src/config_parser/ConfigParser.cpp
+clang -g -Wall -Wextra -Werror -MMD -DMACOS_COMPILATION -c src/config_parser/lex.yy.c -o obj/lex.yy.o
+clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION obj/Webserv.o obj/Server.o obj/VirtServer.o obj/Location.o obj/Client.o obj/Logger.o obj/Redirect.o obj/Request.o obj/Response.o obj/constants.o obj/AMethod.o obj/Get.o obj/Post.o obj/Delete.o obj/InCGI.o obj/OutCGI.o obj/main.o obj/ConfigParser.o obj/lex.yy.o -o server
+make: Leaving directory `/Users/suzumaki/Desktop/webserv'
+ 

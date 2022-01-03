@@ -1,4 +1,4 @@
-error_log /Users/bswag/Desktop/webserv/www/logs/error.log;
+error_log /Users/suzumaki/Desktop/webserv/www/logs/error.log;
 
 idle_timeout 5;
 keepalive_timeout 30;
@@ -25,49 +25,57 @@ types {
 server {
     server_name suzumaki.org www.suzumaki.org;
     listen 127.0.0.1:8080;
-    access_log  /Users/bswag/Desktop/webserv/www/logs/suzumaki.log;
+    access_log  /Users/suzumaki/Desktop/webserv/www/logs/suzumaki.log;
     client_max_body_size 5M;
-    root /Users/bswag/Desktop/webserv/www/;
+    root /Users/suzumaki/Desktop/webserv/www/;
     error_page 500 502 503 504 /500.html;
     error_page 404 /404.html;
-  
+    
+    autoindex on;
     location / {
-        index     upload_form.html index.html index.php;
+        autoindex on;
+        #index     dddupload_form.html dadaindex.html adadwindex.php;
         allowed_methods   GET;
     };
 
     location /images/ {
-        root /Users/bswag/Desktop/webserv/www/static/;
+        autoindex on;
+        root /Users/suzumaki/Desktop/webserv/www/static/;
         allowed_methods   GET;
     };
 
     location /storage/ {
-        root              /Users/bswag/Desktop/webserv/www/users_files;
+        root              /Users/suzumaki/Desktop/webserv/www/users_files;
         allowed_methods   GET;
         autoindex         on;
     };
 
     location /upload/ {
-        root              /Users/bswag/Desktop/webserv/www/users_files;
+        root              /Users/suzumaki/Desktop/webserv/www/users_files;
         allowed_methods   POST DELETE;
+        autoindex on;
     };
 
     location = /index.php {
+        autoindex on;
         allowed_methods   GET;
     };
 
     location ~ py/php {
-        root /Users/bswag/Desktop/webserv/www/cgi-bin_mac/;
+        autoindex on;
+        root /Users/suzumaki/Desktop/webserv/www/cgi-bin_mac/;
         cgi_enabled;
         cgi_timeout  5;
     };
 
     location ~ html {
-        root /Users/bswag/Desktop/webserv/www/static/;
+        autoindex on;
+        root /Users/suzumaki/Desktop/webserv/www/static/;
     };
 
     location ~ pdf {
-        root /Users/bswag/Desktop/webserv/www/documents/;
+        autoindex on;
+        root /Users/suzumaki/Desktop/webserv/www/documents/;
         allowed_methods   GET;
     };
 };
@@ -75,10 +83,11 @@ server {
 server {
 
   listen 127.0.0.1:8080;
-  server_name bswag.ru www.bswag.ru;
-  access_log  /Users/bswag/Desktop/webserv/www/logs/bswag.log;
+  server_name suzumaki.ru www.suzumaki.ru;
+  access_log  /Users/suzumaki/Desktop/webserv/www/logs/suzumaki.log;
 
   location / {
+        autoindex on;
         redirect 301 http://www.cplusplus.com/info/description$uri;
   };
 };

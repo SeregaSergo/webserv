@@ -37,6 +37,7 @@ tcp_keepalive_probes		return KA_PROBES;
 tcp_keepalive_intvl			return KA_INTERVAL;
 types						return MIMETYPES;
 $uri						return URI;
+#							;
 \"                      	return QUOTE;
 \{                      	return OBRACE;
 \}                      	return EBRACE;

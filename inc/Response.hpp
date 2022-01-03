@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <dirent.h>
 #include <sstream>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -48,6 +49,9 @@ private:
 
     // Redirections
     void processRedirection(void);
+
+    //Autoindex
+    void processAI(void);
 
     // Assembling response
     void handleError(void);

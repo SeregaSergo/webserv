@@ -1,0 +1,1155 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+ 
+
+# Make data base, printed on Mon Jan  3 18:18:54 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# makefile (from `Makefile', line 15)
+MAIN_OBJ = $(addprefix $(PATH_O)/,$(MAIN:%.cpp=%.o))
+# environment
+VSCODE_LOG_NATIVE = false
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /Users/suzumaki/Desktop/webserv
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 57)
+CFLAGS = -g -Wall -Wextra -Werror -MMD
+# makefile (from `obj/ConfigParser.d', line 1)
+MAKEFILE_LIST :=  Makefile obj/main.d obj/Webserv.d obj/Server.d obj/VirtServer.d obj/Location.d obj/Client.d obj/Logger.d obj/Redirect.d obj/Request.d obj/Response.d obj/constants.d obj/AMethod.d obj/Get.d obj/Post.d obj/Delete.d obj/InCGI.d obj/OutCGI.d obj/lex.yy.d obj/ConfigParser.d
+# makefile (from `Makefile', line 24)
+SRCS = Webserv.cpp Server.cpp VirtServer.cpp Location.cpp Client.cpp Logger.cpp Redirect.cpp Request.cpp Response.cpp constants.cpp AMethod.cpp Get.cpp Post.cpp Delete.cpp InCGI.cpp OutCGI.cpp
+# makefile (from `Makefile', line 58)
+CXXFLAGS = -std=c++98
+# makefile (from `Makefile', line 51)
+YACC_CPP = $(addprefix $(PATH_P)/, $(YACC_PROD))
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# makefile (from `Makefile', line 52)
+YACC_HPP = $(YACC_CPP:%.cpp=%.hpp)
+# makefile (from `Makefile', line 40)
+OBJS = $(addprefix $(PATH_O)/,$(SRCS:%.cpp=%.o))
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0001r84000f21/T/vscode-ipc-bd7ecfc5-3da1-4eb5-a765-7ab3e6e3fbc9.sock
+# environment
+VSCODE_CWD = /
+# environment
+Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.yudULGiDTk/Render
+# environment
+PATH = /Users/suzumaki/.brew/Cellar/llvm/12.0.1/bin:/Users/suzumaki/.brew/bin:/Users/suzumaki/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/opt/X11/bin
+# makefile (from `Makefile', line 10)
+PATH_O = obj
+# makefile (from `Makefile', line 44)
+LEX_PROD = lex.yy.c
+# environment
+VSCODE_LOG_STACK = false
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# makefile (from `Makefile', line 17)
+MAIN_LEX = test_lex.cpp
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.HYqyG34nNE/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+HOMEBREW_TEMP = /tmp/suzumaki/Homebrew/Temp
+# environment
+DISPLAY = /private/tmp/com.apple.launchd.RKitY7QAND/org.xquartz:0
+# makefile (from `Makefile', line 43)
+LEX_SRC = lexer.l
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+PWD = /Users/suzumaki/Desktop/webserv
+# makefile (from `Makefile', line 45)
+LEX_C = $(addprefix $(PATH_P)/, $(LEX_PROD))
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
+# environment
+HOME = /Users/suzumaki
+# default
+MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/suzumaki/Library/Application Support/Code/CachedData/ccbaa2d27e38e5afa3e5c21c1c7bef4657064247
+# environment
+LOGNAME = suzumaki
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+XPC_FLAGS = 0x0
+# makefile (from `Makefile', line 7)
+PATH_T = tests
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+HOMEBREW_CACHE = /tmp/suzumaki/Homebrew/Caches
+# environment
+SHLVL = 1
+# makefile (from `Makefile', line 53)
+YACC_OBJ = $(addprefix $(PATH_O)/, $(YACC_PROD:%.cpp=%.o))
+# makefile (from `Makefile', line 55)
+CC = clang
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = suzumaki
+# makefile
+.DEFAULT_GOAL := all
+# makefile (from `Makefile', line 2)
+NAME = server
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# makefile (from `Makefile', line 18)
+MAIN_LEX_OBJ = $(addprefix $(PATH_O)/,$(MAIN_LEX:%.cpp=%.o))
+# default
+MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/zz/zyxvpxvq6csfxvn_n0001r84000f21/T/
+# automatic
+*F = $(notdir $*)
+# makefile (from `Makefile', line 63)
+OS := Darwin
+# environment
+VSCODE_IPC_HOOK = /Users/suzumaki/Library/Application Support/Code/1.62.3-main.sock
+# makefile (from `Makefile', line 67)
+OSFLAGS = -DMACOS_COMPILATION
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+MAIL = suzumaki@student.21-school.ru
+# makefile (from `Makefile', line 14)
+MAIN = main.cpp
+# environment
+XPC_SERVICE_NAME = com.microsoft.VSCode.2572
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# makefile (from `Makefile', line 8)
+PATH_I = inc
+# makefile (from `Makefile', line 3)
+NAME_D_LEX = test_lex
+# automatic
++F = $(notdir $+)
+# makefile (from `Makefile', line 11)
+PATH_P = src/config_parser
+# makefile (from `Makefile', line 21)
+MAIN_CL_OBJ = $(addprefix $(PATH_O)/,$(MAIN_CLIENT:%.cpp=%.o))
+# environment
+__CF_USER_TEXT_ENCODING = 0x3841:0x0:0x0
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# makefile (from `Makefile', line 56)
+CXX = clang++
+# environment
+PAGER = most
+# environment
+LC_ALL = C
+# makefile (from `Makefile', line 4)
+NAME_CLIENT = cl
+# automatic
+^F = $(notdir $^)
+# makefile (from `Makefile', line 71)
+DEPS = $(MAIN_OBJ:%.o=%.d) $(MAIN_LEX_OBJ:%.o=%.d) $(MAIN_CL_OBJ:%.o=%.d) $(OBJS:%.o=%.d) $(LEX_OBJ:%.o=%.d) $(YACC_OBJ:%.o=%.d)
+# default
+SUFFIXES := 
+# makefile (from `Makefile', line 50)
+YACC_PROD = ConfigParser.cpp
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+MAKELEVEL := 0
+# makefile (from `Makefile', line 46)
+LEX_OBJ = $(addprefix $(PATH_O)/,$(LEX_PROD:%.c=%.o))
+# environment
+LANG = C
+# makefile (from `Makefile', line 20)
+MAIN_CLIENT = cl.cpp
+# makefile (from `Makefile', line 49)
+YACC_SRC = YACC.y
+# environment
+VSCODE_PID = 3735
+# makefile (from `Makefile', line 9)
+PATH_S = src
+# variable set hash-table stats:
+# Load=98/1024=10%, Rehash=0, Collisions=30/273=11%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777227, inode 5278481): 18 files, no impossibilities.
+
+# 18 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+# Not a target:
+src/config_parser/../../inc/Server.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/Location.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+&: src/config_parser/YACC.y
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 110):
+	yacc $< -d -o $(YACC_CPP)
+	
+
+# Not a target:
+obj/AMethod.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:46
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/../inc/Server.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/Redirect.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/OutCGI.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/Location.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/YACC.y:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+ 
+obj/Server.o: src/Server.cpp src/Server.cpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Server'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+all: directories server
+#  Phony target (prerequisite of .PHONY).
+#  Command-line target.
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# makefile (from `Makefile', line 59)
+# CMDL_FLAGS = 
+# variable set hash-table stats:
+# Load=1/32=3%, Rehash=0, Collisions=0/4=0%
+
+obj/test_lex.o: tests/test_lex.cpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `test_lex'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 97):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+client: directories tests/cl
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+src/Response.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Webserv.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:42
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+obj/Location.o: src/Location.cpp src/Location.cpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/constants.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Location'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+obj/constants.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:46
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/config_parser/../../inc/Get.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+.PHONY: all client debug_lex directories clean fclean re
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/Logger.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/lexer.l:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/Redirect.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tests/cl.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/Post.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/Request.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+obj/Redirect.o: src/Redirect.cpp src/Redirect.cpp src/../inc/Redirect.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Redirect'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+src/../inc/Get.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+obj/Get.o: src/Get.cpp src/Get.cpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Get'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+src/../inc/Post.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/Request.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/VirtServer.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/InCGI.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+obj/Post.o: src/Post.cpp src/Post.cpp src/../inc/Post.hpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Post'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+obj/main.o: src/main.cpp src/main.cpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/Server.hpp src/../inc/AFdHandler.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `main'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+obj/Request.o: src/Request.cpp src/Request.cpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Request'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/AMethod.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:37
+ 
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+server: obj/Webserv.o obj/Server.o obj/VirtServer.o obj/Location.o obj/Client.o obj/Logger.o obj/Redirect.o obj/Request.o obj/Response.o obj/constants.o obj/AMethod.o obj/Get.o obj/Post.o obj/Delete.o obj/InCGI.o obj/OutCGI.o obj/main.o obj/ConfigParser.o obj/lex.yy.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 82):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) $^ -o $@
+	
+
+debug: directories server
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+# makefile (from `Makefile', line 61)
+# CMDL_FLAGS = -DDISPLAY_FLAG -DDEBUG_FLAG -fsanitize=address
+# variable set hash-table stats:
+# Load=1/32=3%, Rehash=0, Collisions=0/1=0%
+
+# Not a target:
+src/config_parser/../../inc/Webserv.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/OutCGI.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:49
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/../inc/AMethod.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/constants.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/AFdHandler.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Response.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:46
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+obj/AMethod.o: src/AMethod.cpp src/AMethod.cpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `AMethod'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+tests/test_lex.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/lex.yy.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:50
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/Logger.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/Client.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/Webserv.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/constants.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/AFdHandler.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+obj/Webserv.o: src/Webserv.cpp src/Webserv.cpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/Server.hpp src/../inc/AFdHandler.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Webserv'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+obj/constants.o: src/constants.cpp src/constants.cpp src/../inc/constants.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `constants'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+obj/ConfigParser.o: src/config_parser/ConfigParser.cpp src/config_parser/ConfigParser.cpp src/config_parser/../../inc/Webserv.hpp src/config_parser/../../inc/constants.hpp src/config_parser/../../inc/Server.hpp src/config_parser/../../inc/AFdHandler.hpp src/config_parser/../../inc/VirtServer.hpp src/config_parser/../../inc/Location.hpp src/config_parser/../../inc/Redirect.hpp src/config_parser/../../inc/Client.hpp src/config_parser/../../inc/Response.hpp src/config_parser/../../inc/Request.hpp src/config_parser/../../inc/InCGI.hpp src/config_parser/../../inc/OutCGI.hpp src/config_parser/../../inc/Logger.hpp src/config_parser/../../inc/Get.hpp src/config_parser/../../inc/AMethod.hpp src/config_parser/../../inc/Post.hpp src/config_parser/../../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 107):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+src/Delete.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+fclean: clean
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 132):
+	/bin/rm -f $(NAME) $(NAME_D_LEX) $(addprefix $(PATH_T)/, $(NAME_CLIENT))
+	
+
+# Not a target:
+obj/VirtServer.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:43
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+obj/InCGI.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:48
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+obj/cl.o: tests/cl.cpp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 120):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+src/../inc/Response.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/ConfigParser.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:50
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/config_parser/../../inc/OutCGI.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/Response.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/Server.cpp:
+ 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+tests/cl: obj/cl.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 117):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $< -o $@
+	
+
+# Not a target:
+src/Location.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/OutCGI.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Logger.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:44
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+obj/cl.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+obj/OutCGI.o: src/OutCGI.cpp src/OutCGI.cpp src/../inc/OutCGI.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `OutCGI'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+obj/Response.o: src/Response.cpp src/Response.cpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Response'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+src/Redirect.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+re: fclean all
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+obj/lex.yy.o: src/config_parser/lex.yy.c src/config_parser/ConfigParser.hpp src/config_parser/lex.yy.c src/config_parser/ConfigParser.hpp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 100):
+	$(CC) $(CFLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 127):
+	/bin/rm -f  $(MAIN_OBJ) $(MAIN_LEX_OBJ) $(OBJS) $(LEX_OBJ) \
+	$(YACC_OBJ) $(DEPS) $(YACC_CPP) $(YACC_HPP) $(LEX_C) \
+	$(MAIN_CL_OBJ)
+	
+
+# Not a target:
+src/Get.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Delete.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:48
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+obj/Client.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:44
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/config_parser/../../inc/InCGI.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/Post.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/main.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/Request.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/VirtServer.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/../inc/InCGI.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+display: directories server
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+# makefile (from `Makefile', line 60)
+# CMDL_FLAGS = -DDISPLAY_FLAG
+# variable set hash-table stats:
+# Load=1/32=3%, Rehash=0, Collisions=0/1=0%
+
+obj/VirtServer.o: src/VirtServer.cpp src/VirtServer.cpp src/../inc/VirtServer.hpp src/../inc/constants.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/Logger.hpp src/../inc/AFdHandler.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `VirtServer'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+obj/InCGI.o: src/InCGI.cpp src/InCGI.cpp src/../inc/InCGI.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `InCGI'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+obj/Server.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:42
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/config_parser/../../inc/Logger.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/test_lex.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/config_parser/../../inc/Client.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/AMethod.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Location.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+ 
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:43
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+src/config_parser/ConfigParser.cpp: src/config_parser/YACC.y
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 110):
+	yacc $< -d -o $(YACC_CPP)
+	
+
+src/config_parser/lex.yy.c: src/config_parser/lexer.l
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 103):
+	flex $<
+	@mv $(LEX_PROD) $(PATH_P)
+	
+
+# Not a target:
+src/config_parser/../../inc/VirtServer.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/Webserv.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Redirect.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:44
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+src/../inc/Client.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/constants.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/config_parser/../../inc/Delete.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+obj/Logger.o: src/Logger.cpp src/Logger.cpp src/../inc/Logger.hpp src/../inc/AFdHandler.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Logger'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+obj/Client.o: src/Client.cpp src/Client.cpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Logger.hpp src/../inc/AFdHandler.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Client'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# Not a target:
+obj/Get.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:47
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+directories:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `'
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := directories
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := 
+# automatic
+# | := 
+# automatic
+# < := 
+# automatic
+# ^ := 
+# automatic
+# ? := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=2/11=18%
+#  commands to execute (from `Makefile', line 124):
+	@mkdir -p $(PATH_O)
+	
+
+debug_lex: directories test_lex
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+test_lex: obj/Webserv.o obj/Server.o obj/VirtServer.o obj/Location.o obj/Client.o obj/Logger.o obj/Redirect.o obj/Request.o obj/Response.o obj/constants.o obj/AMethod.o obj/Get.o obj/Post.o obj/Delete.o obj/InCGI.o obj/OutCGI.o obj/ConfigParser.o obj/lex.yy.o obj/test_lex.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 91):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(OSFLAGS) $^ -o $@
+	
+
+# Not a target:
+src/../inc/Delete.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+obj/Post.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:47
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+obj/main.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:49
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+obj/Request.d:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  Last modified 2022-01-03 18:17:45
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+src/config_parser/ConfigParser.hpp: src/config_parser/YACC.y
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 110):
+	yacc $< -d -o $(YACC_CPP)
+	
+
+obj/Delete.o: src/Delete.cpp src/Delete.cpp src/../inc/Delete.hpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/Post.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `Delete'
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 94):
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
+	
+
+# files hash-table stats:
+# Load=117/1024=11%, Rehash=0, Collisions=39/526=7%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 22
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 3802 / max = 3802 / min = 3802 / avg = 3802
+
+# Finished Make data base on Mon Jan  3 18:18:54 2022
+
+ 

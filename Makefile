@@ -54,7 +54,7 @@ YACC_OBJ =		$(addprefix $(PATH_O)/, $(YACC_PROD:%.cpp=%.o))
 
 CC =			clang
 CXX =			clang++
-CFLAGS =		-Wall -Wextra -Werror -MMD
+CFLAGS =		-g -Wall -Wextra -Werror -MMD
 CXXFLAGS =		-std=c++98
 all: CMDL_FLAGS =
 display: CMDL_FLAGS = -DDISPLAY_FLAG

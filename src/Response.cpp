@@ -304,6 +304,38 @@ void Response::assembleResponse(void)
     _response.append(std::istreambuf_iterator<char>(_body), std::istreambuf_iterator<char>());
 }
 
+/////////////////////////////////////
+//      AI implementation function //
+/////////////////////////////////////
+
+void Response::processAI()
+{
+
+    _virt_serv = _request->_virt_serv;
+    _status_code = _request->_status_code;
+    _resulting_uri = "/static/autoindex.html";//_request->_uri;
+    _location = _request->_location;
+    _file = _location->getResoursePath("/static");
+    std::ofstream myfile;
+    myfile.open(_file);
+    myfile << "<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n";
+    
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir (_file.c_str())) != NULL) {
+    /* print all the files and directories within directory */
+    while ((ent = readdir (dir)) != NULL) {
+        myfile << ent->d_name << std::endl;
+        printf ("%s\n", ent->d_name);
+    }
+    myfile << "</body>\n</html>\n";
+    closedir (dir);
+    myfile.close();
+    } else {
+    /* could not open directory */
+    }
+}
+
 
 /////////////////////////////////////
 //     Public member functions     //
@@ -323,7 +355,7 @@ void Response::processRequest()
         return;
     
     case processing::Type::autoindex:
-        // processAI();
+        processAI();
         break;
     }
 
