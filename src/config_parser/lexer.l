@@ -32,6 +32,8 @@ redirect					return REDIRECTION;
 root						return ROOT;
 server						return SERVER;
 server_name					return SERVER_NAME;
+sessions_enabled			return SESSIONS_ON;
+session_tiomout				return SESSION_TIMEOUT;
 tcp_keepalive_time			return KA_TIME;
 tcp_keepalive_probes		return KA_PROBES;
 tcp_keepalive_intvl			return KA_INTERVAL;

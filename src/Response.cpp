@@ -249,7 +249,8 @@ int Response::processMethod(void)
     _location = _request->_location;
     _file = _location->getResoursePath(_resulting_uri);
     int location_type = _location->getType();
-
+    _virt_serv->init_session(_request->_headers, _sid);
+    
     if (_status_code != 200)
         return (processing::Type::error);
     if (location_type == location::Type::redirection)
@@ -291,6 +292,8 @@ void Response::assembleResponse(void)
     _response.push_back(' ');
     _response.append(constants::codes_description.find(_status_code)->second);
     _headers["Content-Length"] = numToStr(_body.tellp() - _body.tellg());
+    if (!_sid.empty())
+        _headers["Set-Cookie"] = _sid;
     if (_request->isLastRequest())
         _headers["Connection"] = "close";
     for (std::map<std::string,std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
@@ -323,6 +326,7 @@ void Response::processRequest()
         return;
     
     case processing::Type::autoindex:
+        DISPLAY(std::cout << "AI" << std::endl;)
         // processAI();
         break;
     }

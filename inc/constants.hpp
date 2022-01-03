@@ -10,6 +10,8 @@ namespace constants
 {
     extern time_t                               timeout_idle;
     extern time_t                               timeout_ka;
+    extern time_t                               timeout_session;
+    extern time_t                               timeout_sid_cleaning;
     extern int                                  ka_time;
     extern int                                  ka_probes;
     extern int                                  ka_interval;

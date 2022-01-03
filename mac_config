@@ -6,6 +6,7 @@ tcp_keepalive_time 300;
 tcp_keepalive_probes 3;
 tcp_keepalive_intvl 20;
 
+session_tiomout     60;
 limit_uri_length  1024;
 limit_request_entity 4096;
 
@@ -28,9 +29,10 @@ server {
     access_log  /Users/bswag/Desktop/webserv/www/logs/suzumaki.log;
     client_max_body_size 5M;
     root /Users/bswag/Desktop/webserv/www/;
+    sessions_enabled;
     error_page 500 502 503 504 /500.html;
     error_page 404 /404.html;
-  
+
     location / {
         index     upload_form.html index.html index.php;
         allowed_methods   GET;
@@ -64,6 +66,7 @@ server {
 
     location ~ html {
         root /Users/bswag/Desktop/webserv/www/static/;
+        allowed_methods     GET;
     };
 
     location ~ pdf {

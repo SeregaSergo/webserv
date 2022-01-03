@@ -5,6 +5,7 @@ tcp_keepalive_time 300;
 tcp_keepalive_probes 3;
 tcp_keepalive_intvl 20;
 
+session_tiomout     2;
 limit_uri_length  1024;
 limit_request_entity 4096;
 
@@ -23,13 +24,14 @@ types {
 
 server {
     server_name suzumaki.com www.suzumaki.com;
-    listen 127.0.0.1:80;
+    listen 127.0.0.1:8080;
     access_log  /home/serega/Desktop/webserv/www/logs/suzumaki.log;
     client_max_body_size 5M;
     root /home/serega/Desktop/webserv/www/;
+    sessions_enabled;
     error_page 500 502 503 504 /500.html;
     error_page 404 /404.html;
-    
+
     location / {
         index     upload_form.html index.html index.php;
         allowed_methods   GET;
@@ -74,7 +76,7 @@ server {
 
 server {
 
-    listen 127.0.0.1:80;
+    listen 127.0.0.1:8080;
     access_log  /home/serega/Desktop/webserv/www/logs/bswag.log;
     server_name bswag.com www.bswag.com;
     

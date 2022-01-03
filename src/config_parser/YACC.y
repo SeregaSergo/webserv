@@ -13,7 +13,7 @@ extern "C"
 		(void)str;
 	}
 	int yyparse(void);
-	int yylex(void); 
+	int yylex(void);
     int yywrap()
     {
 		return 1;
@@ -35,7 +35,7 @@ int main(void)
 %token	ERRLOG ACCLOG DAEMON MIMETYPES ROOT ALLOWED_METHODS INDEX REDIRECTION
 		AUTOINDEX SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE 
 		CLIENT_MAX_BODY_SIZE URI QUOTE OBRACE EBRACE SEMICOLON COLON
-		CGI_ENABLED CGI_TIMEOUT
+		CGI_ENABLED CGI_TIMEOUT SESSIONS_ON
 
 /*
 ** This is for using different return types (see 6.3)
@@ -64,6 +64,7 @@ int main(void)
 
 %token <number> IDLE_TIMEOUT
 %token <number> KA_TIMEOUT
+%token <number> SESSION_TIMEOUT
 %token <number> KA_TIME
 %token <number> KA_PROBES
 %token <number> KA_INTERVAL
@@ -114,6 +115,9 @@ num_constants: num_constant NUMBER
 			case KA_TIMEOUT:
 				config->timeout_ka = $2;
 				break;
+			case SESSION_TIMEOUT:
+				config->timeout_session = $2 * 60;
+				break;
 			case KA_TIME:
 				config->keepalive_time = $2;
 				break;
@@ -137,6 +141,7 @@ num_constants: num_constant NUMBER
 num_constant:
 		IDLE_TIMEOUT		{ $$ = IDLE_TIMEOUT; }
 		| KA_TIMEOUT 		{ $$ = KA_TIMEOUT; }
+		| SESSION_TIMEOUT 	{ $$ = SESSION_TIMEOUT; }
 		| KA_TIME 			{ $$ = KA_TIME; }
 		| KA_PROBES 		{ $$ = KA_PROBES; }
 		| KA_INTERVAL		{ $$ = KA_INTERVAL; }
@@ -189,6 +194,8 @@ server_statement:
 		autoindex
 		|
 		error_page
+		|
+		sessions_enabled
 		|
 		location_block
 		;
@@ -279,6 +286,13 @@ error_num:
 		| error_num NUMBER
 		{
 			config->servers.back().err_num_temp.push_back($2);
+		}
+		;
+
+sessions_enabled:
+		SESSIONS_ON
+		{
+			config->servers.back().sessions_enabled = true;
 		}
 		;
 

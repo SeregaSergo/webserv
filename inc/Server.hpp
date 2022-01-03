@@ -20,32 +20,37 @@ class Client;
 class Server : public AFdHandler {
 
 private:
-	Webserv *										_master;
-	std::map<std::string, VirtServer *>				_virt_servers;
-	std::map<int, Client *>							_clients;
+	std::string &							_ip;
+	const int 								_port;
+	Webserv *								_master;
+	std::vector<VirtServer *>           	_virt_servers;
+	std::map<std::string, VirtServer *>		_host_map;
+	std::map<int, Client *>					_clients;
+	struct timeval  						_last_sessions_cleaning;
 
-	Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers);
+	Server(std::string & ip, const int port, Webserv * master, int fd, \
+			std::map<std::string, VirtServer *> & host_map, \
+			std::vector<VirtServer *> virt_servers);
 
 public:
 	~Server(void);
-	static Server * create(std::string & host, const int port, Webserv * master,\
-							std::map<std::string, VirtServer *> & virt_servers);
+	static Server * create(std::string & ip, const int port, Webserv * master,\
+							std::map<std::string, VirtServer *> & host_map, \
+							std::vector<VirtServer *> virt_servers);
 	void removeClient(Client * c);
 	void sendErrMsg(std::string const & msg);
 	VirtServer * getVirtualServ(std::string const & serv_name);
 	void removeHandler(AFdHandler * h);
 	void addHandler(AFdHandler * h);
 	void removeAllClients(void);
+	std::string const & getIP(void) const;
+	int getPort(void) const;
 
 private:
 	virtual bool wantRead(void) const { return true; }
     virtual bool wantWrite(void) const { return false; }
 	virtual void handle(void);
-	virtual bool checkTimeout(struct timeval & cur_time)
-	{
-		(void)cur_time;
-		return false;
-	}
+	virtual bool checkTimeout(struct timeval & cur_time);
 };
 
 #endif

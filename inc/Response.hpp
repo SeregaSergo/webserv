@@ -29,6 +29,7 @@ private:
 
     // Data for constructing a response
     int                                 _status_code;
+    std::string                         _sid;
     std::map<std::string,std::string>   _headers;
     std::stringstream                   _body;
 
