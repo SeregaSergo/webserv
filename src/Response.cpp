@@ -245,7 +245,7 @@ int Response::processMethod(void)
 {
     _virt_serv = _request->_virt_serv;
     _status_code = _request->_status_code;
-    _resulting_uri = _request->_uri;
+    _resulting_uri =  _request->_uri;
     _location = _request->_location;
     _file = _location->getResoursePath(_resulting_uri);
     int location_type = _location->getType();
@@ -313,9 +313,9 @@ void Response::processAI()
 
     _virt_serv = _request->_virt_serv;
     _status_code = _request->_status_code;
-    _resulting_uri = "/static/autoindex.html";//_request->_uri;
+    _resulting_uri = "/autoindex.html";//_request->_uri;
     _location = _request->_location;
-    _file = _location->getResoursePath("/static");
+    _file = _location->getResoursePath("/static/autoindex.html");
     std::ofstream myfile;
     myfile.open(_file);
     myfile << "<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n";

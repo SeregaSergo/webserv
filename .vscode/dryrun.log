@@ -1,8 +1,10 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/suzumaki/Desktop/webserv'
 mkdir -p obj
+ 
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Webserv.cpp -o obj/Webserv.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Server.cpp -o obj/Server.o
+ 
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/VirtServer.cpp -o obj/VirtServer.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Location.cpp -o obj/Location.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Client.cpp -o obj/Client.o
@@ -10,6 +12,7 @@ clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Log
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Redirect.cpp -o obj/Redirect.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Request.cpp -o obj/Request.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Response.cpp -o obj/Response.o
+ 
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/constants.cpp -o obj/constants.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/AMethod.cpp -o obj/AMethod.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/Get.cpp -o obj/Get.o
@@ -19,6 +22,7 @@ clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/InC
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/OutCGI.cpp -o obj/OutCGI.o
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98  -DMACOS_COMPILATION -c src/main.cpp -o obj/main.o
 yacc src/config_parser/YACC.y -d -o src/config_parser/ConfigParser.cpp
+ 
 clang++ -g -Wall -Wextra -Werror -MMD -std=c++98 -DMACOS_COMPILATION -c src/config_parser/ConfigParser.cpp -o obj/ConfigParser.o
 flex src/config_parser/lexer.l
 mv lex.yy.c src/config_parser

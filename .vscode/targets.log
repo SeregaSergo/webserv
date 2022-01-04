@@ -8,7 +8,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Mon Jan  3 18:18:54 2022
+# Make data base, printed on Tue Jan  4 11:28:55 2022
+ 
 
 # Variables
 
@@ -51,13 +52,13 @@ YACC_HPP = $(YACC_CPP:%.cpp=%.hpp)
 # makefile (from `Makefile', line 40)
 OBJS = $(addprefix $(PATH_O)/,$(SRCS:%.cpp=%.o))
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0001r84000f21/T/vscode-ipc-bd7ecfc5-3da1-4eb5-a765-7ab3e6e3fbc9.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0001r84000f21/T/vscode-ipc-f29c12f9-e3ee-40b2-abde-65548f5fcb36.sock
 # environment
 VSCODE_CWD = /
 # environment
-Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.yudULGiDTk/Render
+Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.oyRZb4VXRc/Render
 # environment
-PATH = /Users/suzumaki/.brew/Cellar/llvm/12.0.1/bin:/Users/suzumaki/.brew/bin:/Users/suzumaki/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/opt/X11/bin
+PATH = /Users/suzumaki/.brew/Cellar/llvm/12.0.1/bin:/Users/suzumaki/.brew/bin:/Users/suzumaki/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/usr/local/munki:/opt/X11/bin:~/.dotnet/tools
 # makefile (from `Makefile', line 10)
 PATH_O = obj
 # makefile (from `Makefile', line 44)
@@ -71,13 +72,13 @@ ELECTRON_RUN_AS_NODE = 1
 # makefile (from `Makefile', line 17)
 MAIN_LEX = test_lex.cpp
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.HYqyG34nNE/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.4aQWp5wKx0/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
 HOMEBREW_TEMP = /tmp/suzumaki/Homebrew/Temp
 # environment
-DISPLAY = /private/tmp/com.apple.launchd.RKitY7QAND/org.xquartz:0
+DISPLAY = /private/tmp/com.apple.launchd.UhOYsaVlpr/org.xquartz:0
 # makefile (from `Makefile', line 43)
 LEX_SRC = lexer.l
 # environment
@@ -157,7 +158,7 @@ MAIL = suzumaki@student.21-school.ru
 # makefile (from `Makefile', line 14)
 MAIN = main.cpp
 # environment
-XPC_SERVICE_NAME = com.microsoft.VSCode.2572
+XPC_SERVICE_NAME = com.microsoft.VSCode.6244
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # makefile (from `Makefile', line 8)
@@ -205,7 +206,7 @@ MAIN_CLIENT = cl.cpp
 # makefile (from `Makefile', line 49)
 YACC_SRC = YACC.y
 # environment
-VSCODE_PID = 3735
+VSCODE_PID = 39930
 # makefile (from `Makefile', line 9)
 PATH_S = src
 # variable set hash-table stats:
@@ -217,9 +218,9 @@ PATH_S = src
 
 # Directories
 
-# . (device 16777227, inode 5278481): 18 files, no impossibilities.
+# . (device 16777227, inode 5278481): 19 files, no impossibilities.
 
-# 18 files, no impossibilities in 1 directories.
+# 19 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -251,7 +252,7 @@ src/config_parser/../../inc/Location.hpp:
 obj/AMethod.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:46
+#  Last modified 2022-01-03 22:07:22
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -334,7 +335,7 @@ src/Response.cpp:
 obj/Webserv.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:42
+#  Last modified 2022-01-03 22:06:10
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -353,7 +354,7 @@ obj/Location.o: src/Location.cpp src/Location.cpp src/../inc/Location.hpp src/..
 obj/constants.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:46
+#  Last modified 2022-01-03 19:34:51
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -496,7 +497,7 @@ src/config_parser/../../inc/AMethod.hpp:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:37
+#  Last modified 2022-01-03 22:29:12
  
 #  File has been updated.
 #  Successfully updated.
@@ -530,7 +531,7 @@ src/config_parser/../../inc/Webserv.hpp:
 obj/OutCGI.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:49
+#  Last modified 2022-01-03 22:07:25
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -558,7 +559,7 @@ src/config_parser/../../inc/AFdHandler.hpp:
 obj/Response.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:46
+#  Last modified 2022-01-03 22:25:16
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -583,7 +584,7 @@ tests/test_lex.cpp:
 obj/lex.yy.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:50
+#  Last modified 2022-01-03 20:03:59
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -664,7 +665,7 @@ fclean: clean
 obj/VirtServer.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:43
+#  Last modified 2022-01-03 22:06:12
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -674,7 +675,7 @@ obj/VirtServer.d:
 obj/InCGI.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:48
+#  Last modified 2022-01-03 22:07:24
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -698,7 +699,7 @@ src/../inc/Response.hpp:
 obj/ConfigParser.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:50
+#  Last modified 2022-01-03 22:07:26
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -753,7 +754,7 @@ src/../inc/OutCGI.hpp:
 obj/Logger.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:44
+#  Last modified 2022-01-03 19:34:49
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -828,7 +829,7 @@ src/Get.cpp:
 obj/Delete.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:48
+#  Last modified 2022-01-03 22:07:24
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -838,7 +839,7 @@ obj/Delete.d:
 obj/Client.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:44
+#  Last modified 2022-01-03 22:06:12
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -911,7 +912,7 @@ obj/InCGI.o: src/InCGI.cpp src/InCGI.cpp src/../inc/InCGI.hpp src/../inc/Respons
 obj/Server.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:42
+#  Last modified 2022-01-03 22:06:11
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -950,7 +951,7 @@ obj/Location.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
  
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:43
+#  Last modified 2022-01-03 19:34:48
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -989,7 +990,7 @@ src/Webserv.cpp:
 obj/Redirect.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:44
+#  Last modified 2022-01-03 19:34:49
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -1035,7 +1036,7 @@ obj/Client.o: src/Client.cpp src/Client.cpp src/../inc/Client.hpp src/../inc/Res
 obj/Get.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:47
+#  Last modified 2022-01-03 22:07:23
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -1094,7 +1095,7 @@ src/../inc/Delete.hpp:
 obj/Post.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:47
+#  Last modified 2022-01-03 22:07:23
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -1104,7 +1105,7 @@ obj/Post.d:
 obj/main.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:49
+#  Last modified 2022-01-03 22:07:25
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -1114,7 +1115,7 @@ obj/main.d:
 obj/Request.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 18:17:45
+#  Last modified 2022-01-03 22:06:13
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -1150,6 +1151,6 @@ obj/Delete.o: src/Delete.cpp src/Delete.cpp src/../inc/Delete.hpp src/../inc/AMe
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 3802 / max = 3802 / min = 3802 / avg = 3802
 
-# Finished Make data base on Mon Jan  3 18:18:54 2022
+# Finished Make data base on Tue Jan  4 11:28:56 2022
 
  

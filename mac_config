@@ -34,7 +34,7 @@ server {
     autoindex on;
     location / {
         autoindex on;
-        #index     dddupload_form.html dadaindex.html adadwindex.php;
+        #index     wupload_form.html windex.html windex.php;
         allowed_methods   GET;
     };
 

@@ -21,7 +21,12 @@ int Get::findFile(Response & resp)
         index_files.erase(index_files.begin());
     }
     if (index_files.empty() && resp._location->getAutoindex())
+    {
+        (void)resp._location;
+        (void)resp._resulting_uri;
+        resp._file += "static/autoindex.html";
         return (processing::Type::autoindex);
+    }
     else
         return (errorCode(&resp._status_code, 404));
 }
@@ -42,7 +47,7 @@ int Get::process(Response & resp)
     if (isRequestedADirectory(resp._resulting_uri))
     {
         int ret = findFile(resp);
-        if (ret != processing::Type::file)
+        if (ret != processing::Type::file && ret != processing::Type::autoindex)
             return (ret);
     }
 
