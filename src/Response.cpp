@@ -44,7 +44,6 @@ Response::~Response(void)
 
 bool Response::runCGI(void)
 {
-	std::cout << "AaaaaaaaaaaaaaaaaAAAAAAAAAAAA" << std::endl;
     int cgi_out_pipe[2];
     int cgi_in_pipe[2];
 
@@ -211,31 +210,42 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 {
 	std::string str;
 	std::map<std::string, std::string>::iterator map_it;
-	// envp.push_back("AUTH_TYPE=");
+    std::map<std::string, std::string> header_env;
+
+    header_env["Authorization"] = "AUTH_TYPE";
+    header_env["Content-Type"] = "CONTENT_TYPE";
+
+    for (std::map<std::string, std::string>::iterator it = header_env.begin(); it != header_env.end(); ++it) {
+        map_it = this->_request->_headers.find(it->first);
+        if (map_it != this->_request->_headers.end())
+        {
+            str = it->second + "=" + map_it->second;
+            put_env_into_vec(envp, str);
+        }
+    }
+
+    put_env_into_vec(envp, "REQUEST_METHOD=" + this->_request->_method);
+    put_env_into_vec(envp, "QUERY_STRING=" + this->_request->_query);
+
+    std::string uri = this->_request->_uri;
+    put_env_into_vec(envp, "PATH_INFO=" + uri);
+    put_env_into_vec(envp, "PATH_TRANSLATED=" + this->_location->_root + uri);
+    put_env_into_vec(envp, "SCRIPT_NAME=" + uri);
 
 	str = "CONTENT_LENGTH=" + numToStr(this->_request->_body.size());
 	put_env_into_vec(envp, str);
+	put_env_into_vec(envp, "GATEWAY_INTERFACE=CGI/1.1");
 
-	map_it = this->_request->_headers.find("Content-Type");
-	if (map_it != this->_request->_headers.end())
-	{
-		str = "CONTENT_TYPE=" + map_it->second;
-		put_env_into_vec(envp, str);
-	}
-	// envp.push_back("CONTENT_TYPE=");
-	// envp.push_back("GATEWAY_INTERFACE=CGI/1.1");
-	// envp.push_back("PATH_INFO=");
-	// envp.push_back("PATH_TRANSLATED=");
-	// envp.push_back("QUERY_STRING=");
+//    for (map_it = _headers.begin(); map_it != _headers.end(); ++map_it)
+//    	put_env_into_vec(envp, map_it->first + "--->" + map_it->second);
+
 	// envp.push_back("REMOTE_ADDR=");
     // envp.push_back("REMOTE_HOST=");
 	// envp.push_back("REMOTE_IDENT=");
 	// envp.push_back("REMOTE_USER=");
-	// envp.push_back("REQUEST_METHOD=");
-	// envp.push_back("SCRIPT_NAME=");
 	// envp.push_back("SERVER_NAME=");
 	// envp.push_back("SERVER_PORT=");
-	// envp.push_back("SERVER_PROTOCOL=");
+		put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
 	// envp.push_back("SERVER_SOFTWARE=");
     envp.push_back(NULL);
 

@@ -2,6 +2,7 @@
 #define LOCATION_HPP
 
 #include <set>
+#include "Response.hpp"
 #include "Redirect.hpp"
 #include "constants.hpp"
 
@@ -49,6 +50,7 @@ public:
 	std::vector<std::string> &	getIndexFiles(void);
 
 	friend std::ostream &		operator<<(std::ostream & o, Location const & src);
+	friend class Response;
 };
 
 #endif
