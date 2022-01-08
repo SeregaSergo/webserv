@@ -79,7 +79,7 @@ DEPS =			$(MAIN_OBJ:%.o=%.d) \
 
 all: directories $(NAME)
 $(NAME): $(OBJS) $(MAIN_OBJ) $(YACC_OBJ) $(LEX_OBJ)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) $^ -o $@
+	$(CXX) $(CFLAGS) -lpthread $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) $^ -o $@
 
 display: directories $(NAME)
 

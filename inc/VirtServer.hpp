@@ -3,6 +3,9 @@
 
 #include <ctime>
 #include <ftw.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <pthread.h>
 #include "constants.hpp"
 #include "Location.hpp"
 #include "Client.hpp"
@@ -26,6 +29,8 @@ private:
 	bool							_sessions_enabled;
 	std::map<std::string, time_t>	_sessions;
 	pthread_mutex_t					_mutex;
+	pthread_mutex_t					_sync_mutex;
+	pthread_t						_threadID;
 	std::vector<std::string>		_dead_sessions;
 
 	std::map<int, std::string>		_err_pages;
@@ -35,6 +40,7 @@ private:
 				bool sessions, const std::map<int, std::string> & err_pages, \
 				const std::vector<Location> & locations);
 	void giveID(std::string	& cookies, std::string & client_sid);
+	static void * cleaningProcess(void * args);
 
 public:
 	static VirtServer * create(ConfigServ const & conf, Webserv & wbsrv);

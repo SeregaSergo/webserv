@@ -124,7 +124,7 @@ class Webserv {
 private:
     std::vector<AFdHandler *>           _fds;
     int                                 _max_fd;
-    bool                                _quit;
+    static bool                         _quit;
     Logger *                            _err_log;
     std::vector<Server *>               _servers;
     
@@ -134,6 +134,7 @@ private:
     void init_code_descriptions(void);
     void init_methods(void);
     void makeServ(std::vector<ConfigServ> & conf_servers);
+    static void quitSignalHandler(int signum);
 
 public:
     Webserv(const char * config_path);

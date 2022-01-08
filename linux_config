@@ -64,7 +64,7 @@ server {
         cgi_timeout 5;
     };
 
-    location ~ html {
+    location ~ html/ico {
         root /home/serega/Desktop/webserv/www/static/;
     };
 

@@ -244,12 +244,12 @@ void Response::processRedirection(void)
 int Response::processMethod(void)
 {
     _virt_serv = _request->_virt_serv;
+    _virt_serv->init_session(_request->_headers, _sid);
     _status_code = _request->_status_code;
     _resulting_uri = _request->_uri;
     _location = _request->_location;
     _file = _location->getResoursePath(_resulting_uri);
     int location_type = _location->getType();
-    _virt_serv->init_session(_request->_headers, _sid);
     
     if (_status_code != 200)
         return (processing::Type::error);
@@ -293,7 +293,7 @@ void Response::assembleResponse(void)
     _response.append(constants::codes_description.find(_status_code)->second);
     _headers["Content-Length"] = numToStr(_body.tellp() - _body.tellg());
     if (!_sid.empty())
-        _headers["Set-Cookie"] = _sid;
+        _headers["Set-Cookie"] = "SID=" + _sid;
     if (_request->isLastRequest())
         _headers["Connection"] = "close";
     for (std::map<std::string,std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
@@ -371,6 +371,7 @@ std::ostream & operator<<(std::ostream & o, Response const & resp)
     DEBUG(o << "Location:\n" << *resp._location << std::endl);
     DEBUG(o << "Resulting_URI: " << resp._resulting_uri << std::endl);
     DEBUG(o << "File: " << resp._file << std::endl);
+     DEBUG(o << "SID: " << resp._sid << std::endl);
     DEBUG(o << "Sent: " << resp._sent << std::endl << std::endl);
     o << resp._response << std::endl;
     return (o);

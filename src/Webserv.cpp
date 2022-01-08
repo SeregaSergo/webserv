@@ -16,18 +16,18 @@ ConfigServ & ConfigServ::operator=(ConfigServ const & src)
     return (*this);
 }
 
+bool Webserv::_quit = false;
 
-// void quitSignalHandler(int signum)
-// {
-//    cout << "Interrupt signal (" << signum << ") received.\n";
-//     Webserv::
-// }
+void Webserv::quitSignalHandler(int signum)
+{
+    std::cout << "[sig " << signum << "] Webserver was stopped!" << std::endl;
+    Webserv::_quit = true;
+}
 
 // You need to be very carefull with exceptions in construtor.
 // Don't let the memory to leak!
 Webserv::Webserv(const char * config_path)
     : _max_fd(0)
-    , _quit(false)
     , _err_log(NULL)
 {
     Config conf;
@@ -118,6 +118,8 @@ void Webserv::setupParameters(Config & conf)
     init_codes_description();
     init_methods();
     signal (SIGPIPE, SIG_IGN);
+    signal (SIGTERM, Webserv::quitSignalHandler);
+    signal (SIGINT, Webserv::quitSignalHandler);
 }
 
 void Webserv::makeServ(std::vector<ConfigServ> & conf)
