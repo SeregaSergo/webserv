@@ -229,7 +229,7 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 
     std::string uri = this->_request->_uri;
     put_env_into_vec(envp, "PATH_INFO=" + uri);
-    put_env_into_vec(envp, "PATH_TRANSLATED=" + this->_location->_root + uri);
+    put_env_into_vec(envp, "PATH_TRANSLATED=" + this->_location->getResoursePath(uri));
     put_env_into_vec(envp, "SCRIPT_NAME=" + uri);
 
 	str = "CONTENT_LENGTH=" + numToStr(this->_request->_body.size());
