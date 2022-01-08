@@ -243,10 +243,11 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
     // envp.push_back("REMOTE_HOST=");
 	// envp.push_back("REMOTE_IDENT=");
 	// envp.push_back("REMOTE_USER=");
-	// envp.push_back("SERVER_NAME=");
-	// envp.push_back("SERVER_PORT=");
-		put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
-	// envp.push_back("SERVER_SOFTWARE=");
+
+    put_env_into_vec(envp, "SERVER_NAME=webserv");
+    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
+    put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
+    put_env_into_vec(envp, "SERVER_SOFTWARE=webserv_5000");
     envp.push_back(NULL);
 
     return (&envp[0]);
