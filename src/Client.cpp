@@ -145,6 +145,14 @@ void Client::setState(int state) {
     _state = state;
 }
 
+const std::string & Client::getHost(void) {
+    return (_addr);
+}
+
+int Client::getPort(void) {
+    return (_port);
+}
+
 // Delete client if the client takes no action during <timeout_idle> time
 // or keepalive session expired and there is no request.
 bool Client::checkTimeout(struct timeval & cur_time)

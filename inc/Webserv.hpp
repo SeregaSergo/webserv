@@ -104,7 +104,7 @@ template <typename T>
 std::string decToHexStr(T num)
 {
     std::stringstream ss;
-    ss<< std::hex << num;
+    ss << std::hex << num;
     return ss.str();
 }
 

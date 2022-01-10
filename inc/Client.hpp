@@ -42,7 +42,8 @@ public:
     ~Client(void);
 
     void setState(int state);
-
+    const std::string & getHost(void);
+    int getPort(void);
 
 protected:
     virtual bool wantRead(void) const;
