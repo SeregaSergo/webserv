@@ -1,8 +1,8 @@
 #include "../inc/Response.hpp"
 
-Response::Response(Request * req, int * cl_state)
+Response::Response(Request * req, Client * client)
         : _request(req)
-        , _client_state(cl_state)
+        , _client(client)
         , _sent(0)
         , _status_code(0)
         , _virt_serv(NULL)
@@ -14,7 +14,7 @@ Response::Response(Request * req, int * cl_state)
 
 Response::Response(Response const & src)
     : _request(src._request)
-    , _client_state(src._client_state)
+    , _client(src._client)
     , _response(src._response)
     , _sent(src._sent)
     , _status_code(src._status_code)
@@ -187,13 +187,12 @@ void Response::callbackFuncOutCGI(int ret)
     else
     {
         assembleResponse();
-        *_client_state = client::State::writing;
+        _client->setState(client::State::writing);
     }
 }
 
 char * const * Response::getArgv(std::vector<char*> & argv)
 {
-    // argv.push_back((char *)_location->getCgiInterpreter());
     argv.push_back(&_file[0]);
     argv.push_back(NULL);
     return (&argv[0]);
@@ -314,9 +313,9 @@ void Response::assembleResponse(void)
 
 void Response::processRequest()
 {
-    std::cout << "Processing Request" << std::endl;
     switch (processMethod())
     {
+
     case processing::Type::redirection:
         processRedirection();
         break;
@@ -326,14 +325,10 @@ void Response::processRequest()
             break;
         return;
     
-    case processing::Type::autoindex:
-        DISPLAY(std::cout << "AI" << std::endl;)
-        // processAI();
-        break;
     }
-    std::cout << "Assembling response" << std::endl;
+
     assembleResponse();
-    *_client_state = client::State::writing;
+    _client->setState(client::State::writing);
 }
 
 int Response::sendResponse(int fd)

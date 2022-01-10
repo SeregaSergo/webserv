@@ -41,6 +41,9 @@ public:
     Client(Client const & src);
     ~Client(void);
 
+    void setState(int state);
+
+
 protected:
     virtual bool wantRead(void) const;
     virtual bool wantWrite(void) const;

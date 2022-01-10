@@ -7,7 +7,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     , _port(ntohs(addr.sin_port))
     , _state(client::State::reading)
     , _request(serv)
-    , _response(&_request, &_state)
+    , _response(&_request, this)
 {
     int optval = 1;
     socklen_t optlen = sizeof(optval);
@@ -112,7 +112,6 @@ void Client::handle(void)
 
         case request::ReturnCode::completed:
             _state = client::State::processing;
-            DISPLAY(std::cout << _request << std::endl);
             _response.processRequest();
             break;
         }
@@ -140,6 +139,10 @@ std::string Client::getAddress(void)
 
     stream << _addr << ":" << _port;
     return (stream.str());
+}
+
+void Client::setState(int state) {
+    _state = state;
 }
 
 // Delete client if the client takes no action during <timeout_idle> time
