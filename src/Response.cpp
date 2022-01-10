@@ -236,8 +236,12 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 	put_env_into_vec(envp, str);
 	put_env_into_vec(envp, "GATEWAY_INTERFACE=CGI/1.1");
 
-//    for (map_it = _headers.begin(); map_it != _headers.end(); ++map_it)
-//    	put_env_into_vec(envp, map_it->first + "--->" + map_it->second);
+    for (map_it = _request->_headers.begin(); map_it !=  _request->_headers.end(); ++map_it)
+	{
+		str = map_it->first;
+		std::transform(map_it->first.begin(), map_it->first.end(), str.begin(), ::toupper);
+		put_env_into_vec(envp,str + "=" + map_it->second);
+	}
 
 	// envp.push_back("REMOTE_ADDR=");
     // envp.push_back("REMOTE_HOST=");
@@ -245,7 +249,7 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 	// envp.push_back("REMOTE_USER=");
 
     put_env_into_vec(envp, "SERVER_NAME=webserv");
-    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
+//    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
     put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
     put_env_into_vec(envp, "SERVER_SOFTWARE=webserv_5000");
     envp.push_back(NULL);

@@ -13,6 +13,7 @@
 #include "InCGI.hpp"
 #include "OutCGI.hpp"
 #include "string.h"
+#include <algorithm>
 
 class Client;
 class Request;

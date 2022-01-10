@@ -1,4 +1,4 @@
-error_log /Users/19812047/Desktop/webserv/www/logs/error.log;
+error_log /Users/aabet/Desktop/webserv/www/logs/error.log;
 
 idle_timeout 5;
 keepalive_timeout 30;
@@ -25,9 +25,9 @@ types {
 server {
     server_name suzumaki.org www.suzumaki.org;
     listen 127.0.0.1:8080;
-    access_log  /Users/19812047/Desktop/webserv/www/logs/access.log;
+    access_log  /Users/aabet/Desktop/webserv/www/logs/access.log;
     client_max_body_size 5M;
-    root /Users/19812047/Desktop/webserv/www/;
+    root /Users/aabet/Desktop/webserv/www/;
     error_page 500 502 503 504 /custom_50x.html;
     error_page 404 /custom404.html;
   
@@ -37,18 +37,18 @@ server {
     };
 
     location /images/ {
-        root /Users/19812047/Desktop/webserv/www/static/;
+        root /Users/aabet/Desktop/webserv/www/static/;
         allowed_methods   GET;
     };
 
     location /storage/ {
-        root              /Users/19812047/Desktop/webserv/www/users_files;
+        root              /Users/aabet/Desktop/webserv/www/users_files;
         allowed_methods   GET;
         autoindex         on;
     };
 
     location /upload/ {
-        root              /Users/19812047/Desktop/webserv/www/users_files;
+        root              /Users/aabet/Desktop/webserv/www/users_files;
         allowed_methods   POST DELETE;
     };
 
@@ -57,23 +57,23 @@ server {
     };
 
     location ~ php {
-        root /Users/19812047/Desktop/webserv/www/cgi-bin/;
+        root /Users/aabet/Desktop/webserv/www/cgi-bin/;
         cgi_interpreter /usr/bin/php;
         cgi_timeout  10;
     };
 
     location ~ py {
-        root /Users/19812047/Desktop/webserv/www/cgi-bin/;
-        cgi_interpreter /usr/bin/python3;
+        root /Users/aabet/Desktop/webserv/www/cgi-bin/;
+        cgi_interpreter /usr/local/bin/python3;
         cgi_timeout  5;
     };
 
     location ~ html {
-        root /Users/19812047/Desktop/webserv/www/static/;
+        root /Users/aabet/Desktop/webserv/www/static/;
     };
 
     location ~ pdf {
-        root /Users/19812047/Desktop/webserv/www/documents/;
+        root /Users/aabet/Desktop/webserv/www/documents/;
         allowed_methods   GET;
     };
 };
@@ -81,7 +81,7 @@ server {
 server {
 
   listen 127.0.0.1:8080;
-  server_name 19812047.ru www.19812047.ru;
+  server_name aabet.ru www.aabet.ru;
   
   location / {
         redirect 301 http://www.cplusplus.com/info/description§$uri;
