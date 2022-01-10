@@ -100,6 +100,36 @@ void Response::finishCGI(void)
     _pid = 0;
 }
 
+/////////////////////////////////////
+//      AI implementation function //
+/////////////////////////////////////
+
+void Response::processAI()
+{
+
+   
+    _body << "<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n";
+    
+    DIR *dir;
+    struct dirent *ent;
+    std::cout << "AI: " << _file.c_str() << std::endl;
+    if ((dir = opendir (_file.c_str())) != NULL) {
+    /* print all the files and directories within directory */
+    while ((ent = readdir (dir)) != NULL) {
+        _body  <<  "<a href=\"" << _resulting_uri << ent->d_name ;
+        if (ent->d_type == DT_DIR)
+            _body << '/';
+        _body <<  "\">" <<  ent->d_name << "</a><br>";// ent->d_name << std::endl;
+        printf ("%s\n", ent->d_name);
+    }
+    _body << "</body>\n</html>\n";
+    closedir (dir);
+    //myfile.close();
+    } else {
+    /* could not open directory */
+    }
+}
+
 int Response::processResponseCGI(void)
 {
     if (_status_code != 200)
@@ -249,6 +279,7 @@ int Response::processMethod(void)
     _file = _location->getResoursePath(_resulting_uri);
     int location_type = _location->getType();
     
+    std::cout << _file << std::endl;
     if (_status_code != 200)
         return (processing::Type::error);
     if (location_type == location::Type::redirection)
@@ -256,7 +287,6 @@ int Response::processMethod(void)
     if (location_type == location::Type::cgi)
         return (processing::Type::cgi);
 
-    std::cout << "In methods" << std::endl;
     return constants::method[_request->_method]->process(*this);
 }
 
@@ -324,6 +354,10 @@ void Response::processRequest()
         if (!runCGI())
             break;
         return;
+    
+    case processing::Type::autoindex:
+        processAI();
+        break;
     
     }
 

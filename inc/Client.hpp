@@ -33,10 +33,10 @@ private:
     Client(int fd, struct sockaddr_in const & addr, Server * serv);
     int recieveData(void);
     int freeSpace(void);
-    std::string getAddress(void);
     void sendLogMessage(void);
 
 public:
+    std::string getAddress(void);
     static Client * create(int fd, struct sockaddr_in const & addr, Server * serv);
     Client(Client const & src);
     ~Client(void);

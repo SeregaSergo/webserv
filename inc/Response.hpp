@@ -47,6 +47,9 @@ private:
     // Methods implementation
     int processMethod(void);
 
+    // Autoindex implementation
+    void processAI();
+
     // Redirections
     void processRedirection(void);
 
