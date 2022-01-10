@@ -84,18 +84,14 @@ VirtServer::~VirtServer(void)
 {
 	if (_sessions_enabled)
 	{
+		std::string dir_name_sid = _document_root + ".sessions";
 		pthread_cancel(_threadID);
-		sleep(1);
-		pthread_mutex_destroy(&_mutex);
+		if (nftw(dir_name_sid.c_str(), rmFiles, 10, FTW_DEPTH|FTW_MOUNT|FTW_PHYS) == -1)
+			DEBUG(std::cout << "Error while deleting session directory." << std::endl);
 	}
 	delete _acc_log;
 	for (std::vector<Location>::iterator it = _locations.begin(); it != _locations.end(); ++it)
 		(*it).delRedir();
-
-	std::string dir_name_sid = _document_root + ".sessions";
-	
-	if (_sessions_enabled && nftw(dir_name_sid.c_str(), rmFiles, 10, FTW_DEPTH|FTW_MOUNT|FTW_PHYS) == -1)
-		DEBUG(std::cout << "Error while deleting session directory." << std::endl);
 }
 
 VirtServer::VirtServer(VirtServer const & src)

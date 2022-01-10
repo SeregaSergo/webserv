@@ -102,6 +102,7 @@ void Client::handle(void)
             return;
 
         case request::ReturnCode::disconnected:
+            std::cout << "client disconnected" << std::endl;
             _master_serv->removeClient(this);
             return;
         
@@ -111,6 +112,7 @@ void Client::handle(void)
 
         case request::ReturnCode::completed:
             _state = client::State::processing;
+            DISPLAY(std::cout << _request << std::endl);
             _response.processRequest();
             break;
         }

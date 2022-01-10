@@ -88,8 +88,8 @@ void Server::sendErrMsg(std::string const & msg) {
 
 void Server::removeAllClients(void)
 {
-    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-        removeClient(it->second);
+    while(!_clients.empty())
+        removeClient(_clients.begin()->second);
 }
 
 VirtServer * Server::getVirtualServ(std::string const & serv_name)

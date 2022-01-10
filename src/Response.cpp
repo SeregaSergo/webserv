@@ -1,5 +1,4 @@
 #include "../inc/Response.hpp"
-#include <sstream>
 
 Response::Response(Request * req, int * cl_state)
         : _request(req)
@@ -258,6 +257,7 @@ int Response::processMethod(void)
     if (location_type == location::Type::cgi)
         return (processing::Type::cgi);
 
+    std::cout << "In methods" << std::endl;
     return constants::method[_request->_method]->process(*this);
 }
 
@@ -314,6 +314,7 @@ void Response::assembleResponse(void)
 
 void Response::processRequest()
 {
+    std::cout << "Processing Request" << std::endl;
     switch (processMethod())
     {
     case processing::Type::redirection:
@@ -330,7 +331,7 @@ void Response::processRequest()
         // processAI();
         break;
     }
-
+    std::cout << "Assembling response" << std::endl;
     assembleResponse();
     *_client_state = client::State::writing;
 }

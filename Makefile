@@ -58,7 +58,7 @@ CFLAGS =		-Wall -Wextra -Werror -MMD
 CXXFLAGS =		-std=c++98
 all: CMDL_FLAGS =
 display: CMDL_FLAGS = -DDISPLAY_FLAG
-debug: CMDL_FLAGS = -DDISPLAY_FLAG -DDEBUG_FLAG -fsanitize=address
+debug: CMDL_FLAGS =  -fsanitize=address -DDISPLAY_FLAG -DDEBUG_FLAG
 
 OS := $(shell uname)
 ifeq ($(OS), Linux)

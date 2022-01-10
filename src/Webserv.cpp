@@ -115,6 +115,7 @@ void Webserv::setupParameters(Config & conf)
     constants::incoming_buffer = conf.incoming_buffer;
     constants::mime_types.swap(conf.mime_types);
     constants::mime_types[""] = "application/octet-stream";
+    constants::mime_types["default"] = "text/html";
     init_codes_description();
     init_methods();
     signal (SIGPIPE, SIG_IGN);
