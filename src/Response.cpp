@@ -278,16 +278,17 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 		put_env_into_vec(envp, "HTTP_" + str + "=" + map_it->second);
 	}
 
-	// envp.push_back("REMOTE_ADDR=");
-	// envp.push_back("REMOTE_IDENT=");
-	// envp.push_back("REMOTE_USER=");
+	put_env_into_vec(envp, "REMOTE_ADDR=" + this->_client->_addr);
+	put_env_into_vec(envp, "REMOTE_PORT=" + numToStr(this->_client->_port));
+	// envp.push_back("REMOTE_IDENT="); // не надо вроде
+	// envp.push_back("REMOTE_USER="); // не надо вроде
 
     put_env_into_vec(envp, "SERVER_NAME=webserv");
-//    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
+    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
     put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
     put_env_into_vec(envp, "SERVER_SOFTWARE=webserv_5000");
 
-	//    put_env_into_vec(envp, "DOCUMENT_ROOT=");
+	//    put_env_into_vec(envp, "DOCUMENT_ROOT="); // это нужно еще добавить
 
 	envp.push_back(NULL);
 
