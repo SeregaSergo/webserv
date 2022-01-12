@@ -7,7 +7,7 @@ Client::Client(int fd, struct sockaddr_in const & addr, Server * serv)
     , _port(ntohs(addr.sin_port))
     , _state(client::State::reading)
     , _request(serv)
-    , _response(&_request, &_state)
+    , _response(&_request, this)
 {
     int optval = 1;
     socklen_t optlen = sizeof(optval);
@@ -102,6 +102,7 @@ void Client::handle(void)
             return;
 
         case request::ReturnCode::disconnected:
+            std::cout << "client disconnected" << std::endl;
             _master_serv->removeClient(this);
             return;
         
@@ -138,6 +139,18 @@ std::string Client::getAddress(void)
 
     stream << _addr << ":" << _port;
     return (stream.str());
+}
+
+void Client::setState(int state) {
+    _state = state;
+}
+
+const std::string & Client::getHost(void) {
+    return (_addr);
+}
+
+int Client::getPort(void) {
+    return (_port);
 }
 
 // Delete client if the client takes no action during <timeout_idle> time

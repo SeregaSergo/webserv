@@ -58,7 +58,7 @@ CFLAGS =		-Wall -Wextra -Werror -MMD
 CXXFLAGS =		-std=c++98
 all: CMDL_FLAGS =
 display: CMDL_FLAGS = -DDISPLAY_FLAG
-debug: CMDL_FLAGS = -DDISPLAY_FLAG -DDEBUG_FLAG -fsanitize=address
+debug: CMDL_FLAGS =  -fsanitize=address -DDISPLAY_FLAG -DDEBUG_FLAG
 
 OS := $(shell uname)
 ifeq ($(OS), Linux)
@@ -79,7 +79,7 @@ DEPS =			$(MAIN_OBJ:%.o=%.d) \
 
 all: directories $(NAME)
 $(NAME): $(OBJS) $(MAIN_OBJ) $(YACC_OBJ) $(LEX_OBJ)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) $^ -o $@
+	$(CXX) $(CFLAGS) -lpthread $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) $^ -o $@
 
 display: directories $(NAME)
 

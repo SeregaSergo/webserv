@@ -32,9 +32,9 @@ const std::string & Get::getMimeType(std::string const & uri)
     std::map<std::string, std::string>::iterator it;
     if (found == std::string::npos)
         it = constants::mime_types.find("");
-    else
-        it = constants::mime_types.find(uri.substr(found + 1));
-    return ((*it).second);
+    else if ((it = constants::mime_types.find(uri.substr(found + 1))) == constants::mime_types.end())
+        it = constants::mime_types.find("default");
+    return (it->second);
 }
 
 int Get::process(Response & resp)
@@ -55,6 +55,7 @@ int Get::process(Response & resp)
             file.close();
             return (errorCode(&resp._status_code, 500));
         }
+        std::cout << getMimeType(resp._resulting_uri) << std::endl;
         resp._headers["Content-Type"] = getMimeType(resp._resulting_uri);
         file.close();
     }

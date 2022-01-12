@@ -1,4 +1,5 @@
-error_log /Users/aabet/Desktop/webserv/www/logs/error.log;
+
+error_log /Users/suzumaki/Desktop/Sergo/www/logs/error.log;
 
 idle_timeout 5;
 keepalive_timeout 30;
@@ -6,6 +7,7 @@ tcp_keepalive_time 300;
 tcp_keepalive_probes 3;
 tcp_keepalive_intvl 20;
 
+session_tiomout     60;
 limit_uri_length  1024;
 limit_request_entity 4096;
 
@@ -25,55 +27,65 @@ types {
 server {
     server_name suzumaki.org www.suzumaki.org;
     listen 127.0.0.1:8080;
-    access_log  /Users/aabet/Desktop/webserv/www/logs/access.log;
+
+    access_log  /Users/suzumaki/Desktop/Sergo/www/logs/suzumaki.log;
     client_max_body_size 5M;
-    root /Users/aabet/Desktop/webserv/www/;
-    error_page 500 502 503 504 /custom_50x.html;
-    error_page 404 /custom404.html;
-  
+    root /Users/suzumaki/Desktop/Sergo/www/;
+    sessions_enabled;
+    error_page 500 502 503 504 /500.html;
+    error_page 404 /404.html;
+
     location / {
-        index     upload_form.html index.html index.php;
+        autoindex on;
+        index     wupload_form.html windex.html windex.php;
         allowed_methods   GET;
     };
 
     location /images/ {
-        root /Users/aabet/Desktop/webserv/www/static/;
+
+        root /Users/suzumaki/Desktop/Sergo/www/static/;
         allowed_methods   GET;
     };
 
     location /storage/ {
-        root              /Users/aabet/Desktop/webserv/www/users_files;
+
+        root              /Users/suzumaki/Desktop/Sergo/www/users_files;
         allowed_methods   GET;
         autoindex         on;
     };
 
     location /upload/ {
-        root              /Users/aabet/Desktop/webserv/www/users_files;
+
+        root              /Users/suzumaki/Desktop/Sergo/www/users_files;
         allowed_methods   POST DELETE;
     };
+
+    location /cgi-bin_mac {
+        autoindex on;
+        root /Users/suzumaki/Desktop/Sergo/www/cgi-bin_mac;
+        cgi_enabled;
+        cgi_timeout  5;
+    };
+
 
     location = /index.php {
         allowed_methods   GET;
     };
 
-    location ~ php {
-        root /Users/aabet/Desktop/webserv/www/cgi-bin/;
-        cgi_interpreter /usr/bin/php;
-        cgi_timeout  10;
-    };
-
-    location ~ py {
-        root /Users/aabet/Desktop/webserv/www/cgi-bin/;
-        cgi_interpreter /usr/local/bin/python3;
+    location ~ py/php {
+        root /Users/suzumaki/Desktop/Sergo/www/cgi-bin_mac/;
+        cgi_enabled;
         cgi_timeout  5;
     };
 
     location ~ html {
-        root /Users/aabet/Desktop/webserv/www/static/;
+
+        root /Users/suzumaki/Desktop/Sergo/www/static/;
+        allowed_methods     GET;
     };
 
     location ~ pdf {
-        root /Users/aabet/Desktop/webserv/www/documents/;
+        root /Users/suzumaki/Desktop/Sergo/www/documents/;
         allowed_methods   GET;
     };
 };
@@ -81,9 +93,11 @@ server {
 server {
 
   listen 127.0.0.1:8080;
-  server_name aabet.ru www.aabet.ru;
-  
+
+  server_name suzumaki.ru www.suzumaki.ru;
+  access_log  /Users/suzumaki/Desktop/Sergo/www/logs/suzumaki.log;
+
   location / {
-        redirect 301 http://www.cplusplus.com/info/description§$uri;
+        redirect 301 http://www.cplusplus.com/info/description$uri;
   };
 };

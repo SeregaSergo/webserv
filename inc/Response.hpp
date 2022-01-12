@@ -23,7 +23,7 @@ class Response {
 
 private:
     Request *                           _request;
-    int *                               _client_state;
+    Client *                            _client;
 
     // Data members for sending
     std::string                         _response;
@@ -31,6 +31,7 @@ private:
 
     // Data for constructing a response
     int                                 _status_code;
+    std::string                         _sid;
     std::map<std::string,std::string>   _headers;
     std::stringstream                   _body;
 
@@ -47,6 +48,9 @@ private:
 
     // Methods implementation
     int processMethod(void);
+
+    // Autoindex implementation
+    void processAI();
 
     // Redirections
     void processRedirection(void);
@@ -71,7 +75,7 @@ private:
     Response(void) {}
 
 public:
-    Response(Request * req, int * cl_state);
+    Response(Request * req, Client * client);
     Response(Response const & src);
     ~Response(void);
 

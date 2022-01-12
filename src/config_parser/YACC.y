@@ -13,7 +13,7 @@ extern "C"
 		(void)str;
 	}
 	int yyparse(void);
-	int yylex(void); 
+	int yylex(void);
     int yywrap()
     {
 		return 1;
@@ -35,7 +35,7 @@ int main(void)
 %token	ERRLOG ACCLOG DAEMON MIMETYPES ROOT ALLOWED_METHODS INDEX REDIRECTION
 		AUTOINDEX SERVER LISTEN SERVER_NAME LOCATION ERROR_PAGE 
 		CLIENT_MAX_BODY_SIZE URI QUOTE OBRACE EBRACE SEMICOLON COLON
-		CGI_INTERPRETER CGI_TIMEOUT
+		CGI_ENABLED CGI_TIMEOUT SESSIONS_ON
 
 /*
 ** This is for using different return types (see 6.3)
@@ -64,6 +64,7 @@ int main(void)
 
 %token <number> IDLE_TIMEOUT
 %token <number> KA_TIMEOUT
+%token <number> SESSION_TIMEOUT
 %token <number> KA_TIME
 %token <number> KA_PROBES
 %token <number> KA_INTERVAL
@@ -114,6 +115,9 @@ num_constants: num_constant NUMBER
 			case KA_TIMEOUT:
 				config->timeout_ka = $2;
 				break;
+			case SESSION_TIMEOUT:
+				config->timeout_session = $2 * 60;
+				break;
 			case KA_TIME:
 				config->keepalive_time = $2;
 				break;
@@ -137,6 +141,7 @@ num_constants: num_constant NUMBER
 num_constant:
 		IDLE_TIMEOUT		{ $$ = IDLE_TIMEOUT; }
 		| KA_TIMEOUT 		{ $$ = KA_TIMEOUT; }
+		| SESSION_TIMEOUT 	{ $$ = SESSION_TIMEOUT; }
 		| KA_TIME 			{ $$ = KA_TIME; }
 		| KA_PROBES 		{ $$ = KA_PROBES; }
 		| KA_INTERVAL		{ $$ = KA_INTERVAL; }
@@ -189,6 +194,8 @@ server_statement:
 		autoindex
 		|
 		error_page
+		|
+		sessions_enabled
 		|
 		location_block
 		;
@@ -282,6 +289,13 @@ error_num:
 		}
 		;
 
+sessions_enabled:
+		SESSIONS_ON
+		{
+			config->servers.back().sessions_enabled = true;
+		}
+		;
+
 location_block:
 		LOCATION loc_type PATH OBRACE 
 		{
@@ -335,7 +349,7 @@ location_statement:
 		|
 		client_max_body_size
 		|
-		cgi_interpreter
+		cgi_enabled
 		|
 		cgi_timeout
 		;
@@ -396,17 +410,10 @@ http_redirection:
 			free($3);
 		}
 		;
-cgi_interpreter:
-		CGI_INTERPRETER PATH
+cgi_enabled:
+		CGI_ENABLED
 		{
-			config->servers.back().locations.back().setCgiInterpreter($2);
-			free($2);
-		}
-		|
-		CGI_INTERPRETER WORD
-		{
-			config->servers.back().locations.back().setCgiInterpreter($2);
-			free($2);
+			config->servers.back().locations.back().switchOnCgi();
 		}
 		;
 cgi_timeout:

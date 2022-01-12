@@ -38,6 +38,7 @@ struct ConfigServ {
     int                         client_max_body_size;
     std::string                 root;
     bool                        autoindex;
+    bool                        sessions_enabled;
     std::vector<int>            err_num_temp;
     std::map<int, std::string>	err_pages;
     std::vector<Location>       locations;
@@ -45,9 +46,12 @@ struct ConfigServ {
     ConfigServ(void)
     : port(-1)
     , client_max_body_size(constants::client_max_body_size)
-    , autoindex(false) {}
+    , autoindex(false)
+    , sessions_enabled(false)
+    {}
     
     ConfigServ & operator=(ConfigServ const & src);
+    friend std::ostream & operator<<(std::ostream & o, ConfigServ const & conf);
 };
 
 
@@ -60,6 +64,7 @@ struct Config {
     bool                                daemon;
     time_t                              timeout_idle;
     time_t                              timeout_ka;
+    time_t                              timeout_session;
     time_t                              keepalive_time;
     int                                 num_probes;
     time_t                              keepalive_intvl;
@@ -74,6 +79,7 @@ struct Config {
     : daemon(false)
     , timeout_idle(constants::timeout_idle)
     , timeout_ka(constants::timeout_ka)
+    , timeout_session(constants::timeout_session)
     , keepalive_time(constants::ka_time)
     , num_probes(constants::ka_probes)
     , keepalive_intvl(constants::ka_interval)
@@ -94,6 +100,14 @@ std::string numToStr(T num)
     return ss.str();
 }
 
+template <typename T>
+std::string decToHexStr(T num)
+{
+    std::stringstream ss;
+    ss << std::hex << num;
+    return ss.str();
+}
+
 int yyparse(Config *config);
 
 
@@ -110,10 +124,9 @@ class Webserv {
 private:
     std::vector<AFdHandler *>           _fds;
     int                                 _max_fd;
-    bool                                _quit;
+    static bool                         _quit;
     Logger *                            _err_log;
     std::vector<Server *>               _servers;
-    std::vector<VirtServer *>           _virt_servers;
     
     void fillSets(fd_set * rs, fd_set * ws);
     void demonize(void);
@@ -121,6 +134,7 @@ private:
     void init_code_descriptions(void);
     void init_methods(void);
     void makeServ(std::vector<ConfigServ> & conf_servers);
+    static void quitSignalHandler(int signum);
 
 public:
     Webserv(const char * config_path);

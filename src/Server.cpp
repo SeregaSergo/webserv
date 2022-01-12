@@ -1,23 +1,34 @@
 #include "../inc/Server.hpp"
 
-Server::Server(Webserv * master, int fd, std::map<std::string, VirtServer *> & virt_servers)
+Server::Server(std::string & ip, const int port, Webserv * master, int fd, std::map<std::string, VirtServer *> & host_map, \
+                std::vector<VirtServer *> virt_servers)
 		: AFdHandler(fd)
+        , _ip(ip)
+        , _port(port)
         , _master(master)
-        , _virt_servers(virt_servers) {}
+        , _virt_servers(virt_servers)
+        , _host_map(host_map)
+{
+    gettimeofday(&_last_sessions_cleaning, NULL);
+}
 
 Server::~Server(void) {
     removeAllClients();
+    for (std::vector<VirtServer *>::iterator it = _virt_servers.begin(); it != _virt_servers.end(); ++it)
+        delete *it;
 }
 
-Server * Server::create(std::string & host, const int port, Webserv * master, std::map<std::string, VirtServer *> & virt_servers)
+Server * Server::create(std::string & ip, const int port, Webserv * master, \
+                        std::map<std::string, VirtServer *> & host_map, \
+                        std::vector<VirtServer *> virt_servers)
 {
     struct sockaddr_in  addr;
     std::memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
-    if (host.empty())
+    if (ip.empty())
 	    addr.sin_addr.s_addr = INADDR_ANY;
 	else 
-        addr.sin_addr.s_addr = inet_addr(host.c_str());
+        addr.sin_addr.s_addr = inet_addr(ip.c_str());
 	addr.sin_port = htons(port);
     int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1)
@@ -26,7 +37,7 @@ Server * Server::create(std::string & host, const int port, Webserv * master, st
 	    throw std::runtime_error("Could not bind port: " + numToStr(port));
 	if (listen(fd, 1024) == -1)
 	    throw std::runtime_error("Port could not listen.");
-    Server * serv = new Server(master, fd, virt_servers);
+    Server * serv = new Server(ip, port, master, fd, host_map, virt_servers);
     master->addHandler(serv);
     return (serv);
 }
@@ -77,14 +88,33 @@ void Server::sendErrMsg(std::string const & msg) {
 
 void Server::removeAllClients(void)
 {
-    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-        removeClient(it->second);
+    while(!_clients.empty())
+        removeClient(_clients.begin()->second);
 }
 
 VirtServer * Server::getVirtualServ(std::string const & serv_name)
 {
-    std::map<std::string, VirtServer *>::iterator it = _virt_servers.find(serv_name);
-    if (it == _virt_servers.end())
-        it =_virt_servers.find("");
+    std::map<std::string, VirtServer *>::iterator it = _host_map.find(serv_name);
+    if (it == _host_map.end())
+        it =_host_map.find("");
     return ((*it).second);
+}
+
+std::string const & Server::getIP(void) const {
+    return (_ip);
+}
+
+int Server::getPort(void) const {
+    return (_port);
+}
+
+bool Server::checkTimeout(struct timeval & cur_time)
+{
+    if (cur_time.tv_sec - _last_sessions_cleaning.tv_sec > constants::timeout_sid_cleaning)
+    {
+        for (std::vector<VirtServer *>::iterator it = _virt_servers.begin(); it != _virt_servers.end(); ++it)
+            (*it)->cleanSessions(cur_time.tv_sec);
+        _last_sessions_cleaning = cur_time;
+    }
+    return false;
 }

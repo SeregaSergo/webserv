@@ -15,7 +15,7 @@
 access_log					return ACCLOG;
 allowed_methods				return ALLOWED_METHODS;
 autoindex					return AUTOINDEX;
-cgi_interpreter				return CGI_INTERPRETER;
+cgi_enabled					return CGI_ENABLED;
 cgi_timeout					return CGI_TIMEOUT;
 client_max_body_size		return CLIENT_MAX_BODY_SIZE;
 daemon_mode					return DAEMON;
@@ -32,6 +32,8 @@ redirect					return REDIRECTION;
 root						return ROOT;
 server						return SERVER;
 server_name					return SERVER_NAME;
+sessions_enabled			return SESSIONS_ON;
+session_tiomout				return SESSION_TIMEOUT;
 tcp_keepalive_time			return KA_TIME;
 tcp_keepalive_probes		return KA_PROBES;
 tcp_keepalive_intvl			return KA_INTERVAL;

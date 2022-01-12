@@ -9,17 +9,25 @@ ConfigServ & ConfigServ::operator=(ConfigServ const & src)
     client_max_body_size = src.client_max_body_size;
     root = src.root;
     autoindex = src.autoindex;
+    sessions_enabled = src.sessions_enabled;
     err_num_temp = src.err_num_temp;
     err_pages = src.err_pages;
     locations = src.locations;
     return (*this);
 }
 
+bool Webserv::_quit = false;
+
+void Webserv::quitSignalHandler(int signum)
+{
+    std::cout << "[sig " << signum << "] Webserver was stopped!" << std::endl;
+    Webserv::_quit = true;
+}
+
 // You need to be very carefull with exceptions in construtor.
 // Don't let the memory to leak!
 Webserv::Webserv(const char * config_path)
     : _max_fd(0)
-    , _quit(false)
     , _err_log(NULL)
 {
     Config conf;
@@ -98,6 +106,7 @@ void Webserv::setupParameters(Config & conf)
     addHandler(_err_log);
     constants::timeout_idle = conf.timeout_idle;
     constants::timeout_ka = conf.timeout_ka;
+    constants::timeout_session = conf.timeout_session < 120 ? 120 : conf.timeout_session;
     constants::ka_time = conf.keepalive_time;
     constants::ka_probes = conf.num_probes;
     constants::ka_interval = conf.keepalive_intvl;
@@ -106,17 +115,20 @@ void Webserv::setupParameters(Config & conf)
     constants::incoming_buffer = conf.incoming_buffer;
     constants::mime_types.swap(conf.mime_types);
     constants::mime_types[""] = "application/octet-stream";
+    constants::mime_types["default"] = "text/html";
     init_codes_description();
     init_methods();
     signal (SIGPIPE, SIG_IGN);
+    signal (SIGTERM, Webserv::quitSignalHandler);
+    signal (SIGINT, Webserv::quitSignalHandler);
 }
 
 void Webserv::makeServ(std::vector<ConfigServ> & conf)
 {
-    int pos_new = _virt_servers.size();
     int port = conf[0].port;
     std::string ip = conf[0].ip;
     std::vector<ConfigServ> serv_create;
+    std::vector<VirtServer *> virt_servers;
     serv_create.push_back(conf[0]);
     conf.erase(conf.begin());
     std::map<std::string, VirtServer *> virt_map;
@@ -140,14 +152,14 @@ void Webserv::makeServ(std::vector<ConfigServ> & conf)
     // Creating virtual servers for one real server
     for (std::vector<ConfigServ>::iterator it = serv_create.begin(); it != serv_create.end(); ++it)
     {
-        _virt_servers.push_back(VirtServer::create(*it, *this));
+        virt_servers.push_back(VirtServer::create(*it, *this));
         for (std::vector<std::string>::iterator i = (*it).server_names.begin(); i != (*it).server_names.end(); ++i)
-            virt_map.insert(std::pair<std::string, VirtServer *>(*i, _virt_servers.back()));
+            virt_map.insert(std::pair<std::string, VirtServer *>(*i, virt_servers.back()));
     }
-    virt_map.insert(std::pair<std::string, VirtServer *>("", _virt_servers[pos_new]));
+    virt_map.insert(std::pair<std::string, VirtServer *>("", virt_servers[0]));
     
     // Creating real server
-    _servers.push_back(Server::create(ip, port, this, virt_map));
+    _servers.push_back(Server::create(ip, port, this, virt_map, virt_servers));
     std::cout << "[fd " << _servers.back()->getFd() << "] Server created " << ip << ":" << port << std::endl;
 }
 
@@ -156,8 +168,6 @@ Webserv::~Webserv(void)
     if (_err_log)
         delete _err_log;
     for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-        delete *it;
-    for (std::vector<VirtServer *>::iterator it = _virt_servers.begin(); it != _virt_servers.end(); ++it)
         delete *it;
     for (std::map<std::string, AMethod *>::iterator it = constants::method.begin(); it != constants::method.end(); ++it)
         delete it->second;
@@ -294,26 +304,31 @@ std::ostream & operator<<(std::ostream & o, Config const & conf)
         o << "    [" << (*it).first << ", " << (*it).second << "]\n";
     o << "Servers: " << std::endl;
     for (std::vector<ConfigServ>::const_iterator it = conf.servers.begin(); it != conf.servers.end(); ++it)
+        o << *it << std::endl;
+    return (o);
+}
+
+std::ostream & operator<<(std::ostream & o, ConfigServ const & conf)
+{
+    o << "*****Config VirtServ******" << std::endl;
+    o << "Server names: " << std::endl;
+    for (std::vector<std::string>::const_iterator i = conf.server_names.begin(); i != conf.server_names.end(); ++i)
+        o << "    " << *i << std::endl;
+    o << "IP: " << conf.ip << std::endl;
+    o << "Port: " << conf.port << std::endl;
+    o << "Acc log: " << conf.acc_log << std::endl;
+    o << "max body: " << conf.client_max_body_size << std::endl;
+    o << "Root: " << conf.root << std::endl;
+    o << "Autoindex: " << conf.autoindex << std::endl;
+    o << "Sessions enabled: " << conf.sessions_enabled << std::endl;
+    o << "Error pages: " << std::endl;
+    for (std::map<int, std::string>::const_iterator i = conf.err_pages.begin(); i != conf.err_pages.end(); ++i)
+        o << "    " << (*i).first << ": " << (*i).second << std::endl;
+    o << "Locations: " << std::endl;
+    for (std::vector<Location>::const_iterator i = conf.locations.begin(); i != conf.locations.end(); ++i)
     {
-        o << "******************" << std::endl;
-        o << "Server names: " << std::endl;
-        for (std::vector<std::string>::const_iterator i = (*it).server_names.begin(); i != (*it).server_names.end(); ++i)
-            o << "    " << *i << std::endl;
-        o << "IP: " << (*it).ip << std::endl;
-        o << "Port: " << (*it).port << std::endl;
-        o << "Acc log: " << (*it).acc_log << std::endl;
-        o << "max body: " << (*it).client_max_body_size << std::endl;
-        o << "Root: " << (*it).root << std::endl;
-        o << "Autoindex: " << (*it).autoindex << std::endl;
-        o << "Error pages: " << std::endl;
-        for (std::map<int, std::string>::const_iterator i = (*it).err_pages.begin(); i != (*it).err_pages.end(); ++i)
-            o << "    " << (*i).first << ": " << (*i).second << std::endl;
-        o << "Locations: " << std::endl;
-        for (std::vector<Location>::const_iterator i = (*it).locations.begin(); i != (*it).locations.end(); ++i)
-        {
-            o << "*****************" << std::endl;
-            o << *i << std::endl;
-        }
+        o << "*****************" << std::endl;
+        o << *i << std::endl;
     }
     return (o);
 }

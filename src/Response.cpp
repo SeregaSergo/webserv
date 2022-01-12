@@ -1,9 +1,8 @@
 #include "../inc/Response.hpp"
-#include <sstream>
 
-Response::Response(Request * req, int * cl_state)
+Response::Response(Request * req, Client * client)
         : _request(req)
-        , _client_state(cl_state)
+        , _client(client)
         , _sent(0)
         , _status_code(0)
         , _virt_serv(NULL)
@@ -15,7 +14,7 @@ Response::Response(Request * req, int * cl_state)
 
 Response::Response(Response const & src)
     : _request(src._request)
-    , _client_state(src._client_state)
+    , _client(src._client)
     , _response(src._response)
     , _sent(src._sent)
     , _status_code(src._status_code)
@@ -69,10 +68,15 @@ bool Response::runCGI(void)
         std::vector<char*>  argv;
         std::vector<char*>  envp;
 
+<<<<<<< HEAD
         if (execve(_location->getCgiInterpreter(), getArgv(argv), getEnvp(envp)) == -1) {
 			DEBUG(std::cerr << "Cant' execute execve" << std::endl);
 			exit(502);
 		}
+=======
+        if (execve(&_file[0], getArgv(argv), getEnvp(envp)) == -1)
+            exit(502);
+>>>>>>> origin/main
     }
     else
     {
@@ -101,6 +105,36 @@ void Response::finishCGI(void)
     }
     DISPLAY(std::cout << "[pid " << _pid << "] was stopped" << std::endl);
     _pid = 0;
+}
+
+/////////////////////////////////////
+//      AI implementation function //
+/////////////////////////////////////
+
+void Response::processAI()
+{
+
+   
+    _body << "<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n";
+    
+    DIR *dir;
+    struct dirent *ent;
+    std::cout << "AI: " << _file.c_str() << std::endl;
+    if ((dir = opendir (_file.c_str())) != NULL) {
+    /* print all the files and directories within directory */
+    while ((ent = readdir (dir)) != NULL) {
+        _body  <<  "<a href=\"" << _resulting_uri << ent->d_name ;
+        if (ent->d_type == DT_DIR)
+            _body << '/';
+        _body <<  "\">" <<  ent->d_name << "</a><br>";// ent->d_name << std::endl;
+        printf ("%s\n", ent->d_name);
+    }
+    _body << "</body>\n</html>\n";
+    closedir (dir);
+    //myfile.close();
+    } else {
+    /* could not open directory */
+    }
 }
 
 int Response::processResponseCGI(void)
@@ -190,13 +224,12 @@ void Response::callbackFuncOutCGI(int ret)
     else
     {
         assembleResponse();
-        *_client_state = client::State::writing;
+        _client->setState(client::State::writing);
     }
 }
 
 char * const * Response::getArgv(std::vector<char*> & argv)
 {
-    argv.push_back((char *)_location->getCgiInterpreter());
     argv.push_back(&_file[0]);
     argv.push_back(NULL);
     return (&argv[0]);
@@ -281,12 +314,14 @@ void Response::processRedirection(void)
 int Response::processMethod(void)
 {
     _virt_serv = _request->_virt_serv;
+    _virt_serv->init_session(_request->_headers, _sid);
     _status_code = _request->_status_code;
     _resulting_uri = _request->_uri;
     _location = _request->_location;
     _file = _location->getResoursePath(_resulting_uri);
     int location_type = _location->getType();
-
+    
+    std::cout << _file << std::endl;
     if (_status_code != 200)
         return (processing::Type::error);
     if (location_type == location::Type::redirection)
@@ -328,6 +363,8 @@ void Response::assembleResponse(void)
     _response.push_back(' ');
     _response.append(constants::codes_description.find(_status_code)->second);
     _headers["Content-Length"] = numToStr(_body.tellp() - _body.tellg());
+    if (!_sid.empty())
+        _headers["Set-Cookie"] = "SID=" + _sid;
     if (_request->isLastRequest())
         _headers["Connection"] = "close";
     for (std::map<std::string,std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
@@ -350,6 +387,7 @@ void Response::processRequest()
 {
     switch (processMethod())
     {
+
     case processing::Type::redirection:
         processRedirection();
         break;
@@ -360,12 +398,13 @@ void Response::processRequest()
         return;
     
     case processing::Type::autoindex:
-        // processAI();
+        processAI();
         break;
+    
     }
 
     assembleResponse();
-    *_client_state = client::State::writing;
+    _client->setState(client::State::writing);
 }
 
 int Response::sendResponse(int fd)
@@ -404,6 +443,7 @@ std::ostream & operator<<(std::ostream & o, Response const & resp)
     DEBUG(o << "Location:\n" << *resp._location << std::endl);
     DEBUG(o << "Resulting_URI: " << resp._resulting_uri << std::endl);
     DEBUG(o << "File: " << resp._file << std::endl);
+     DEBUG(o << "SID: " << resp._sid << std::endl);
     DEBUG(o << "Sent: " << resp._sent << std::endl << std::endl);
     o << resp._response << std::endl;
     return (o);
