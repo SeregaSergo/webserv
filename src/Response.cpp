@@ -63,20 +63,13 @@ bool Response::runCGI(void)
         close(cgi_out_pipe[0]);
         close(cgi_in_pipe[1]);
 
-//        freopen("/dev/null", "w", stderr);  // mute stderr
+        freopen("/dev/null", "w", stderr);  // mute stderr
 
         std::vector<char*>  argv;
         std::vector<char*>  envp;
 
-<<<<<<< HEAD
-        if (execve(_location->getCgiInterpreter(), getArgv(argv), getEnvp(envp)) == -1) {
-			DEBUG(std::cerr << "Cant' execute execve" << std::endl);
-			exit(502);
-		}
-=======
         if (execve(&_file[0], getArgv(argv), getEnvp(envp)) == -1)
             exit(502);
->>>>>>> origin/main
     }
     else
     {
@@ -444,7 +437,7 @@ std::ostream & operator<<(std::ostream & o, Response const & resp)
     DEBUG(o << "Location:\n" << *resp._location << std::endl);
     DEBUG(o << "Resulting_URI: " << resp._resulting_uri << std::endl);
     DEBUG(o << "File: " << resp._file << std::endl);
-     DEBUG(o << "SID: " << resp._sid << std::endl);
+	DEBUG(o << "SID: " << resp._sid << std::endl);
     DEBUG(o << "Sent: " << resp._sent << std::endl << std::endl);
     o << resp._response << std::endl;
     return (o);
