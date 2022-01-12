@@ -108,18 +108,41 @@ void Response::processAI()
 {
 
    
-    _body << "<html>\n<head>\n<title>Test upload</title>\n</head>\n<body>\n";
+    _body   << "<html>\n<head>\n<title>Test upload</title>\n<style>"
+            << "* {box-sizing: border-box;}"
+            << "a {display: inline-block;position:relative;padding: 0 2em; margin: 0 -2em;}"
+            << ".column {float: left; padding: 10px; height: 20px;}.left,"
+            << ".right {width: 25%;}.middle {width: 50%;}"
+            << ".row:after {content: "";display: table;clear: both;}"
+            << "</style></head>\n<body>\n";
     
-    DIR *dir;
-    struct dirent *ent;
+    DIR             *dir;
+    struct stat     t_stat;
+    std::string     creation_time;
+    off_t     file_size;
+    struct dirent   *ent;
+    
     std::cout << "AI: " << _file.c_str() << std::endl;
     if ((dir = opendir (_file.c_str())) != NULL) {
-    /* print all the files and directories within directory */
+    _body << "<h2>Autoindex: " << _resulting_uri << "</h2>\n";
     while ((ent = readdir (dir)) != NULL) {
-        _body  <<  "<a href=\"" << _resulting_uri << ent->d_name ;
+        if (ent->d_name[0] == '.' && ent->d_name[1] != '.')
+            continue;
+        file_size = -1;
+        creation_time = "";
+        stat((_file + ent->d_name).c_str(), &t_stat);
+        _body << "<div class=\"row\">";
+        _body  <<  "<div class=\"column left\"><p><a href=\"" << _resulting_uri << ent->d_name;
         if (ent->d_type == DT_DIR)
             _body << '/';
-        _body <<  "\">" <<  ent->d_name << "</a><br>";// ent->d_name << std::endl;
+        else 
+            file_size = t_stat.st_size;
+        if (ent->d_name[0] != '.')
+            creation_time = asctime(localtime(&t_stat.st_ctime));
+        _body <<  "\">" <<  ent->d_name << "</a>" << "</p></div>"
+        << "<div class=\"column middle\"><p>" << creation_time << "</p></div>"
+        << "<div  class=\"column right\"><p>" << (file_size == -1 ? "-" : numToStr(file_size)) << "</p></div>"
+        << "</div>";
         printf ("%s\n", ent->d_name);
     }
     _body << "</body>\n</html>\n";
@@ -271,8 +294,8 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 		put_env_into_vec(envp, "HTTP_" + str + "=" + map_it->second);
 	}
 
-	put_env_into_vec(envp, "REMOTE_ADDR=" + this->_client->_addr);
-	put_env_into_vec(envp, "REMOTE_PORT=" + numToStr(this->_client->_port));
+	put_env_into_vec(envp, "REMOTE_ADDR=" + this->_client->getHost());
+	put_env_into_vec(envp, "REMOTE_PORT=" + numToStr(this->_client->getPort()));
 	// envp.push_back("REMOTE_IDENT="); // не надо вроде
 	// envp.push_back("REMOTE_USER="); // не надо вроде
 
