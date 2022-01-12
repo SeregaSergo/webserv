@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 """Very basic Python script that outputs static HTML content."""
 
 import cgi
@@ -12,8 +12,10 @@ def template():
 <html>
 <title>{title}</title>
 <body>
-  Hello, {username}!\n
-  I read {size} symbols from stdin!
+  <p>Hello, {username}!
+  I read {size} symbols from stdin!</p>
+  <p>Env:</p>
+  {env}
 </body>
 </html>
             """
@@ -30,6 +32,7 @@ def run():
     title = 'My first tinyPy.cgi'
     input_str = sys.stdin.read(-1)
     size = len(input_str)
+    env = list(os.environ.items())
     render(**locals())
 
 

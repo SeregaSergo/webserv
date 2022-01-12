@@ -1,3 +1,4 @@
+
 error_log /Users/suzumaki/Desktop/Sergo/www/logs/error.log;
 
 idle_timeout 5;
@@ -26,6 +27,7 @@ types {
 server {
     server_name suzumaki.org www.suzumaki.org;
     listen 127.0.0.1:8080;
+
     access_log  /Users/suzumaki/Desktop/Sergo/www/logs/suzumaki.log;
     client_max_body_size 5M;
     root /Users/suzumaki/Desktop/Sergo/www/;
@@ -40,17 +42,20 @@ server {
     };
 
     location /images/ {
+
         root /Users/suzumaki/Desktop/Sergo/www/static/;
         allowed_methods   GET;
     };
 
     location /storage/ {
+
         root              /Users/suzumaki/Desktop/Sergo/www/users_files;
         allowed_methods   GET;
         autoindex         on;
     };
 
     location /upload/ {
+
         root              /Users/suzumaki/Desktop/Sergo/www/users_files;
         allowed_methods   POST DELETE;
     };
@@ -61,6 +66,7 @@ server {
         cgi_enabled;
         cgi_timeout  5;
     };
+
 
     location = /index.php {
         allowed_methods   GET;
@@ -73,6 +79,7 @@ server {
     };
 
     location ~ html {
+
         root /Users/suzumaki/Desktop/Sergo/www/static/;
         allowed_methods     GET;
     };
@@ -86,6 +93,7 @@ server {
 server {
 
   listen 127.0.0.1:8080;
+
   server_name suzumaki.ru www.suzumaki.ru;
   access_log  /Users/suzumaki/Desktop/Sergo/www/logs/suzumaki.log;
 

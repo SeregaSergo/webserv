@@ -2,6 +2,7 @@
 #define LOCATION_HPP
 
 #include <set>
+#include "Response.hpp"
 #include "Redirect.hpp"
 #include "constants.hpp"
 

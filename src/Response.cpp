@@ -63,13 +63,20 @@ bool Response::runCGI(void)
         close(cgi_out_pipe[0]);
         close(cgi_in_pipe[1]);
 
-        freopen("/dev/null", "w", stderr);  // mute stderr
+//        freopen("/dev/null", "w", stderr);  // mute stderr
 
         std::vector<char*>  argv;
         std::vector<char*>  envp;
 
+<<<<<<< HEAD
+        if (execve(_location->getCgiInterpreter(), getArgv(argv), getEnvp(envp)) == -1) {
+			DEBUG(std::cerr << "Cant' execute execve" << std::endl);
+			exit(502);
+		}
+=======
         if (execve(&_file[0], getArgv(argv), getEnvp(envp)) == -1)
             exit(502);
+>>>>>>> origin/main
     }
     else
     {
@@ -228,27 +235,63 @@ char * const * Response::getArgv(std::vector<char*> & argv)
     return (&argv[0]);
 }
 
+void	Response::put_env_into_vec(std::vector<char *> &envp, std::string new_env) {
+	envp.push_back(strdup(new_env.c_str()));
+}
+
 char * const * Response::getEnvp(std::vector<char*> & envp)
 {
-    
-    // envp.push_back("AUTH_TYPE=");
-	// envp.push_back("CONTENT_LENGTH=");
-	// envp.push_back("CONTENT_TYPE=");
-	// envp.push_back("GATEWAY_INTERFACE=CGI/1.1");
-	// envp.push_back("PATH_INFO=");
-	// envp.push_back("PATH_TRANSLATED=");
-	// envp.push_back("QUERY_STRING=");
-	// envp.push_back("REMOTE_ADDR=");
-    // envp.push_back("REMOTE_HOST=");
-	// envp.push_back("REMOTE_IDENT=");
-	// envp.push_back("REMOTE_USER=");
-	// envp.push_back("REQUEST_METHOD=");
-	// envp.push_back("SCRIPT_NAME=");
-	// envp.push_back("SERVER_NAME=");
-	// envp.push_back("SERVER_PORT=");
-	// envp.push_back("SERVER_PROTOCOL=");
-	// envp.push_back("SERVER_SOFTWARE=");
-    envp.push_back(NULL);
+	std::string str;
+	std::map<std::string, std::string>::iterator map_it;
+    std::map<std::string, std::string> header_env;
+
+//    header_env["Authorization"] = "AUTH_TYPE";
+    header_env["Content-Type"] = "CONTENT_TYPE";
+    header_env["Host"] = "REMOTE_HOST";
+
+    for (std::map<std::string, std::string>::iterator it = header_env.begin(); it != header_env.end(); ++it) {
+        map_it = this->_request->_headers.find(it->first);
+        if (map_it != this->_request->_headers.end())
+        {
+            str = it->second + "=" + map_it->second;
+            put_env_into_vec(envp, str);
+        }
+    }
+
+	put_env_into_vec(envp, "AUTH_TYPE=");
+    put_env_into_vec(envp, "REQUEST_METHOD=" + this->_request->_method);
+    put_env_into_vec(envp, "QUERY_STRING=" + this->_request->_query);
+
+    std::string uri = this->_request->_uri;
+    put_env_into_vec(envp, "PATH_INFO=" + uri);
+    put_env_into_vec(envp, "PATH_TRANSLATED=" + this->_location->getResoursePath(uri));
+    put_env_into_vec(envp, "SCRIPT_NAME=" + uri);
+
+	str = "CONTENT_LENGTH=" + numToStr(this->_request->_body.size());
+	put_env_into_vec(envp, str);
+	put_env_into_vec(envp, "GATEWAY_INTERFACE=CGI/1.1");
+
+    for (map_it = _request->_headers.begin(); map_it !=  _request->_headers.end(); ++map_it)
+	{
+		str = map_it->first;
+		std::transform(map_it->first.begin(), map_it->first.end(), str.begin(), ::toupper);
+		put_env_into_vec(envp, "HTTP_" + str + "=" + map_it->second);
+	}
+
+	put_env_into_vec(envp, "REMOTE_ADDR=" + this->_client->_addr);
+	put_env_into_vec(envp, "REMOTE_PORT=" + numToStr(this->_client->_port));
+	// envp.push_back("REMOTE_IDENT="); // не надо вроде
+	// envp.push_back("REMOTE_USER="); // не надо вроде
+
+    put_env_into_vec(envp, "SERVER_NAME=webserv");
+    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
+    put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
+    put_env_into_vec(envp, "SERVER_SOFTWARE=webserv_5000");
+
+	//    put_env_into_vec(envp, "DOCUMENT_ROOT="); // это нужно еще добавить
+
+	envp.push_back(NULL);
+
     return (&envp[0]);
 }
 
