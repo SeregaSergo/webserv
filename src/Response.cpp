@@ -212,8 +212,9 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 	std::map<std::string, std::string>::iterator map_it;
     std::map<std::string, std::string> header_env;
 
-    header_env["Authorization"] = "AUTH_TYPE";
+//    header_env["Authorization"] = "AUTH_TYPE";
     header_env["Content-Type"] = "CONTENT_TYPE";
+    header_env["Host"] = "REMOTE_HOST";
 
     for (std::map<std::string, std::string>::iterator it = header_env.begin(); it != header_env.end(); ++it) {
         map_it = this->_request->_headers.find(it->first);
@@ -224,6 +225,7 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
         }
     }
 
+	put_env_into_vec(envp, "AUTH_TYPE=");
     put_env_into_vec(envp, "REQUEST_METHOD=" + this->_request->_method);
     put_env_into_vec(envp, "QUERY_STRING=" + this->_request->_query);
 
@@ -240,11 +242,10 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 	{
 		str = map_it->first;
 		std::transform(map_it->first.begin(), map_it->first.end(), str.begin(), ::toupper);
-		put_env_into_vec(envp,str + "=" + map_it->second);
+		put_env_into_vec(envp, "HTTP_" + str + "=" + map_it->second);
 	}
 
 	// envp.push_back("REMOTE_ADDR=");
-    // envp.push_back("REMOTE_HOST=");
 	// envp.push_back("REMOTE_IDENT=");
 	// envp.push_back("REMOTE_USER=");
 
@@ -252,7 +253,10 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 //    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
     put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
     put_env_into_vec(envp, "SERVER_SOFTWARE=webserv_5000");
-    envp.push_back(NULL);
+
+	//    put_env_into_vec(envp, "DOCUMENT_ROOT=");
+
+	envp.push_back(NULL);
 
     return (&envp[0]);
 }
