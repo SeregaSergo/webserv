@@ -8,8 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Tue Jan  4 11:28:55 2022
- 
+# Make data base, printed on Wed Jan 12 17:13:20 2022
 
 # Variables
 
@@ -37,8 +36,8 @@ VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupp
 _ = /usr/bin/make
 # makefile (from `Makefile', line 57)
 CFLAGS = -g -Wall -Wextra -Werror -MMD
-# makefile (from `obj/ConfigParser.d', line 1)
-MAKEFILE_LIST :=  Makefile obj/main.d obj/Webserv.d obj/Server.d obj/VirtServer.d obj/Location.d obj/Client.d obj/Logger.d obj/Redirect.d obj/Request.d obj/Response.d obj/constants.d obj/AMethod.d obj/Get.d obj/Post.d obj/Delete.d obj/InCGI.d obj/OutCGI.d obj/lex.yy.d obj/ConfigParser.d
+# makefile (from `Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
 # makefile (from `Makefile', line 24)
 SRCS = Webserv.cpp Server.cpp VirtServer.cpp Location.cpp Client.cpp Logger.cpp Redirect.cpp Request.cpp Response.cpp constants.cpp AMethod.cpp Get.cpp Post.cpp Delete.cpp InCGI.cpp OutCGI.cpp
 # makefile (from `Makefile', line 58)
@@ -52,11 +51,11 @@ YACC_HPP = $(YACC_CPP:%.cpp=%.hpp)
 # makefile (from `Makefile', line 40)
 OBJS = $(addprefix $(PATH_O)/,$(SRCS:%.cpp=%.o))
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0001r84000f21/T/vscode-ipc-f29c12f9-e3ee-40b2-abde-65548f5fcb36.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0001r84000f21/T/vscode-ipc-972f5414-9ed7-406c-9f51-fc31d31ed597.sock
 # environment
 VSCODE_CWD = /
 # environment
-Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.oyRZb4VXRc/Render
+Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.WQz5iEvj0m/Render
 # environment
 PATH = /Users/suzumaki/.brew/Cellar/llvm/12.0.1/bin:/Users/suzumaki/.brew/bin:/Users/suzumaki/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/usr/local/munki:/opt/X11/bin:~/.dotnet/tools
 # makefile (from `Makefile', line 10)
@@ -72,13 +71,13 @@ ELECTRON_RUN_AS_NODE = 1
 # makefile (from `Makefile', line 17)
 MAIN_LEX = test_lex.cpp
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.4aQWp5wKx0/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.DToJjzzBvb/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
 HOMEBREW_TEMP = /tmp/suzumaki/Homebrew/Temp
 # environment
-DISPLAY = /private/tmp/com.apple.launchd.UhOYsaVlpr/org.xquartz:0
+DISPLAY = /private/tmp/com.apple.launchd.09zGcHf25T/org.xquartz:0
 # makefile (from `Makefile', line 43)
 LEX_SRC = lexer.l
 # environment
@@ -158,12 +157,13 @@ MAIL = suzumaki@student.21-school.ru
 # makefile (from `Makefile', line 14)
 MAIN = main.cpp
 # environment
-XPC_SERVICE_NAME = com.microsoft.VSCode.6244
+XPC_SERVICE_NAME = com.apple.xpc.launchd.oneshot.0x1000000c.Electron
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # makefile (from `Makefile', line 8)
 PATH_I = inc
 # makefile (from `Makefile', line 3)
+ 
 NAME_D_LEX = test_lex
 # automatic
 +F = $(notdir $+)
@@ -173,6 +173,8 @@ PATH_P = src/config_parser
 MAIN_CL_OBJ = $(addprefix $(PATH_O)/,$(MAIN_CLIENT:%.cpp=%.o))
 # environment
 __CF_USER_TEXT_ENCODING = 0x3841:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
 # default
 MAKEFILES := 
 # automatic
@@ -183,8 +185,8 @@ CXX = clang++
 PAGER = most
 # environment
 LC_ALL = C
-# makefile (from `Makefile', line 4)
-NAME_CLIENT = cl
+# environment
+SECURITYSESSIONID = 186c7
 # automatic
 ^F = $(notdir $^)
 # makefile (from `Makefile', line 71)
@@ -195,6 +197,8 @@ SUFFIXES :=
 YACC_PROD = ConfigParser.cpp
 # default
 .INCLUDE_DIRS = /usr/local/include
+# makefile (from `Makefile', line 4)
+NAME_CLIENT = cl
 # environment
 MAKELEVEL := 0
 # makefile (from `Makefile', line 46)
@@ -206,11 +210,11 @@ MAIN_CLIENT = cl.cpp
 # makefile (from `Makefile', line 49)
 YACC_SRC = YACC.y
 # environment
-VSCODE_PID = 39930
+VSCODE_PID = 5468
 # makefile (from `Makefile', line 9)
 PATH_S = src
 # variable set hash-table stats:
-# Load=98/1024=10%, Rehash=0, Collisions=30/273=11%
+# Load=100/1024=10%, Rehash=0, Collisions=33/237=14%
 
 # Pattern-specific Variable Values
 
@@ -228,18 +232,6 @@ PATH_S = src
 
 # Files
 
-# Not a target:
-src/config_parser/../../inc/Server.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/config_parser/../../inc/Location.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
 &: src/config_parser/YACC.y
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -252,32 +244,14 @@ src/config_parser/../../inc/Location.hpp:
 obj/AMethod.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:22
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 # Not a target:
-src/../inc/Server.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/config_parser/../../inc/Redirect.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 src/OutCGI.cpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/../inc/Location.hpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -288,8 +262,7 @@ src/config_parser/YACC.y:
 #  Modification time never checked.
 #  File has not been updated.
 
- 
-obj/Server.o: src/Server.cpp src/Server.cpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/Server.o: src/Server.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Server'
 #  Modification time never checked.
@@ -335,13 +308,13 @@ src/Response.cpp:
 obj/Webserv.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:06:10
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
-obj/Location.o: src/Location.cpp src/Location.cpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/constants.hpp
+obj/Location.o: src/Location.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Location'
 #  Modification time never checked.
@@ -354,25 +327,13 @@ obj/Location.o: src/Location.cpp src/Location.cpp src/../inc/Location.hpp src/..
 obj/constants.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 19:34:51
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
-# Not a target:
-src/config_parser/../../inc/Get.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
 .PHONY: all client debug_lex directories clean fclean re
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/../inc/Logger.hpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -384,30 +345,12 @@ src/config_parser/lexer.l:
 #  File has not been updated.
 
 # Not a target:
-src/../inc/Redirect.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 tests/cl.cpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-src/config_parser/../../inc/Post.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/config_parser/../../inc/Request.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-obj/Redirect.o: src/Redirect.cpp src/Redirect.cpp src/../inc/Redirect.hpp
+obj/Redirect.o: src/Redirect.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Redirect'
 #  Modification time never checked.
@@ -416,13 +359,7 @@ obj/Redirect.o: src/Redirect.cpp src/Redirect.cpp src/../inc/Redirect.hpp
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-# Not a target:
-src/../inc/Get.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-obj/Get.o: src/Get.cpp src/Get.cpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/Get.o: src/Get.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Get'
 #  Modification time never checked.
@@ -430,18 +367,6 @@ obj/Get.o: src/Get.cpp src/Get.cpp src/../inc/Get.hpp src/../inc/AMethod.hpp src
 #  commands to execute (from `Makefile', line 94):
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
-
-# Not a target:
-src/../inc/Post.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/../inc/Request.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
 
 # Not a target:
 src/VirtServer.cpp:
@@ -455,7 +380,7 @@ src/InCGI.cpp:
 #  Modification time never checked.
 #  File has not been updated.
 
-obj/Post.o: src/Post.cpp src/Post.cpp src/../inc/Post.hpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/Delete.hpp
+obj/Post.o: src/Post.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Post'
 #  Modification time never checked.
@@ -464,7 +389,7 @@ obj/Post.o: src/Post.cpp src/Post.cpp src/../inc/Post.hpp src/../inc/AMethod.hpp
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-obj/main.o: src/main.cpp src/main.cpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/Server.hpp src/../inc/AFdHandler.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/main.o: src/main.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `main'
 #  Modification time never checked.
@@ -473,7 +398,7 @@ obj/main.o: src/main.cpp src/main.cpp src/../inc/Webserv.hpp src/../inc/constant
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-obj/Request.o: src/Request.cpp src/Request.cpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/Request.o: src/Request.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Request'
 #  Modification time never checked.
@@ -489,21 +414,15 @@ obj/Request.o: src/Request.cpp src/Request.cpp src/../inc/Request.hpp src/../inc
 #  File has not been updated.
 
 # Not a target:
-src/config_parser/../../inc/AMethod.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:29:12
- 
+#  Last modified 2022-01-10 20:41:34
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
+ 
 server: obj/Webserv.o obj/Server.o obj/VirtServer.o obj/Location.o obj/Client.o obj/Logger.o obj/Redirect.o obj/Request.o obj/Response.o obj/constants.o obj/AMethod.o obj/Get.o obj/Post.o obj/Delete.o obj/InCGI.o obj/OutCGI.o obj/main.o obj/ConfigParser.o obj/lex.yy.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -522,50 +441,26 @@ debug: directories server
 # Load=1/32=3%, Rehash=0, Collisions=0/1=0%
 
 # Not a target:
-src/config_parser/../../inc/Webserv.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 obj/OutCGI.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:25
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-
-# Not a target:
-src/../inc/AMethod.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/config_parser/../../inc/constants.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/config_parser/../../inc/AFdHandler.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
 
 # Not a target:
 obj/Response.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:25:16
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
-obj/AMethod.o: src/AMethod.cpp src/AMethod.cpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/AMethod.o: src/AMethod.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `AMethod'
 #  Modification time never checked.
@@ -584,9 +479,9 @@ tests/test_lex.cpp:
 obj/lex.yy.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 20:03:59
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -602,25 +497,7 @@ src/Client.cpp:
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-src/../inc/Webserv.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/../inc/constants.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/../inc/AFdHandler.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-obj/Webserv.o: src/Webserv.cpp src/Webserv.cpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/Server.hpp src/../inc/AFdHandler.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/Webserv.o: src/Webserv.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Webserv'
 #  Modification time never checked.
@@ -629,7 +506,7 @@ obj/Webserv.o: src/Webserv.cpp src/Webserv.cpp src/../inc/Webserv.hpp src/../inc
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-obj/constants.o: src/constants.cpp src/constants.cpp src/../inc/constants.hpp
+obj/constants.o: src/constants.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `constants'
 #  Modification time never checked.
@@ -638,7 +515,7 @@ obj/constants.o: src/constants.cpp src/constants.cpp src/../inc/constants.hpp
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-obj/ConfigParser.o: src/config_parser/ConfigParser.cpp src/config_parser/ConfigParser.cpp src/config_parser/../../inc/Webserv.hpp src/config_parser/../../inc/constants.hpp src/config_parser/../../inc/Server.hpp src/config_parser/../../inc/AFdHandler.hpp src/config_parser/../../inc/VirtServer.hpp src/config_parser/../../inc/Location.hpp src/config_parser/../../inc/Redirect.hpp src/config_parser/../../inc/Client.hpp src/config_parser/../../inc/Response.hpp src/config_parser/../../inc/Request.hpp src/config_parser/../../inc/InCGI.hpp src/config_parser/../../inc/OutCGI.hpp src/config_parser/../../inc/Logger.hpp src/config_parser/../../inc/Get.hpp src/config_parser/../../inc/AMethod.hpp src/config_parser/../../inc/Post.hpp src/config_parser/../../inc/Delete.hpp
+obj/ConfigParser.o: src/config_parser/ConfigParser.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -665,9 +542,9 @@ fclean: clean
 obj/VirtServer.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:06:12
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -675,9 +552,9 @@ obj/VirtServer.d:
 obj/InCGI.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:24
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -690,36 +567,17 @@ obj/cl.o: tests/cl.cpp
 	
 
 # Not a target:
-src/../inc/Response.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 obj/ConfigParser.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:26
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 # Not a target:
-src/config_parser/../../inc/OutCGI.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/config_parser/../../inc/Response.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 src/Server.cpp:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -745,18 +603,12 @@ src/Location.cpp:
 #  File has not been updated.
 
 # Not a target:
-src/../inc/OutCGI.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 obj/Logger.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 19:34:49
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -770,7 +622,7 @@ obj/cl.d:
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
-obj/OutCGI.o: src/OutCGI.cpp src/OutCGI.cpp src/../inc/OutCGI.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/OutCGI.o: src/OutCGI.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `OutCGI'
 #  Modification time never checked.
@@ -779,7 +631,7 @@ obj/OutCGI.o: src/OutCGI.cpp src/OutCGI.cpp src/../inc/OutCGI.hpp src/../inc/Res
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-obj/Response.o: src/Response.cpp src/Response.cpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/Response.o: src/Response.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Response'
 #  Modification time never checked.
@@ -800,7 +652,7 @@ re: fclean all
 #  File does not exist.
 #  File has not been updated.
 
-obj/lex.yy.o: src/config_parser/lex.yy.c src/config_parser/ConfigParser.hpp src/config_parser/lex.yy.c src/config_parser/ConfigParser.hpp
+obj/lex.yy.o: src/config_parser/lex.yy.c src/config_parser/ConfigParser.hpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -829,9 +681,9 @@ src/Get.cpp:
 obj/Delete.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:24
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -839,17 +691,12 @@ obj/Delete.d:
 obj/Client.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:06:12
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
+ 
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-
-# Not a target:
-src/config_parser/../../inc/InCGI.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
 
 # Not a target:
 src/Post.cpp:
@@ -869,18 +716,6 @@ src/Request.cpp:
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-src/../inc/VirtServer.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/../inc/InCGI.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
 display: directories server
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -890,7 +725,7 @@ display: directories server
 # variable set hash-table stats:
 # Load=1/32=3%, Rehash=0, Collisions=0/1=0%
 
-obj/VirtServer.o: src/VirtServer.cpp src/VirtServer.cpp src/../inc/VirtServer.hpp src/../inc/constants.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/Logger.hpp src/../inc/AFdHandler.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/VirtServer.o: src/VirtServer.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `VirtServer'
 #  Modification time never checked.
@@ -899,7 +734,7 @@ obj/VirtServer.o: src/VirtServer.cpp src/VirtServer.cpp src/../inc/VirtServer.hp
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-obj/InCGI.o: src/InCGI.cpp src/InCGI.cpp src/../inc/InCGI.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/InCGI.o: src/InCGI.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `InCGI'
 #  Modification time never checked.
@@ -912,17 +747,11 @@ obj/InCGI.o: src/InCGI.cpp src/InCGI.cpp src/../inc/InCGI.hpp src/../inc/Respons
 obj/Server.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:06:11
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-
-# Not a target:
-src/config_parser/../../inc/Logger.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
 
 # Not a target:
 obj/test_lex.d:
@@ -935,12 +764,6 @@ obj/test_lex.d:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 # Not a target:
-src/config_parser/../../inc/Client.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 src/AMethod.cpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -949,11 +772,10 @@ src/AMethod.cpp:
 # Not a target:
 obj/Location.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
- 
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 19:34:48
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -975,12 +797,6 @@ src/config_parser/lex.yy.c: src/config_parser/lexer.l
 	
 
 # Not a target:
-src/config_parser/../../inc/VirtServer.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 src/Webserv.cpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -990,17 +806,11 @@ src/Webserv.cpp:
 obj/Redirect.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 19:34:49
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-
-# Not a target:
-src/../inc/Client.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
 
 # Not a target:
 src/constants.cpp:
@@ -1008,13 +818,7 @@ src/constants.cpp:
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-src/config_parser/../../inc/Delete.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-obj/Logger.o: src/Logger.cpp src/Logger.cpp src/../inc/Logger.hpp src/../inc/AFdHandler.hpp
+obj/Logger.o: src/Logger.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Logger'
 #  Modification time never checked.
@@ -1023,7 +827,7 @@ obj/Logger.o: src/Logger.cpp src/Logger.cpp src/../inc/Logger.hpp src/../inc/AFd
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(CMDL_FLAGS) $(OSFLAGS) -c $< -o $@
 	
 
-obj/Client.o: src/Client.cpp src/Client.cpp src/../inc/Client.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Logger.hpp src/../inc/AFdHandler.hpp src/../inc/Get.hpp src/../inc/AMethod.hpp src/../inc/InCGI.hpp src/../inc/OutCGI.hpp src/../inc/Post.hpp src/../inc/Delete.hpp
+obj/Client.o: src/Client.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Client'
 #  Modification time never checked.
@@ -1036,9 +840,9 @@ obj/Client.o: src/Client.cpp src/Client.cpp src/../inc/Client.hpp src/../inc/Res
 obj/Get.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:23
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -1086,18 +890,12 @@ test_lex: obj/Webserv.o obj/Server.o obj/VirtServer.o obj/Location.o obj/Client.
 	
 
 # Not a target:
-src/../inc/Delete.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 obj/Post.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:23
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -1105,9 +903,9 @@ obj/Post.d:
 obj/main.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:07:25
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -1115,9 +913,9 @@ obj/main.d:
 obj/Request.d:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2022-01-03 22:06:13
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
@@ -1129,7 +927,7 @@ src/config_parser/ConfigParser.hpp: src/config_parser/YACC.y
 	yacc $< -d -o $(YACC_CPP)
 	
 
-obj/Delete.o: src/Delete.cpp src/Delete.cpp src/../inc/Delete.hpp src/../inc/AMethod.hpp src/../inc/Response.hpp src/../inc/Request.hpp src/../inc/Server.hpp src/../inc/Webserv.hpp src/../inc/constants.hpp src/../inc/VirtServer.hpp src/../inc/Location.hpp src/../inc/Redirect.hpp src/../inc/Client.hpp src/../inc/InCGI.hpp src/../inc/AFdHandler.hpp src/../inc/OutCGI.hpp src/../inc/Logger.hpp src/../inc/Get.hpp src/../inc/Post.hpp
+obj/Delete.o: src/Delete.cpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `Delete'
 #  Modification time never checked.
@@ -1139,7 +937,7 @@ obj/Delete.o: src/Delete.cpp src/Delete.cpp src/../inc/Delete.hpp src/../inc/AMe
 	
 
 # files hash-table stats:
-# Load=117/1024=11%, Rehash=0, Collisions=39/526=7%
+# Load=83/1024=8%, Rehash=0, Collisions=7/208=3%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -1151,6 +949,6 @@ obj/Delete.o: src/Delete.cpp src/Delete.cpp src/../inc/Delete.hpp src/../inc/AMe
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 3802 / max = 3802 / min = 3802 / avg = 3802
 
-# Finished Make data base on Tue Jan  4 11:28:56 2022
+# Finished Make data base on Wed Jan 12 17:13:20 2022
 
  
