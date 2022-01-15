@@ -14,5 +14,5 @@ bool AMethod::isRequestedADirectory(std::string const & uri)
 bool AMethod::isFileExist(std::string const & file)
 {
     struct stat buffer;   
-    return (stat(&file[0], &buffer) == 0);
+    return (stat(&file[0], &buffer) == 0 && !(S_IFDIR & buffer.st_mode));
 }

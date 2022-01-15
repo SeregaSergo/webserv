@@ -19,6 +19,7 @@ types {
     application/octet-stream              deb bin exe dll dmg eot iso img;
     audio/mpeg                            mp3;
     video/mpeg                            mpeg mpg mov avi;
+    image/png                             png;
 };
 
 

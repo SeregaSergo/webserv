@@ -3,6 +3,11 @@
 #ifndef AMETHOD_HPP
 #define AMETHOD_HPP
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+
 class Response;
 
 // Absract parent class for all method classes:

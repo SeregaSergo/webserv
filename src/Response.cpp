@@ -106,51 +106,49 @@ void Response::finishCGI(void)
 
 void Response::processAI()
 {
-
-   
-    _body   << "<html>\n<head>\n<title>Test upload</title>\n<style>"
+    DIR             *dir;
+    struct stat     t_stat;
+    std::string     creation_time;
+    off_t           file_size;
+    struct dirent   *ent;
+    
+    if ((dir = opendir (_file.c_str())) != NULL)
+    {
+        _body   << "<html>\n<head>\n<title>Test upload</title>\n<style>"
             << "* {box-sizing: border-box;}"
             << "a {display: inline-block;position:relative;padding: 0 2em; margin: 0 -2em;}"
             << ".column {float: left; padding: 10px; height: 20px;}.left,"
             << ".right {width: 25%;}.middle {width: 50%;}"
             << ".row:after {content: "";display: table;clear: both;}"
-            << "</style></head>\n<body>\n";
-    
-    DIR             *dir;
-    struct stat     t_stat;
-    std::string     creation_time;
-    off_t     file_size;
-    struct dirent   *ent;
-    
-    std::cout << "AI: " << _file.c_str() << std::endl;
-    if ((dir = opendir (_file.c_str())) != NULL) {
-    _body << "<h2>Autoindex: " << _resulting_uri << "</h2>\n";
-    while ((ent = readdir (dir)) != NULL) {
-        if (ent->d_name[0] == '.' && ent->d_name[1] != '.')
-            continue;
-        file_size = -1;
-        creation_time = "";
-        stat((_file + ent->d_name).c_str(), &t_stat);
-        _body << "<div class=\"row\">";
-        _body  <<  "<div class=\"column left\"><p><a href=\"" << _resulting_uri << ent->d_name;
-        if (ent->d_type == DT_DIR)
-            _body << '/';
-        else 
-            file_size = t_stat.st_size;
-        if (ent->d_name[0] != '.')
-            creation_time = asctime(localtime(&t_stat.st_ctime));
-        _body <<  "\">" <<  ent->d_name << "</a>" << "</p></div>"
-        << "<div class=\"column middle\"><p>" << creation_time << "</p></div>"
-        << "<div  class=\"column right\"><p>" << (file_size == -1 ? "-" : numToStr(file_size)) << "</p></div>"
-        << "</div>";
-        printf ("%s\n", ent->d_name);
-    }
-    _body << "</body>\n</html>\n";
-    closedir (dir);
-    //myfile.close();
-    } else {
-    /* could not open directory */
-    }
+            << "</style></head>\n<body>\n" << "<h2>Autoindex: " << _resulting_uri << "</h2>\n";
+
+        while ((ent = readdir (dir)) != NULL)
+        {
+            if (ent->d_name[0] == '.' && ent->d_name[1] != '.')
+                continue;
+            file_size = -1;
+            creation_time.clear();
+            stat((_file + ent->d_name).c_str(), &t_stat);
+            _body << "<div class=\"row\">";
+            _body  <<  "<div class=\"column left\"><p><a href=\"" << _resulting_uri << ent->d_name;
+            if (ent->d_type == DT_DIR)
+                _body << '/';
+            else 
+                file_size = t_stat.st_size;
+            if (ent->d_name[0] != '.')
+                creation_time = asctime(localtime(&t_stat.st_ctime));
+            
+            _body <<  "\">" <<  ent->d_name << "</a>" << "</p></div>"
+            << "<div class=\"column middle\"><p>" << creation_time << "</p></div>"
+            << "<div  class=\"column right\"><p>" << (file_size == -1 ? "-" : numToStr(file_size)) << "</p></div>"
+            << "</div>";
+        }
+
+        _body << "</body>\n</html>\n";
+        closedir (dir);
+    } 
+    else
+        _status_code = 404;
 }
 
 int Response::processResponseCGI(void)
@@ -255,56 +253,48 @@ void	Response::put_env_into_vec(std::vector<char *> &envp, std::string new_env) 
 	envp.push_back(strdup(new_env.c_str()));
 }
 
+int convertHeader(int c)
+{
+    if (c == '-')
+        return ('_');
+    return (::toupper(c));
+}
+
 char * const * Response::getEnvp(std::vector<char*> & envp)
 {
 	std::string str;
-	std::map<std::string, std::string>::iterator map_it;
-    std::map<std::string, std::string> header_env;
+	std::map<std::string, std::string>::iterator it;
 
-//    header_env["Authorization"] = "AUTH_TYPE";
-    header_env["Content-Type"] = "CONTENT_TYPE";
-    header_env["Host"] = "REMOTE_HOST";
-
-    for (std::map<std::string, std::string>::iterator it = header_env.begin(); it != header_env.end(); ++it) {
-        map_it = this->_request->_headers.find(it->first);
-        if (map_it != this->_request->_headers.end())
-        {
-            str = it->second + "=" + map_it->second;
-            put_env_into_vec(envp, str);
-        }
-    }
-
-	put_env_into_vec(envp, "AUTH_TYPE=");
-    put_env_into_vec(envp, "REQUEST_METHOD=" + this->_request->_method);
-    put_env_into_vec(envp, "QUERY_STRING=" + this->_request->_query);
-
-    std::string uri = this->_request->_uri;
-    put_env_into_vec(envp, "PATH_INFO=" + uri);
-    put_env_into_vec(envp, "PATH_TRANSLATED=" + this->_location->getResoursePath(uri));
-    put_env_into_vec(envp, "SCRIPT_NAME=" + uri);
-
-	str = "CONTENT_LENGTH=" + numToStr(this->_request->_body.size());
-	put_env_into_vec(envp, str);
+	put_env_into_vec(envp, "AUTH_TYPE=NULL");
+    put_env_into_vec(envp, "REQUEST_METHOD=" + _request->_method);
+    put_env_into_vec(envp, "QUERY_STRING=" + _request->_query);
+    put_env_into_vec(envp, "PATH_INFO=" + _location->getResoursePath(_request->_uri));
+    put_env_into_vec(envp, "PATH_TRANSLATED=" + _location->getResoursePath(_request->_uri));
+    put_env_into_vec(envp, "DOCUMENT_ROOT=" + _virt_serv->getDocRoot());
+    put_env_into_vec(envp, "SCRIPT_NAME=" + _request->_uri);
+	put_env_into_vec(envp, "CONTENT_LENGTH=" + numToStr(_request->_body.size()));
 	put_env_into_vec(envp, "GATEWAY_INTERFACE=CGI/1.1");
-
-    for (map_it = _request->_headers.begin(); map_it !=  _request->_headers.end(); ++map_it)
-	{
-		str = map_it->first;
-		std::transform(map_it->first.begin(), map_it->first.end(), str.begin(), ::toupper);
-		put_env_into_vec(envp, "HTTP_" + str + "=" + map_it->second);
-	}
-
-	put_env_into_vec(envp, "REMOTE_ADDR=" + this->_client->getHost());
-	put_env_into_vec(envp, "REMOTE_PORT=" + numToStr(this->_client->getPort()));
-	// envp.push_back("REMOTE_IDENT="); // не надо вроде
-	// envp.push_back("REMOTE_USER="); // не надо вроде
-
-    put_env_into_vec(envp, "SERVER_NAME=webserv");
-    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(this->_request->_server->getPort()));
+	put_env_into_vec(envp, "REMOTE_ADDR=" + _client->getHost());
+    put_env_into_vec(envp, "REMOTE_HOST=NULL");
+	put_env_into_vec(envp, "REMOTE_PORT=" + numToStr(_client->getPort()));
+    put_env_into_vec(envp, "SERVER_NAME=" + _request->_headers["Host"]);
+    put_env_into_vec(envp, "SERVER_PORT=" + numToStr(_request->_server->getPort()));
     put_env_into_vec(envp, "SERVER_PROTOCOL=HTTP/1.1");
     put_env_into_vec(envp, "SERVER_SOFTWARE=webserv_5000");
 
-	//    put_env_into_vec(envp, "DOCUMENT_ROOT="); // это нужно еще добавить
+    if ((it = (_request->_headers).find("Content-Type")) != _request->_headers.end())
+    {
+        put_env_into_vec(envp, "CONTENT_TYPE=" + it->second);
+        _request->_headers.erase("Content-Type");
+    }
+    _request->_headers.erase("Host");
+
+    for (it = _request->_headers.begin(); it !=  _request->_headers.end(); ++it)
+	{
+		str = it->first;
+		std::transform(it->first.begin(), it->first.end(), str.begin(), convertHeader);
+		put_env_into_vec(envp, "HTTP_" + str + "=" + it->second);
+	}
 
 	envp.push_back(NULL);
 
@@ -462,6 +452,6 @@ std::ostream & operator<<(std::ostream & o, Response const & resp)
     DEBUG(o << "File: " << resp._file << std::endl);
 	DEBUG(o << "SID: " << resp._sid << std::endl);
     DEBUG(o << "Sent: " << resp._sent << std::endl << std::endl);
-    o << resp._response << std::endl;
+    o << resp._response.substr(0, 1000) << std::endl;
     return (o);
 }

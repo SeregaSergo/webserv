@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/python3
 """Very basic Python script that outputs static HTML content."""
 
 import cgi
@@ -14,7 +14,7 @@ def template():
 <body>
   <p>Hello, {username}!
   I read {size} symbols from stdin!</p>
-  <p>Env:</p>
+  <h4>Environment variables:</h4>
   {env}
 </body>
 </html>
@@ -26,13 +26,24 @@ def render(**kwargs):
     content = template().format(**kwargs)
     print(content)
 
+def listToString(l): 
+    
+    # initialize an empty string
+    str1 = "" 
+    
+    # traverse in the string  
+    for tuple in l: 
+        str1 += tuple[0] + " = " + tuple[1] + "<br>"
+    
+    # return string  
+    return str1 
 
 def run():
     username = 'Bswag'
     title = 'My first tinyPy.cgi'
     input_str = sys.stdin.read(-1)
     size = len(input_str)
-    env = list(os.environ.items())
+    env = listToString(list(os.environ.items()))
     render(**locals())
 
 

@@ -94,7 +94,8 @@ void Server::removeAllClients(void)
 
 VirtServer * Server::getVirtualServ(std::string const & serv_name)
 {
-    std::map<std::string, VirtServer *>::iterator it = _host_map.find(serv_name);
+    size_t  pos = serv_name.find(':');
+    std::map<std::string, VirtServer *>::iterator it = _host_map.find(serv_name.substr(0, pos));
     if (it == _host_map.end())
         it =_host_map.find("");
     return ((*it).second);

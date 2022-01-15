@@ -52,7 +52,7 @@ public:
 	std::string getPage(int num_page);
 	void init_session(std::map<std::string, std::string> & headers, std::string & client_sid);
 	void cleanSessions(time_t cur_time);
-
+	std::string const & getDocRoot(void) const;
 
 	friend std::ostream & operator<<(std::ostream & o, VirtServer const & serv);
 };

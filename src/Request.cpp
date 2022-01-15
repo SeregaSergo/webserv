@@ -93,10 +93,9 @@ bool Request::parseUri(void)
         return (1);
     else
     {
+        int pos = 0;
         _head += 7;
         size -= 7;
-        int pos = 0;
-        int host_end = 0;
         while (true)
         {
             if (pos == size)
@@ -104,8 +103,6 @@ bool Request::parseUri(void)
                 _uri = std::string("/");
                 break;
             }
-            if (_head[pos] == ':')
-                host_end = pos;
             if (_head[pos] == '/')
             {
                 _uri = std::string(&_head[pos], query_ptr);
@@ -113,11 +110,7 @@ bool Request::parseUri(void)
             }
             ++pos;
         }
-        if (host_end == 0)
-            _headers.insert(std::make_pair("Host", std::string(_head, &_head[pos])));
-        else
-            _headers.insert(std::make_pair("Host", std::string(_head, &_head[host_end])));
-
+        _headers.insert(std::make_pair("Host", std::string(_head, &_head[pos])));
     }
     _query = std::string(query_ptr, _tail);
     return (0);

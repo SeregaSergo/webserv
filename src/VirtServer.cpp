@@ -210,6 +210,10 @@ void VirtServer::cleanSessions(time_t cur_time)
 	pthread_mutex_unlock(&_sync_mutex);
 }
 
+std::string const & VirtServer::getDocRoot(void) const {
+	return (_document_root);
+}
+
 std::ostream & operator<<(std::ostream & o, VirtServer const & serv)
 {
 	o << "\n***** Virtual server *****\n" << std::endl;
