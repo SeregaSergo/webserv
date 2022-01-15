@@ -42,14 +42,18 @@ struct ConfigServ {
     std::vector<int>            err_num_temp;
     std::map<int, std::string>	err_pages;
     std::vector<Location>       locations;
+    int                         location_lvl;
+    
     
     ConfigServ(void)
     : port(-1)
     , client_max_body_size(constants::client_max_body_size)
     , autoindex(false)
     , sessions_enabled(false)
+    , location_lvl(-1)
     {}
     
+    std::vector<Location> & getLocations();
     ConfigServ & operator=(ConfigServ const & src);
     friend std::ostream & operator<<(std::ostream & o, ConfigServ const & conf);
 };

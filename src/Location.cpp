@@ -18,6 +18,7 @@ Location::Location(Location const & src)
 	: _pathType(src._pathType)
 	, _loc_path(src._loc_path)
 	, _index(src._index)
+	, _locations(src._locations)
 	, _methods(src._methods)
 	, _max_body_size(src._max_body_size)
 	, _root(src._root)
@@ -34,6 +35,7 @@ Location & Location::operator=(Location const & src)
 	_pathType = src._pathType;
 	_loc_path = src._loc_path;
 	_index = src._index;
+	_locations = src._locations;
 	_methods = src._methods;
 	_redir = src._redir;
 	_autoindex = src._autoindex;
@@ -158,6 +160,10 @@ int	Location::getCgiTimout(void) {
 	return (_cgi_timeout);
 }
 
+std::vector<Location> &	Location::getLocations(void) {
+	return (_locations);
+}
+
 std::ostream & operator<<(std::ostream & o, Location const & src) {
     o << "Type: " << (int)src._pathType << std::endl;
 	o << "Location path: ";
@@ -166,6 +172,13 @@ std::ostream & operator<<(std::ostream & o, Location const & src) {
 	o << "\nIndex: ";
 	for (std::vector<std::string>::const_iterator it = src._index.begin(); it != src._index.end(); ++it)
 		o << *it << "  ";
+	o << "\nLocations inner:\n";
+	for (std::vector<Location>::const_iterator it = src._locations.begin(); it != src._locations.end(); ++it)
+	{
+		o << "***************************" << std::endl;
+		o << *it << std::endl;
+		o << "***************************" << std::endl;
+	}
 	o << "\nAllowed methods: ";
 	for (std::set<std::string>::const_iterator it = src._methods.begin(); it != src._methods.end(); ++it)
 		o << *it << "  ";

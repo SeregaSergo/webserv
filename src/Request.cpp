@@ -504,7 +504,7 @@ std::ostream & operator<<(std::ostream & o, Request const & req)
     for (std::map<std::string, std::string>::const_iterator it = req._headers.begin(); \
             it != req._headers.end(); ++it)
         o << "    " << it->first << ": " << it->second <<std::endl;
-    o << "\nBody:\n" << req._body << std::endl;
+    o << "\nBody:\n" << req._body.substr(0, 1000) << std::endl;
 
     DEBUG
     (

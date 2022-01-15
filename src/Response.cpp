@@ -101,7 +101,7 @@ void Response::finishCGI(void)
 }
 
 /////////////////////////////////////
-//      AI implementation function //
+//        Autoindex function       //
 /////////////////////////////////////
 
 void Response::processAI()
@@ -114,17 +114,19 @@ void Response::processAI()
     
     if ((dir = opendir (_file.c_str())) != NULL)
     {
-        _body   << "<html>\n<head>\n<title>Test upload</title>\n<style>"
-            << "* {box-sizing: border-box;}"
+        _body   << "<!DOCTYPE html><html lang=\"en\"><html>\n<head>\n<meta charset=\"UTF-8\"><title>"
+            << _request->_headers["Host"] << "</title>\n<style> * {box-sizing: border-box;}"
             << "a {display: inline-block;position:relative;padding: 0 2em; margin: 0 -2em;}"
-            << ".column {float: left; padding: 10px; height: 20px;}.left,"
-            << ".right {width: 25%;}.middle {width: 50%;}"
+            << ".column {float: left; padding: 10px; height: 20px;}.left {width: 50%;},"
+            << ".right {width: 25%;}.middle {width: 25%;}"
             << ".row:after {content: "";display: table;clear: both;}"
-            << "</style></head>\n<body>\n" << "<h2>Autoindex: " << _resulting_uri << "</h2>\n";
-
+            << "</style></head>\n<body>\n" << "<h2>Autoindex: " << _resulting_uri << "</h2>\n"
+            << "<div class=\"row\"><div class=\"column left\"><p><a href=\"" << _resulting_uri
+            << "..\">..</a></p></div> <div class=\"column middle\"><p></p></div>"
+            << "<div  class=\"column right\"><p>-</p></div></div>";
         while ((ent = readdir (dir)) != NULL)
         {
-            if (ent->d_name[0] == '.' && ent->d_name[1] != '.')
+            if (ent->d_name[0] == '.')
                 continue;
             file_size = -1;
             creation_time.clear();
@@ -371,7 +373,7 @@ void Response::assembleResponse(void)
     _response.append(constants::codes_description.find(_status_code)->second);
     _headers["Content-Length"] = numToStr(_body.tellp() - _body.tellg());
     if (!_sid.empty())
-        _headers["Set-Cookie"] = "SID=" + _sid;
+        _headers["Set-Cookie"] = "SID=" + _sid + "; Path=/;";
     if (_request->isLastRequest())
         _headers["Connection"] = "close";
     for (std::map<std::string,std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)

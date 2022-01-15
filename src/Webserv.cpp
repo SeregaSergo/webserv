@@ -13,7 +13,20 @@ ConfigServ & ConfigServ::operator=(ConfigServ const & src)
     err_num_temp = src.err_num_temp;
     err_pages = src.err_pages;
     locations = src.locations;
+    location_lvl = src.location_lvl;
     return (*this);
+}
+
+std::vector<Location> & ConfigServ::getLocations(void)
+{
+    std::cout << "ConfigServ::getLocation" << std::endl;
+    std::vector<Location> * loc_vector = &locations;
+    for (int i = 0; i < location_lvl; ++i)
+    {
+        std::cout << "Inside cicle" << std::endl;
+        loc_vector = &loc_vector->back().getLocations();
+    }
+    return (*loc_vector);
 }
 
 bool Webserv::_quit = false;
@@ -327,7 +340,7 @@ std::ostream & operator<<(std::ostream & o, ConfigServ const & conf)
     o << "Locations: " << std::endl;
     for (std::vector<Location>::const_iterator i = conf.locations.begin(); i != conf.locations.end(); ++i)
     {
-        o << "*****************" << std::endl;
+        o << "******* First level Location **********" << std::endl;
         o << *i << std::endl;
     }
     return (o);

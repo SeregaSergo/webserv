@@ -59,10 +59,23 @@ server {
         allowed_methods   GET;
     };
 
-    location ~ py/php {
-        root /home/serega/Desktop/webserv/www/cgi-bin_linux/;
+    location /cgi-bin/ {
+
+        root /home/serega/Desktop/webserv/www/cgi-bin_linux/other;
         cgi_enabled;
         cgi_timeout 5;
+
+        location ~ py {
+            root /home/serega/Desktop/webserv/www/cgi-bin_linux/python;
+            cgi_enabled;
+            cgi_timeout 5;
+        };
+        
+        location ~ php {
+            root /home/serega/Desktop/webserv/www/cgi-bin_linux/php;
+            cgi_enabled;
+            cgi_timeout 5;
+        };
     };
 
     location ~ html/ico {

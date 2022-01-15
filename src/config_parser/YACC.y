@@ -78,6 +78,7 @@ int main(void)
 commands:
 		| commands command SEMICOLON
 		;
+
 command:
 		error_log_file
 		|
@@ -138,6 +139,7 @@ num_constants: num_constant NUMBER
 			}
 		}
 		;
+
 num_constant:
 		IDLE_TIMEOUT		{ $$ = IDLE_TIMEOUT; }
 		| KA_TIMEOUT 		{ $$ = KA_TIMEOUT; }
@@ -152,9 +154,11 @@ num_constant:
 mime_types:
 		MIMETYPES OBRACE mime_type_statements EBRACE
 		;
+
 mime_type_statements:
 		| mime_type_statements mime_type_statement SEMICOLON
 		;
+
 mime_type_statement:
 		PATH 
 		{
@@ -163,6 +167,7 @@ mime_type_statement:
 		}
 		extensions
 		;
+
 extensions:
 		| extensions WORD
 		{
@@ -177,9 +182,11 @@ server:	SERVER OBRACE
 		}
 		server_statements EBRACE
 		;
+
 server_statements:
 		| server_statements server_statement SEMICOLON
 		;
+
 server_statement:
 		server_names
 		|
@@ -203,6 +210,7 @@ server_statement:
 server_names:
 		SERVER_NAME server_name
 		;
+
 server_name:
 		| server_name PATH
 		{
@@ -214,6 +222,7 @@ server_name:
 listen:
 		LISTEN what_to_listen
 		;
+		
 what_to_listen:
 		IP COLON NUMBER 
 		{
@@ -282,6 +291,7 @@ error_page:
 			free($3);
 		}
 		;
+
 error_num:
 		| error_num NUMBER
 		{
@@ -311,23 +321,35 @@ location_block:
 			}
 			else
 				loc_path.push_back($3);
-			config->servers.back().locations.push_back(Location(type, loc_path, \
+			++(config->servers.back().location_lvl);
+			config->servers.back().getLocations().push_back(Location(type, loc_path, \
 							config->servers.back().root, config->servers.back().autoindex, \
 							config->servers.back().client_max_body_size));
+			std::cout << config->servers.back().locations.size() << std::endl;
 			free($3);
 		}
 		location_statements EBRACE
+		{
+			--(config->servers.back().location_lvl);
+		}
 		|
 		LOCATION TILDE WORD OBRACE 
 		{
 			std::vector<std::string> loc_path;
 			loc_path.push_back($3);
-			config->servers.back().locations.push_back(Location(location::pathType::extention, loc_path, \
+			++(config->servers.back().location_lvl);
+			config->servers.back().getLocations().push_back(Location(location::pathType::extention, loc_path, \
 							config->servers.back().root, config->servers.back().autoindex, \
 							config->servers.back().client_max_body_size));
+			std::cout << config->servers.back().locations.size() << std::endl;
 			free($3);
 		}
 		location_statements EBRACE
+		{
+			--(config->servers.back().location_lvl);
+		}
+		;
+
 loc_type:
 		EQUALS	{ $$ = location::pathType::equal; }
 		| TILDE	{ $$ = location::pathType::extention; }
@@ -352,6 +374,8 @@ location_statement:
 		cgi_enabled
 		|
 		cgi_timeout
+		|
+		location_block
 		;
 autoindex_loc:
 		AUTOINDEX STATE

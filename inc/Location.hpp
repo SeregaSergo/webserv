@@ -13,6 +13,7 @@ private:
 	int							_pathType;	// see constants namespace
 	std::vector<std::string>	_loc_path;
 	std::vector<std::string>	_index;
+	std::vector<Location>		_locations;
 	std::set<std::string>		_methods;
 	int							_max_body_size;
 	std::string					_root;
@@ -47,6 +48,7 @@ public:
 	std::string					getResoursePath(std::string const & uri);
 	int							getCgiTimout(void);
 	std::vector<std::string> &	getIndexFiles(void);
+	std::vector<Location> &		getLocations(void);
 
 	friend std::ostream &		operator<<(std::ostream & o, Location const & src);
 };
