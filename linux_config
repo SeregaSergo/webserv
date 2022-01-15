@@ -90,7 +90,6 @@ server {
 
 server {
 
-    listen 127.0.0.1:8080;
     access_log  /home/serega/Desktop/webserv/www/logs/bswag.log;
     server_name bswag.com www.bswag.com;
     

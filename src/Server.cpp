@@ -25,6 +25,8 @@ Server * Server::create(std::string & ip, const int port, Webserv * master, \
     struct sockaddr_in  addr;
     std::memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
+    if (port < 0)
+        throw std::runtime_error("Invalid port: -1");
     if (ip.empty())
 	    addr.sin_addr.s_addr = INADDR_ANY;
 	else 

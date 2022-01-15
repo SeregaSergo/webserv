@@ -124,6 +124,7 @@ void Response::processAI()
             << "<div class=\"row\"><div class=\"column left\"><p><a href=\"" << _resulting_uri
             << "..\">..</a></p></div> <div class=\"column middle\"><p></p></div>"
             << "<div  class=\"column right\"><p>-</p></div></div>";
+            
         while ((ent = readdir (dir)) != NULL)
         {
             if (ent->d_name[0] == '.')
@@ -270,8 +271,8 @@ char * const * Response::getEnvp(std::vector<char*> & envp)
 	put_env_into_vec(envp, "AUTH_TYPE=NULL");
     put_env_into_vec(envp, "REQUEST_METHOD=" + _request->_method);
     put_env_into_vec(envp, "QUERY_STRING=" + _request->_query);
-    put_env_into_vec(envp, "PATH_INFO=" + _location->getResoursePath(_request->_uri));
-    put_env_into_vec(envp, "PATH_TRANSLATED=" + _location->getResoursePath(_request->_uri));
+    put_env_into_vec(envp, "PATH_INFO=" + _file);
+    put_env_into_vec(envp, "PATH_TRANSLATED=" + _file);
     put_env_into_vec(envp, "DOCUMENT_ROOT=" + _virt_serv->getDocRoot());
     put_env_into_vec(envp, "SCRIPT_NAME=" + _request->_uri);
 	put_env_into_vec(envp, "CONTENT_LENGTH=" + numToStr(_request->_body.size()));

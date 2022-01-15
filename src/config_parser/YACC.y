@@ -380,13 +380,13 @@ location_statement:
 autoindex_loc:
 		AUTOINDEX STATE
 		{
-			config->servers.back().locations.back().setAutoindex($2);
+			config->servers.back().getLocations().back().setAutoindex($2);
 		}
 		;
 root_loc:
 		ROOT PATH
 		{
-			config->servers.back().locations.back().setRoot($2);
+			config->servers.back().getLocations().back().setRoot($2);
 			free($2);
 		}
 		;
@@ -396,26 +396,26 @@ index_loc:
 index_file:
 		| index_file PATH
 		{
-			config->servers.back().locations.back().addIndex($2);
+			config->servers.back().getLocations().back().addIndex($2);
 			free($2);
 		}
 		;
 allowed_methods:
 		ALLOWED_METHODS
 		{
-			config->servers.back().locations.back().clearMethodSet();
+			config->servers.back().getLocations().back().clearMethodSet();
 		}
 		http_methods
 		;
 http_methods:
 		HTTP_METHOD 
 		{
-			config->servers.back().locations.back().addMethod($1);
+			config->servers.back().getLocations().back().addMethod($1);
 			free($1);
 		}
 		| http_methods HTTP_METHOD
 		{
-			config->servers.back().locations.back().addMethod($2);
+			config->servers.back().getLocations().back().addMethod($2);
 			free($2);
 		}
 		;	
@@ -423,27 +423,27 @@ http_redirection:
 		REDIRECTION NUMBER URL URI
 		{
 			Redirect * ptr = new Redirect($2, $3, true);
-			config->servers.back().locations.back().setRedir(ptr);
+			config->servers.back().getLocations().back().setRedir(ptr);
 			free($3);
 		}
 		|
 		REDIRECTION NUMBER URL
 		{
 			Redirect * ptr = new Redirect($2, $3, false);
-			config->servers.back().locations.back().setRedir(ptr);
+			config->servers.back().getLocations().back().setRedir(ptr);
 			free($3);
 		}
 		;
 cgi_enabled:
 		CGI_ENABLED
 		{
-			config->servers.back().locations.back().switchOnCgi();
+			config->servers.back().getLocations().back().switchOnCgi();
 		}
 		;
 cgi_timeout:
 		CGI_TIMEOUT NUMBER
 		{
-			config->servers.back().locations.back().setCgiTimeout($2);
+			config->servers.back().getLocations().back().setCgiTimeout($2);
 		}
 		;
 %%
