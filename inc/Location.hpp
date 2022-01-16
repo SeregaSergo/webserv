@@ -6,6 +6,9 @@
 #include "Redirect.hpp"
 #include "constants.hpp"
 
+namespace location {
+    extern Location	NoneLocation;
+}
 
 class Location {
 
@@ -21,9 +24,11 @@ private:
 	bool						_cgi_enabled;
 	int							_cgi_timeout;
 	bool						_autoindex;
-
+	int							_symbols_cut;
+	
 public:
-	Location(int type, std::vector<std::string> & path, std::string & root, bool ai, int max_body_size);
+	Location(int type, std::vector<std::string> const & path, std::string const & root, \
+				bool ai, int max_body_size, int cut);
 	Location(Location const & src);
 	~Location() {}
 	Location & operator=(Location const & src);
@@ -38,7 +43,7 @@ public:
 	void						switchOnCgi(void);
 	void						setCgiTimeout(int timout);
 
-	char						checkLocation(std::string const & uri, unsigned int * max_symbols);
+	Location *					checkLocation(std::string const & uri);
 	bool						checkMethod(std::string & method);
 	bool						checkBodySize(int size);
 	Redirect *					getRedir(void);
@@ -49,7 +54,15 @@ public:
 	int							getCgiTimout(void);
 	std::vector<std::string> &	getIndexFiles(void);
 	std::vector<Location> &		getLocations(void);
+	int							getSymbolsToCut(void);
 
+	friend bool 				operator>(const Location & l1, const Location & l2);
+	friend bool					operator>=(const Location & l1, const Location & l2);
+	friend bool					operator==(const Location & l1, const Location & l2);
+	friend bool					operator!=(const Location & l1, const Location & l2);
+	friend bool					operator<(const Location & l1, const Location & l2);
+	friend bool					operator<=(const Location & l1, const Location & l2);
+	
 	friend std::ostream &		operator<<(std::ostream & o, Location const & src);
 };
 

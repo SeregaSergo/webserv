@@ -55,7 +55,6 @@ int Get::process(Response & resp)
             file.close();
             return (errorCode(&resp._status_code, 500));
         }
-        std::cout << getMimeType(resp._resulting_uri) << std::endl;
         resp._headers["Content-Type"] = getMimeType(resp._resulting_uri);
         file.close();
     }

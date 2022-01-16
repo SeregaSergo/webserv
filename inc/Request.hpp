@@ -60,6 +60,9 @@ public:
     std::string & getMethod(void);
     std::string & getURI(void);
     std::string & getQuery(void);
+    std::string const & getHttpVersion(void);
+    bool hasVirtServer(void);
+
     std::map<std::string, std::string> & getHeaders(void);
     std::string const & getBody(void);
     VirtServer * getVirtualServer(void);

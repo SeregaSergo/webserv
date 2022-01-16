@@ -64,23 +64,6 @@ inline int Request::filledSpace(void) const
     return ((_ptr - _buffer) / sizeof(char));
 }
 
-// std::string Request::getParams( std::vector< std::pair< std::string, std::string> > requestData )
-// {
-//     std::string parm = "";
-
-//     std::vector< std::pair< std::string, std::string> >::iterator itr = requestData.begin();
-
-//     for( ; itr != requestData.end(); ++itr )
-//     {
-//         if( parm.size() < 1 )
-//             parm += "";
-//         else
-//             parm += "&";
-//         parm += itr->first + "=" + itr->second;
-//     }
-//     return parm;
-// }
-
 bool Request::parseUri(void)
 {
     int size = (_tail - _head) / sizeof(char);
@@ -423,6 +406,12 @@ std::string & Request::getQuery(void) {
     return (_query);
 }
 
+std::string const & Request::getHttpVersion(void) {
+    if (_http_version.empty())
+        return (constants::default_http_version);
+    return (_http_version);
+}
+
 std::map<std::string, std::string> & Request::getHeaders(void) {
     return (_headers);
 }
@@ -432,6 +421,10 @@ std::string const & Request::getBody(void) {
 }
 
 VirtServer * Request::getVirtualServer(void) {
+    return (_virt_serv);
+}
+
+bool    Request::hasVirtServer(void) {
     return (_virt_serv);
 }
 
@@ -447,6 +440,9 @@ void Request::clear(void)
     _state = request::State::getting_headers;
     _status_code = 200;
     _body_size = 0;
+    _ptr = _buffer;
+    _head = _buffer;
+    _tail = _buffer;
 }
 
 std::ostream & operator<<(std::ostream & o, Request const & req)

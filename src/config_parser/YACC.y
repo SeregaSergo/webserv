@@ -321,32 +321,46 @@ location_block:
 			}
 			else
 				loc_path.push_back($3);
-			++(config->servers.back().location_lvl);
+
+			if (!config->servers.back().incrementLvl(type))
+				YYABORT;
+
+			int symbols_cut = 0;
+			if (type == location::pathType::partial)
+				symbols_cut = loc_path[0].size();
+			if (config->servers.back().location_lvl == 1)
+				symbols_cut += config->servers.back().locations.back().getSymbolsToCut();
+
 			config->servers.back().getLocations().push_back(Location(type, loc_path, \
 							config->servers.back().root, config->servers.back().autoindex, \
-							config->servers.back().client_max_body_size));
-			std::cout << config->servers.back().locations.size() << std::endl;
+							config->servers.back().client_max_body_size, symbols_cut));
 			free($3);
 		}
 		location_statements EBRACE
 		{
-			--(config->servers.back().location_lvl);
+			config->servers.back().decrementLvl();
 		}
 		|
 		LOCATION TILDE WORD OBRACE 
 		{
 			std::vector<std::string> loc_path;
 			loc_path.push_back($3);
-			++(config->servers.back().location_lvl);
+
+			if (!config->servers.back().incrementLvl(location::pathType::extention))
+				YYABORT;
+			
+			int symbols_cut = 0;
+			if (config->servers.back().location_lvl == 1)
+				symbols_cut = config->servers.back().locations.back().getSymbolsToCut();
+
 			config->servers.back().getLocations().push_back(Location(location::pathType::extention, loc_path, \
 							config->servers.back().root, config->servers.back().autoindex, \
-							config->servers.back().client_max_body_size));
-			std::cout << config->servers.back().locations.size() << std::endl;
+							config->servers.back().client_max_body_size, symbols_cut));
 			free($3);
 		}
 		location_statements EBRACE
 		{
-			--(config->servers.back().location_lvl);
+			config->servers.back().decrementLvl();
 		}
 		;
 

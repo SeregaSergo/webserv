@@ -322,16 +322,21 @@ void Response::processRedirection(void)
 /////////////////////////////////////
 
 int Response::processMethod(void)
-{
-    _virt_serv = _request->_virt_serv;
-    _virt_serv->init_session(_request->_headers, _sid);
+{   
     _status_code = _request->_status_code;
+    _virt_serv = _request->_virt_serv;
+    if (!_virt_serv)
+        return (processing::Type::error);
+
+    _virt_serv->init_session(_request->_headers, _sid);
     _resulting_uri = _request->_uri;
     _location = _request->_location;
+    if (!_location)
+        return (processing::Type::error);
+        
     _file = _location->getResoursePath(_resulting_uri);
     int location_type = _location->getType();
     
-    std::cout << _file << std::endl;
     if (_status_code != 200)
         return (processing::Type::error);
     if (location_type == location::Type::redirection)
@@ -349,6 +354,9 @@ int Response::processMethod(void)
 
 void Response::handleError(void)
 {
+    if (!_virt_serv)
+        return;
+
     clear();
     _resulting_uri = _virt_serv->getPage(_status_code);
     if (_resulting_uri.empty())
@@ -367,7 +375,7 @@ void Response::assembleResponse(void)
 {   
     if (_status_code >= 400)
         handleError();
-    _response.append(_request->_http_version);
+    _response.append(_request->getHttpVersion());
     _response.push_back(' ');
     _response.append(numToStr(_status_code));
     _response.push_back(' ');
@@ -436,6 +444,7 @@ void Response::clear(void)
     _response.clear();
     _headers.clear();
     _body.str(std::string());
+    _sid.clear();
     _sent = 0;
 }
 

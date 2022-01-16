@@ -43,7 +43,7 @@ struct ConfigServ {
     std::map<int, std::string>	err_pages;
     std::vector<Location>       locations;
     int                         location_lvl;
-    
+    bool                        lvl_inc_ban;
     
     ConfigServ(void)
     : port(-1)
@@ -51,11 +51,14 @@ struct ConfigServ {
     , autoindex(false)
     , sessions_enabled(false)
     , location_lvl(-1)
+    , lvl_inc_ban(false)
     {}
     
     std::vector<Location> & getLocations();
-    ConfigServ & operator=(ConfigServ const & src);
-    friend std::ostream & operator<<(std::ostream & o, ConfigServ const & conf);
+    bool                    incrementLvl(int pathType);
+    bool                    decrementLvl();
+    ConfigServ &            operator=(ConfigServ const & src);
+    friend std::ostream &   operator<<(std::ostream & o, ConfigServ const & conf);
 };
 
 
@@ -93,8 +96,6 @@ struct Config {
 
     friend std::ostream & operator<<(std::ostream & o, Config const & conf);
 };
-
-std::ostream & operator<<(std::ostream & o, Config const & conf);
 
 template <typename T>
 std::string numToStr(T num)

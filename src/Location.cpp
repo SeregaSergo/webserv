@@ -1,6 +1,7 @@
 #include "../inc/Location.hpp"
 
-Location::Location(int type, std::vector<std::string> & path, std::string & root, bool ai, int max_body_size)
+Location::Location(int type, std::vector<std::string> const & path, std::string const & root, \
+					bool ai, int max_body_size, int cut = 0)
 		: _pathType(type)
 		, _loc_path(path)
 		, _max_body_size(max_body_size)
@@ -9,6 +10,7 @@ Location::Location(int type, std::vector<std::string> & path, std::string & root
 		, _cgi_enabled(false)
 		, _cgi_timeout(constants::cgi_timeout)
 		, _autoindex(ai)
+		, _symbols_cut(cut)
 {
 	for (int i = sizeof(constants::methods) / sizeof(std::string) - 1; i != -1; --i)
 		_methods.insert(constants::methods[i]);
@@ -26,6 +28,7 @@ Location::Location(Location const & src)
 	, _cgi_enabled(src._cgi_enabled)
 	, _cgi_timeout(src._cgi_timeout)
 	, _autoindex(src._autoindex)
+	, _symbols_cut(src._symbols_cut)
 {}
 
 Location & Location::operator=(Location const & src)
@@ -40,6 +43,7 @@ Location & Location::operator=(Location const & src)
 	_redir = src._redir;
 	_autoindex = src._autoindex;
 	_root = src._root;
+	_symbols_cut = src._symbols_cut;
 	return (*this);
 }
 
@@ -64,9 +68,9 @@ void	Location::setAutoindex(bool ai) {
 }
 
 void	Location::setRoot(std::string const & root) {
-	if (*root.rbegin() != '/')
-		_root = root + "/";
-	else
+	// if (*root.rbegin() != '/')
+	// 	_root = root + "/";
+	// else
 		_root = root;
 }
 
@@ -88,11 +92,13 @@ void	Location::setCgiTimeout(int timout)
 
 // if the location is suitable to uri then return
 // apropriate priority, else return 0
-char	Location::checkLocation(std::string const & uri, unsigned int * max_symbols)
+Location *	Location::checkLocation(std::string const & uri)
 {
+	Location * ret = &location::NoneLocation;
+	
 	if (_pathType == location::pathType::equal) {
 		if (uri == _loc_path[0])
-			return (location::pathType::equal);
+			ret = this;
 	}
 	else if (_pathType == location::pathType::extention) {
 		std::size_t found = uri.find_last_of(".");
@@ -100,25 +106,36 @@ char	Location::checkLocation(std::string const & uri, unsigned int * max_symbols
 			std::string ext_uri = uri.substr(found + 1);
 			for (std::vector<std::string>::iterator it = _loc_path.begin(); it != _loc_path.end(); ++it) {
 				if (*it == ext_uri)
-					return (location::pathType::extention);
+					ret = this;
 			}
 		}
 	}
-	else if (uri.compare(0, _loc_path[0].size(), _loc_path[0]) == 0 && \
-				_loc_path[0].size() > *max_symbols)
+	else if (uri.compare(_symbols_cut - _loc_path[0].size(), _loc_path[0].size(), _loc_path[0]) == 0)
 	{
-		*max_symbols = _loc_path[0].size();
-		return (location::pathType::partial);
+		ret = this;
+		if (!_locations.empty())
+		{
+			Location *	_ret;
+			Location *	winner = &location::NoneLocation;
+
+			for (std::vector<Location>::iterator it = _locations.begin(); it != _locations.end(); ++it)
+			{
+				_ret = (*it).checkLocation(uri);
+				if (*_ret > *winner)
+					winner = _ret;
+			}
+			if (winner != &location::NoneLocation)
+				ret = winner;
+		}
 	}
-	return (0);
+	if (ret != &location::NoneLocation)
+		std::cout << "Winner " << ret->_loc_path[0] << std::endl; 
+	return (ret);
 }
 
 std::string  Location::getResoursePath(std::string const & uri)
 {
-	if (_pathType == location::pathType::partial)
-		return (_root + &uri[_loc_path[0].size()]);
-	else
-		return (_root + &uri[1]);
+	return (_root + &uri[_symbols_cut]);
 }
 
 bool	Location::checkMethod(std::string & method) {
@@ -164,6 +181,36 @@ std::vector<Location> &	Location::getLocations(void) {
 	return (_locations);
 }
 
+int	Location::getSymbolsToCut(void) {
+	return (_symbols_cut);
+}
+
+Location	location::NoneLocation(location::pathType::none, std::vector<std::string>(), std::string(), false, 0, 0);
+
+bool	operator>(const Location & l1, const Location & l2) {
+	return (l1._pathType > l2._pathType);
+}
+
+bool	operator>=(const Location & l1, const Location & l2) {
+	return (l1._pathType >= l2._pathType);
+}
+
+bool	operator==(const Location & l1, const Location & l2) {
+	return (l1._pathType == l2._pathType);
+}
+
+bool	operator!=(const Location & l1, const Location & l2) {
+	return (l1._pathType != l2._pathType);
+}
+
+bool	operator<(const Location & l1, const Location & l2) {
+	return (l1._pathType < l2._pathType);
+}
+
+bool	operator<=(const Location & l1, const Location & l2) {
+	return (l1._pathType <= l2._pathType);
+}
+
 std::ostream & operator<<(std::ostream & o, Location const & src) {
     o << "Type: " << (int)src._pathType << std::endl;
 	o << "Location path: ";
@@ -179,6 +226,7 @@ std::ostream & operator<<(std::ostream & o, Location const & src) {
 		o << *it << std::endl;
 		o << "***************************" << std::endl;
 	}
+	o << "\nSymbols to cut: " << src._symbols_cut << std::endl;
 	o << "\nAllowed methods: ";
 	for (std::set<std::string>::const_iterator it = src._methods.begin(); it != src._methods.end(); ++it)
 		o << *it << "  ";

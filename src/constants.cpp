@@ -20,6 +20,7 @@ namespace constants
     // Implemented methods
 	const std::string methods [] = {"GET", "POST", "DELETE"};
     const std::string versions [] = {"HTTP/1.1", "HTTP/1.0"};
+    const std::string default_http_version("HTTP/0.9");
     
     std::map<int, std::string>          codes_description;
     std::map<std::string, AMethod *>    method;

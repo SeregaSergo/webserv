@@ -39,19 +39,21 @@ private:
 	VirtServer(Logger * logger, const long long int body_size, std::string root, \
 				bool sessions, const std::map<int, std::string> & err_pages, \
 				const std::vector<Location> & locations);
-	void giveID(std::string	& cookies, std::string & client_sid);
-	static void * cleaningProcess(void * args);
+	
+	void				giveID(std::string	& cookies, std::string & client_sid);
+	static void * 		cleaningProcess(void * args);
 
 public:
 	static VirtServer * create(ConfigServ const & conf, Webserv & wbsrv);
-	~VirtServer();
 	VirtServer(VirtServer const & src);
-	void sendAccMsg(std::string & msg);
-	Location * chooseLocation(std::string const & uri);
-	bool IsBodyOversize(long long int body_size);
-	std::string getPage(int num_page);
-	void init_session(std::map<std::string, std::string> & headers, std::string & client_sid);
-	void cleanSessions(time_t cur_time);
+	~VirtServer();
+
+	void 				sendAccMsg(std::string & msg);
+	Location * 			chooseLocation(std::string const & uri);
+	bool 				IsBodyOversize(long long int body_size);
+	std::string 		getPage(int num_page);
+	void 				init_session(std::map<std::string, std::string> & headers, std::string & client_sid);
+	void 				cleanSessions(time_t cur_time);
 	std::string const & getDocRoot(void) const;
 
 	friend std::ostream & operator<<(std::ostream & o, VirtServer const & serv);

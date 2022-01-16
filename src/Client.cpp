@@ -76,6 +76,7 @@ void Client::handle(void)
 
         case response::ReturnCode::completed:
             sendLogMessage();
+            DISPLAY(std::cout << _response << std::endl);
             if (_request.isLastRequest())
             {
                 shutdown(_fd, SHUT_RDWR);
@@ -112,6 +113,7 @@ void Client::handle(void)
 
         case request::ReturnCode::completed:
             _state = client::State::processing;
+            DISPLAY(std::cout << _request << std::endl);
             _response.processRequest();
             break;
         }
@@ -120,6 +122,8 @@ void Client::handle(void)
 
 void Client::sendLogMessage(void)
 {
+    if (!_request.hasVirtServer())
+        return;
     std::string msg;
     msg += getAddress();
     msg += " \"" + _request.getMethod();
@@ -128,9 +132,6 @@ void Client::sendLogMessage(void)
     msg += numToStr(_response.getStatusCode()) + " ";
     msg += numToStr(_response.getBytesSent()) + "B";
     _request.getVirtualServer()->sendAccMsg(msg);
-
-    DISPLAY(std::cout << _request << std::endl);
-    DISPLAY(std::cout << _response << std::endl);
 }
 
 std::string Client::getAddress(void)

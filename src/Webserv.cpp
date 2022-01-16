@@ -19,14 +19,27 @@ ConfigServ & ConfigServ::operator=(ConfigServ const & src)
 
 std::vector<Location> & ConfigServ::getLocations(void)
 {
-    std::cout << "ConfigServ::getLocation" << std::endl;
     std::vector<Location> * loc_vector = &locations;
-    for (int i = 0; i < location_lvl; ++i)
-    {
-        std::cout << "Inside cicle" << std::endl;
+    for (int i = 0; i < location_lvl; ++i) 
         loc_vector = &loc_vector->back().getLocations();
-    }
     return (*loc_vector);
+}
+
+bool    ConfigServ::incrementLvl(int pathType)
+{
+    ++location_lvl;
+	if (lvl_inc_ban || location_lvl > 1)
+		return false;
+    if (pathType != location::pathType::partial)
+        lvl_inc_ban = true;
+    return true;
+}
+
+bool    ConfigServ::decrementLvl()
+{
+    --location_lvl;
+    lvl_inc_ban = false;
+    return true;
 }
 
 bool Webserv::_quit = false;

@@ -28,6 +28,7 @@ namespace constants
     extern unsigned long                        limit_headers_length;
     extern const int                            client_max_body_size;
     extern int                                  incoming_buffer;
+    extern const std::string                    default_http_version;
 }
 
 namespace location

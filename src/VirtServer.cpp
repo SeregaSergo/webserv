@@ -113,22 +113,16 @@ void VirtServer::sendAccMsg(std::string & msg) {
 
 Location * VirtServer::chooseLocation(std::string const & uri)
 {
-	std::vector<Location>::iterator winner_pos;
-	int ret;
-	unsigned int max_symbols = 0;
-	int win_prior = location::pathType::none;
+	Location *	winner = &location::NoneLocation;
+	Location *	ret;
+
 	for (std::vector<Location>::iterator it = _locations.begin(); it != _locations.end(); ++it)
 	{
-		ret = (*it).checkLocation(uri, &max_symbols);
-		if (ret >= win_prior)
-		{
-			winner_pos = it;
-			win_prior = ret;
-		}
+		ret = (*it).checkLocation(uri);
+		if (*ret >= *winner)
+			winner = ret;
 	}
-	if (win_prior == location::pathType::none)
-		return NULL;
-	return (winner_pos.base());	
+	return (winner);	
 }
 
 bool VirtServer::IsBodyOversize(long long int body_size) {
