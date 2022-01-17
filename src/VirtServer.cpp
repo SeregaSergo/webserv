@@ -138,22 +138,23 @@ std::string VirtServer::getPage(int num_page)
 		return (ptr->second);
 }
 
-void VirtServer::giveID(std::string	& cookies, std::string & client_sid)
+void VirtServer::giveID(std::string	& cookies, std::vector<std::string> & set_cookie)
 {
 	time_t creation_time = std::time(NULL);
-	client_sid = decToHexStr(creation_time) + decToHexStr(std::rand());
-	std::string filename = _document_root + ".sessions/" + client_sid;
+	std::string sid = decToHexStr(creation_time) + decToHexStr(std::rand());
+	std::string filename = _document_root + ".sessions/" + sid;
 	std::ofstream outfile (filename.c_str());
 	outfile.close();
 	if (cookies.empty())
-		cookies += "SID=" + client_sid;
+		cookies += "SID=" + sid;
 	else
-		cookies += "; SID=" + client_sid;
-	_sessions[client_sid] = creation_time;
+		cookies += "; SID=" + sid;
+	set_cookie.push_back("SID=" + sid + "; Path=/;");
+	_sessions[sid] = creation_time;
 }
 
 void VirtServer::init_session(std::map<std::string, std::string> & headers, \
-								std::string & client_sid)
+								std::vector<std::string> & set_cookies)
 {
 	if (!_sessions_enabled)
 		return;
@@ -175,13 +176,11 @@ void VirtServer::init_session(std::map<std::string, std::string> & headers, \
 				cookies.erase(pos);
 			else
 				cookies.erase(pos, end - pos + 1);
-			giveID(cookies, client_sid);
+			giveID(cookies, set_cookies);
 		}
-		else
-			client_sid = sid;
 	}
 	else
-		giveID(cookies, client_sid);
+		giveID(cookies, set_cookies);
 }
 
 void VirtServer::cleanSessions(time_t cur_time)

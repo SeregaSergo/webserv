@@ -31,9 +31,10 @@ private:
 
     // Data for constructing a response
     int                                 _status_code;
-    std::string                         _sid;
+    std::vector<std::string>            _set_cookies;
     std::map<std::string,std::string>   _headers;
     std::stringstream                   _body;
+    bool                                _handle_err;
 
     // Data for file processing
     VirtServer *                        _virt_serv;

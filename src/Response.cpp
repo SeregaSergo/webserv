@@ -5,6 +5,7 @@ Response::Response(Request * req, Client * client)
         , _client(client)
         , _sent(0)
         , _status_code(0)
+        , _handle_err(true)
         , _virt_serv(NULL)
         , _location(NULL)
         , _in_CGI(NULL)
@@ -18,10 +19,16 @@ Response::Response(Response const & src)
     , _response(src._response)
     , _sent(src._sent)
     , _status_code(src._status_code)
+    , _set_cookies(src._set_cookies)
     , _headers(src._headers)
+    , _handle_err(src._handle_err)
+    , _virt_serv(src._virt_serv)
     , _location(src._location)
     , _resulting_uri(src._resulting_uri)
     , _file(src._file)
+    , _in_CGI(src._in_CGI)
+    , _out_CGI(src._out_CGI)
+    , _pid(src._pid)
 {
     _body << src._body.rdbuf();
 }
@@ -163,11 +170,6 @@ int Response::processResponseCGI(void)
         if (parseHeaderLine(line))
         {
             std::map<std::string,std::string>::iterator it;
-            if ((it = _headers.find("Status")) != _headers.end())
-            {
-                _status_code = atoi(it->second.c_str());
-                _headers.erase(it);
-            }
             if ((it = _headers.find("Location")) != _headers.end() && \
                 it->second[0] == '/')           // Server redirection, see RFC 3875 6.2.2 
             {
@@ -180,6 +182,12 @@ int Response::processResponseCGI(void)
                     return (response::CGI::document);
                 }
                 return (response::CGI::server_redir);
+            }
+            if ((it = _headers.find("Status")) != _headers.end())
+            {
+                _status_code = atoi(it->second.c_str());
+                _headers.erase(it);
+                _handle_err = false;
             }
             return (response::CGI::document);
         }
@@ -197,6 +205,8 @@ bool Response::parseHeaderLine(std::string & line)
     if (line.empty() || line == "\r")
         return (true);
     size_t pos_delim = line.find(':');
+    if (*line.rbegin() == '\r')
+        line.erase(line.size() - 1, 1);
     if (pos_delim != std::string::npos)
     {
         size_t  pos_val = line.find_first_not_of(" ", pos_delim + 1);
@@ -328,12 +338,12 @@ int Response::processMethod(void)
     if (!_virt_serv)
         return (processing::Type::error);
 
-    _virt_serv->init_session(_request->_headers, _sid);
+    _virt_serv->init_session(_request->_headers, _set_cookies);
     _resulting_uri = _request->_uri;
     _location = _request->_location;
     if (!_location)
         return (processing::Type::error);
-        
+
     _file = _location->getResoursePath(_resulting_uri);
     int location_type = _location->getType();
     
@@ -373,7 +383,7 @@ void Response::handleError(void)
 
 void Response::assembleResponse(void)
 {   
-    if (_status_code >= 400)
+    if (_status_code >= 400 && _handle_err)
         handleError();
     _response.append(_request->getHttpVersion());
     _response.push_back(' ');
@@ -381,8 +391,6 @@ void Response::assembleResponse(void)
     _response.push_back(' ');
     _response.append(constants::codes_description.find(_status_code)->second);
     _headers["Content-Length"] = numToStr(_body.tellp() - _body.tellg());
-    if (!_sid.empty())
-        _headers["Set-Cookie"] = "SID=" + _sid + "; Path=/;";
     if (_request->isLastRequest())
         _headers["Connection"] = "close";
     for (std::map<std::string,std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
@@ -391,6 +399,11 @@ void Response::assembleResponse(void)
         _response.append((*it).first);
         _response.append(": ");
         _response.append((*it).second);
+    }
+    for (std::vector<std::string>::iterator it = _set_cookies.begin(); it != _set_cookies.end(); ++it)
+    {
+        _response.append("\r\nSet-Cookie: ");
+        _response.append(*it);
     }
     _response.append("\r\n\r\n");
     _response.append(std::istreambuf_iterator<char>(_body), std::istreambuf_iterator<char>());
@@ -442,10 +455,11 @@ int Response::sendResponse(int fd)
 void Response::clear(void)
 {
     _response.clear();
+    _set_cookies.clear();
     _headers.clear();
     _body.str(std::string());
-    _sid.clear();
     _sent = 0;
+    _handle_err = true;
 }
 
 int Response::getStatusCode(void) {
@@ -462,7 +476,7 @@ std::ostream & operator<<(std::ostream & o, Response const & resp)
     DEBUG(o << "Location:\n" << *resp._location << std::endl);
     DEBUG(o << "Resulting_URI: " << resp._resulting_uri << std::endl);
     DEBUG(o << "File: " << resp._file << std::endl);
-	DEBUG(o << "SID: " << resp._sid << std::endl);
+	DEBUG(o << (resp._set_cookies.empty() ? "None cookies" : resp._set_cookies[0]) << std::endl);
     DEBUG(o << "Sent: " << resp._sent << std::endl << std::endl);
     o << resp._response.substr(0, 1000) << std::endl;
     return (o);

@@ -128,8 +128,6 @@ Location *	Location::checkLocation(std::string const & uri)
 				ret = winner;
 		}
 	}
-	if (ret != &location::NoneLocation)
-		std::cout << "Winner " << ret->_loc_path[0] << std::endl; 
 	return (ret);
 }
 

@@ -40,7 +40,7 @@ private:
 				bool sessions, const std::map<int, std::string> & err_pages, \
 				const std::vector<Location> & locations);
 	
-	void				giveID(std::string	& cookies, std::string & client_sid);
+	void				giveID(std::string	& cookies, std::vector<std::string> & set_cookies);
 	static void * 		cleaningProcess(void * args);
 
 public:
@@ -52,7 +52,8 @@ public:
 	Location * 			chooseLocation(std::string const & uri);
 	bool 				IsBodyOversize(long long int body_size);
 	std::string 		getPage(int num_page);
-	void 				init_session(std::map<std::string, std::string> & headers, std::string & client_sid);
+	void 				init_session(std::map<std::string, std::string> & headers, \
+										std::vector<std::string> & _set_cookies);
 	void 				cleanSessions(time_t cur_time);
 	std::string const & getDocRoot(void) const;
 
