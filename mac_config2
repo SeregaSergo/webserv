@@ -12,8 +12,8 @@ limit_uri_length  1024;
 limit_request_entity 4096;
 
 types {
-    application/pdf                       pdf;
-    text/html                             html htm shtml;
+    text/cmd                              py php;
+    text/html                             html htm shtml txt;
     text/css                              css;
     image/gif                             gif;
     image/jpeg                            jpeg jpg;
@@ -21,6 +21,7 @@ types {
     application/x-x509-ca-cert            der pem crt;
     application/zip                       zip;
     application/octet-stream              deb bin exe dll dmg eot iso img;
+    application/pdf                       pdf;
     audio/mpeg                            mp3;
     video/mpeg                            mpeg mpg mov avi;
 };
@@ -43,8 +44,8 @@ server {
         allowed_methods   GET;
     };
 
-    location /images/ {
-
+    location /static/ {
+        autoindex on;
         root /Users/aabet/Desktop/webserv/www/static/;
         allowed_methods   GET;
     };
@@ -62,7 +63,7 @@ server {
         allowed_methods   POST DELETE;
     };
 
-    location /cgi-bin_mac {
+    location www/cgi-bin_mac {
         autoindex on;
         root /Users/aabet/Desktop/webserv/www/cgi-bin_mac;
         cgi_enabled;
@@ -74,27 +75,36 @@ server {
         allowed_methods   GET;
     };
 
-    location ~ py/php {
-        root /Users/aabet/Desktop/webserv/www/cgi-bin_mac/;
+    location /cgi-bin/ {
+
+        root /Users/aabet/Desktop/webserv/www/cgi-bin_mac/other/;
         cgi_enabled;
-        cgi_timeout  5;
+        cgi_timeout 5;
+
+        location ~ py {
+            root /Users/aabet/Desktop/webserv/www/cgi-bin_mac/python/;
+            cgi_enabled;
+            cgi_timeout 5;
+        };
+
+        location ~ php {
+            root /Users/aabet/Desktop/webserv/www/cgi-bin_mac/php/;
+            cgi_enabled;
+            cgi_timeout 5;
+        };
     };
 
-    location ~ html {
-
-        root /Users/aabet/Desktop/webserv/www/static/;
-        allowed_methods     GET;
-    };
-
-    location ~ pdf {
-        root /Users/aabet/Desktop/webserv/www/documents/;
-        allowed_methods   GET;
+    location /docs/ {
+        location ~ pdf {
+            root /Users/aabet/Desktop/webserv/www/documents/;
+            allowed_methods   GET;
+        };
     };
 };
 
 server {
 
-  listen 127.0.0.1:8080;
+  listen 192.168.21.86:8082;
 
   server_name serv.ru www.serv.ru;
   access_log  /Users/aabet/Desktop/webserv/www/logs/aabet.log;
