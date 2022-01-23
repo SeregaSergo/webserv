@@ -203,7 +203,15 @@ bool Webserv::makeServ(std::vector<ConfigServ> & conf, std::string & result)
     virt_map.insert(std::pair<std::string, VirtServer *>("", virt_servers[0]));
     
     // Creating real server
-    _servers.push_back(Server::create(ip, port, this, virt_map, virt_servers));
+    Server * serv_ptr;
+    try {
+        serv_ptr = Server::create(ip, port, this, virt_map, virt_servers);
+    }
+    catch (std::runtime_error & ex) {
+        result = ex.what();
+        return (true);
+    }
+    _servers.push_back(serv_ptr);
     std::cout << "[fd " << _servers.back()->getFd() << "] Server created " << ip << ":" << port << std::endl;
     if (conf.empty())
         return (false);
