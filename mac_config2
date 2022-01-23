@@ -15,6 +15,7 @@ types {
     text/cmd                              py php log;
     text/html                             html htm shtml txt;
     text/css                              css;
+    image/vnd.microsoft.icon              ico;
     image/gif                             gif;
     image/jpeg                            jpeg jpg;
     image/png                             png;
@@ -46,6 +47,11 @@ server {
 
     location /static/ {
         autoindex on;
+        root /Users/aabet/Desktop/webserv/www/static/;
+        allowed_methods   GET;
+    };
+
+    location = /favicon.ico {
         root /Users/aabet/Desktop/webserv/www/static/;
         allowed_methods   GET;
     };
