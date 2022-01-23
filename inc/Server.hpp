@@ -45,12 +45,14 @@ public:
 	void removeAllClients(void);
 	std::string const & getIP(void) const;
 	int getPort(void) const;
+	static void clean_after_error(std::vector<VirtServer *> vec, std::string error_msg);
 
 private:
 	virtual bool wantRead(void) const { return true; }
     virtual bool wantWrite(void) const { return false; }
 	virtual void handle(void);
 	virtual bool checkTimeout(struct timeval & cur_time);
+
 };
 
 #endif

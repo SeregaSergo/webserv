@@ -30,7 +30,7 @@ public:
 	Location(int type, std::vector<std::string> const & path, std::string const & root, \
 				bool ai, int max_body_size, int cut);
 	Location(Location const & src);
-	~Location() {}
+	~Location() {delRedir();}
 	Location & operator=(Location const & src);
 	
 	void						addIndex(std::string const & index);

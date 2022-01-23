@@ -12,7 +12,7 @@ limit_uri_length  1024;
 limit_request_entity 4096;
 
 types {
-    text/cmd                              py php;
+    text/cmd                              py php log;
     text/html                             html htm shtml txt;
     text/css                              css;
     image/gif                             gif;
@@ -65,7 +65,7 @@ server {
 
     location www/cgi-bin_mac {
         autoindex on;
-        root /Users/bswag/Desktop/webserv/www/cgi-bin_mac;
+        root /Users/aabet/Desktop/webserv/www/cgi-bin_mac;
         cgi_enabled;
         cgi_timeout  5;
     };
@@ -104,7 +104,7 @@ server {
 
 server {
 
-  listen 127.0.0.1:8080;
+  listen 192.168.24.103:8082;
 
   server_name serv.ru www.serv.ru;
   access_log  /Users/aabet/Desktop/webserv/www/logs/aabet.log;
@@ -112,4 +112,12 @@ server {
   location / {
         redirect 301 http://www.cplusplus.com/info/description$uri;
   };
+};
+
+server {
+
+  listen 192.168.24.103:8084;
+
+  server_name serv.ru www.serv.ru;
+  access_log  /Users/aabet/Desktop/webserv/www/logs/aabet.log;
 };

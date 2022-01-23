@@ -59,27 +59,28 @@ void Webserv::quitSignalHandler(int signum)
 // Don't let the memory to leak!
 Webserv::Webserv(const char * config_path, std::string & result)
     : _max_fd(0)
-    , _err_log(NULL)
-{
-    Config conf;
-    int file = open(config_path, O_RDONLY);
-    if (file < 0)
-    {
-        result = "Can't open file - " + std::string(config_path);
-        return;
-    }
-    dup2(file, 0);
-    if (yyparse(&conf))
-    {
-        result = "Сonfig file is not valid";
-        return;
-    }
-    close(file);
-    DEBUG(std::cout << conf << std::endl);
-    setupParameters(conf);
-    while (makeServ(conf.servers, result))
-        if (!result.empty())
-            return;
+    , _err_log(NULL) {
+	Config conf;
+	int file = open(config_path, O_RDONLY);
+	if (file < 0) {
+		result = "Can't open file - " + std::string(config_path);
+		return;
+	}
+	dup2(file, 0);
+	if (yyparse(&conf)) {
+		result = "Сonfig file is not valid";
+		return;
+	}
+	close(file);
+	DEBUG(std::cout << conf << std::endl);
+	setupParameters(conf);
+	while (makeServ(conf.servers, result))
+	{
+		if (!result.empty()) {
+			this->~Webserv();
+			return;
+		}
+	}
     if (_servers.empty())
     {
         result = "Servers are not defined";

@@ -34,14 +34,20 @@ Server * Server::create(std::string & ip, const int port, Webserv * master, \
 	addr.sin_port = htons(port);
     int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1)
-        throw std::runtime_error("Could not create socket.");
+		Server::clean_after_error(virt_servers, "Could not create socket.");
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
-	    throw std::runtime_error("Could not bind port: " + numToStr(port));
+		Server::clean_after_error(virt_servers, "Could not bind port: " + numToStr(port));
 	if (listen(fd, 1024) == -1)
-	    throw std::runtime_error("Port could not listen.");
-    Server * serv = new Server(ip, port, master, fd, host_map, virt_servers);
+		Server::clean_after_error(virt_servers, "Port could not listen.");
+	Server * serv = new Server(ip, port, master, fd, host_map, virt_servers);
     master->addHandler(serv);
     return (serv);
+}
+void Server::clean_after_error(std::vector<VirtServer *> vec, std::string error_msg) {
+	for (std::vector<VirtServer *>::iterator it = vec.begin(); it < vec.end(); ++it)
+		delete *it;
+	vec.clear();
+	throw std::runtime_error(error_msg);
 }
 
 void Server::handle()

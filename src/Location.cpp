@@ -24,12 +24,16 @@ Location::Location(Location const & src)
 	, _methods(src._methods)
 	, _max_body_size(src._max_body_size)
 	, _root(src._root)
-	, _redir(src._redir)
 	, _cgi_enabled(src._cgi_enabled)
 	, _cgi_timeout(src._cgi_timeout)
 	, _autoindex(src._autoindex)
 	, _symbols_cut(src._symbols_cut)
-{}
+{
+	if (src._redir)
+		_redir = new Redirect(*src._redir);
+	else
+		_redir = NULL;
+}
 
 Location & Location::operator=(Location const & src)
 {
@@ -40,7 +44,10 @@ Location & Location::operator=(Location const & src)
 	_index = src._index;
 	_locations = src._locations;
 	_methods = src._methods;
-	_redir = src._redir;
+	if (src._redir)
+		_redir = new Redirect(*src._redir);
+	else
+		_redir = NULL;
 	_autoindex = src._autoindex;
 	_root = src._root;
 	_symbols_cut = src._symbols_cut;
@@ -153,8 +160,10 @@ Redirect * Location::getRedir(void) {
 }
 
 void Location::delRedir(void) {
-	if (_redir)
+	if (_redir != NULL) {
 		delete _redir;
+		_redir = NULL;
+	}
 }
 
 int	Location::getType(void)

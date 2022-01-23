@@ -1,5 +1,11 @@
 #include "../inc/Redirect.hpp"
 
+Redirect::Redirect(Redirect const & src)
+	: _code(src._code)
+	, _url(src._url)
+	, _uri(src._uri)
+{}
+
 int Redirect::get_code(void) {
     return (_code);
 }
