@@ -1,5 +1,5 @@
 
-error_log /Users/aabet/Desktop/webserv/www/logs/error.log;
+error_log /Users/bswag/Desktop/webserv/www/logs/error.log;
 
 idle_timeout 5;
 keepalive_timeout 30;

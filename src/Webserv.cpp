@@ -17,6 +17,11 @@ ConfigServ & ConfigServ::operator=(ConfigServ const & src)
     return (*this);
 }
 
+ConfigServ::~ConfigServ()
+{
+
+}
+
 std::vector<Location> & ConfigServ::getLocations(void)
 {
     std::vector<Location> * loc_vector = &locations;
@@ -52,24 +57,34 @@ void Webserv::quitSignalHandler(int signum)
 
 // You need to be very carefull with exceptions in construtor.
 // Don't let the memory to leak!
-Webserv::Webserv(const char * config_path)
+Webserv::Webserv(const char * config_path, std::string & result)
     : _max_fd(0)
     , _err_log(NULL)
 {
     Config conf;
     int file = open(config_path, O_RDONLY);
     if (file < 0)
-        throw std::runtime_error("Can't open file - " + std::string(config_path));
+    {
+        result = "Can't open file - " + std::string(config_path);
+        return;
+    }
     dup2(file, 0);
     if (yyparse(&conf))
-        throw std::runtime_error("Сonfig file is not valid");
+    {
+        result = "Сonfig file is not valid";
+        return;
+    }
     close(file);
     DEBUG(std::cout << conf << std::endl);
     setupParameters(conf);
-    while (conf.servers.size() != 0)
-        makeServ(conf.servers);
+    while (makeServ(conf.servers, result))
+        if (!result.empty())
+            return;
     if (_servers.empty())
-        throw std::runtime_error("Servers are not defined");
+    {
+        result = "Servers are not defined";
+        return;
+    }
     std::cout << "Starting webserv!" << std::endl;
     if (conf.daemon)
         demonize();
@@ -149,7 +164,7 @@ void Webserv::setupParameters(Config & conf)
     signal (SIGINT, Webserv::quitSignalHandler);
 }
 
-void Webserv::makeServ(std::vector<ConfigServ> & conf)
+bool Webserv::makeServ(std::vector<ConfigServ> & conf, std::string & result)
 {
     int port = conf[0].port;
     std::string ip = conf[0].ip;
@@ -171,7 +186,10 @@ void Webserv::makeServ(std::vector<ConfigServ> & conf)
                 --it;
             }
             else if ((*it).ip.empty() || ip.empty())
-                throw std::runtime_error("Ip/host mismatch");
+            {
+                result = "Ip/host mismatch";
+                return (true);
+            }
         }
     }
 
@@ -187,6 +205,10 @@ void Webserv::makeServ(std::vector<ConfigServ> & conf)
     // Creating real server
     _servers.push_back(Server::create(ip, port, this, virt_map, virt_servers));
     std::cout << "[fd " << _servers.back()->getFd() << "] Server created " << ip << ":" << port << std::endl;
+    if (conf.empty())
+        return (false);
+    else
+        return (true);
 }
 
 Webserv::~Webserv(void)

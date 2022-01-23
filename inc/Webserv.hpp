@@ -54,6 +54,8 @@ struct ConfigServ {
     , lvl_inc_ban(false)
     {}
     
+    ~ConfigServ();
+
     std::vector<Location> & getLocations();
     bool                    incrementLvl(int pathType);
     bool                    decrementLvl();
@@ -138,11 +140,11 @@ private:
     void setupParameters(Config & conf);
     void init_code_descriptions(void);
     void init_methods(void);
-    void makeServ(std::vector<ConfigServ> & conf_servers);
+    bool makeServ(std::vector<ConfigServ> & conf_servers, std::string & result);
     static void quitSignalHandler(int signum);
 
 public:
-    Webserv(const char * config_path);
+    Webserv(const char * config_path, std::string & result);
     ~Webserv(void);
     void sendErrMsg(std::string const & msg);
     void addHandler(AFdHandler * h);
